@@ -3,11 +3,8 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  Sparkles,
   Layers,
   Award,
-  Bot,
-  Mail,
   Home,
   Plus,
   X,
@@ -64,19 +61,19 @@ export default function Sidebar({
   };
 
   const content = (
-    <div className="flex flex-col h-full bg-white border-r border-slate-200 text-slate-900 w-64 select-none">
+    <div className="flex flex-col h-full bg-white border-r border-slate-200/80 text-slate-900 w-64 select-none">
       {/* Brand Header */}
       <div className="p-5 border-b border-slate-100 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-2xl bg-rose-600 text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
-            <span className="font-black text-base">한</span>
+          <div className="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs">
+            <span className="font-black text-sm">한</span>
           </div>
           <div>
-            <span className="font-black text-lg tracking-tight text-slate-900 block leading-tight">
+            <span className="font-extrabold text-base tracking-tight text-slate-900 block leading-none">
               LynKore
             </span>
-            <span className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase block">
-              Korean Learning App
+            <span className="text-[10px] text-slate-400 font-semibold tracking-wide uppercase block mt-1">
+              Korean Learning
             </span>
           </div>
         </Link>
@@ -98,18 +95,18 @@ export default function Sidebar({
             if (onOpenCreateModal) onOpenCreateModal();
             if (onCloseMobile) onCloseMobile();
           }}
-          className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow-sm flex items-center justify-center gap-2 transition-all hover:shadow"
+          className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full shadow-xs flex items-center justify-center gap-2 transition-all"
         >
           <Plus className="w-4 h-4" />
           <span>Tạo Bộ Bài AI Mới</span>
         </button>
       </div>
 
-      {/* Main Navigation & Category Scroll Container */}
+      {/* Main Navigation & Category List */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
-        {/* Main App Routes */}
+        {/* Main Routes */}
         <div className="space-y-1">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 px-3 block mb-2">
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-3 block mb-2">
             ĐIỀU HƯỚNG BÀI HỌC
           </span>
           {mainNavLinks.map((link) => {
@@ -120,9 +117,9 @@ export default function Sidebar({
                 key={link.href}
                 href={link.href}
                 onClick={onCloseMobile}
-                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-colors ${
+                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
                   isActive
-                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                    ? 'bg-blue-50 text-blue-700 font-bold border border-blue-200/60'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
@@ -136,9 +133,9 @@ export default function Sidebar({
           })}
         </div>
 
-        {/* Category List Navigation */}
+        {/* Category List */}
         <div className="space-y-1">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-rose-600 px-3 block mb-2 flex items-center justify-between">
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-rose-600 px-3 block mb-2 flex items-center justify-between">
             <span>DANH MỤC TIẾNG HÀN</span>
             <FolderOpen className="w-3.5 h-3.5" />
           </span>
@@ -149,15 +146,15 @@ export default function Sidebar({
               <button
                 key={cat.name}
                 onClick={() => handleCategoryClick(cat.name)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all text-left ${
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all text-left ${
                   isSelected
-                    ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                    ? 'bg-rose-50 text-rose-700 font-bold border border-rose-200/60'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
                 <span className="truncate">{cat.name}</span>
                 <span
-                  className={`px-2 py-0.5 text-[10px] font-extrabold rounded-full ${
+                  className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
                     isSelected
                       ? 'bg-rose-600 text-white'
                       : 'bg-slate-100 text-slate-500'
@@ -171,22 +168,22 @@ export default function Sidebar({
         </div>
       </div>
 
-      {/* Footer Progress & Streak Card */}
-      <div className="p-4 border-t border-slate-100 bg-slate-50">
-        <div className="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-2 shadow-sm">
+      {/* Footer Streak Progress Card */}
+      <div className="p-4 border-t border-slate-100 bg-slate-50/50">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-3.5 space-y-2 shadow-2xs">
           <div className="flex items-center justify-between text-xs font-bold">
             <span className="flex items-center gap-1 text-amber-600">
               <Flame className="w-4 h-4 fill-current" /> Chuỗi 5 Ngày
             </span>
-            <span className="flex items-center gap-1 text-emerald-600">
-              <CheckCircle2 className="w-3.5 h-3.5" /> 32/100 từ
+            <span className="text-emerald-600 text-[11px] font-extrabold">
+              32/100 từ
             </span>
           </div>
-          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
             <div className="bg-emerald-500 h-full w-[32%]" />
           </div>
-          <p className="text-[10px] text-slate-500 text-center font-semibold">
-            Duy trì lật thẻ mỗi ngày để nhớ lâu! 🇰🇷
+          <p className="text-[10px] text-slate-500 text-center font-medium pt-0.5">
+            Duy trì lật thẻ hằng ngày 🇰🇷
           </p>
         </div>
       </div>
@@ -204,7 +201,7 @@ export default function Sidebar({
       {isOpenMobile && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div
-            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs"
             onClick={onCloseMobile}
           />
           <div className="relative z-10 h-full shadow-2xl animate-in slide-in-from-left duration-200">

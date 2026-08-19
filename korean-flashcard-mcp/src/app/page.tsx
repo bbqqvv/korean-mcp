@@ -11,7 +11,6 @@ import {
   Play,
   ChevronDown,
   Sparkles,
-  BookOpen,
   Flame,
   Award,
   ArrowRight,
@@ -103,100 +102,89 @@ function DashboardContent() {
           searchQuery={searchQuery}
           onSearchChange={(q) => setSearchQuery(q)}
           onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
-          onOpenCreateModal={() => setIsCreateModalOpen(true)}
         />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 pb-24 md:pb-8">
           {/* Welcome & Progress Overview Banner */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-sm space-y-5">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 bg-rose-50 text-rose-700 font-extrabold text-xs rounded-full border border-rose-200">
-                    안녕하세요! 🇰🇷
-                  </span>
-                  <span className="text-xs text-slate-500 font-bold">Trung Tâm Học Tiếng Hàn LynKore</span>
-                </div>
-                <h1 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                  Bắt Đầu Bài Học Tiếng Hàn Hôm Nay
-                </h1>
-                <p className="text-xs sm:text-sm text-slate-500">
-                  Lật thẻ Flashcard thông minh, tích hợp phát âm chuẩn và tự động hóa qua Gemini MCP
-                </p>
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-7 shadow-xs space-y-5">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-rose-600 font-extrabold tracking-wide uppercase">
+                  안녕하세요! 🇰🇷 LynKore Learning Hub
+                </span>
               </div>
-
-              <button
-                onClick={() => setIsCreateModalOpen(true)}
-                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-sm flex items-center gap-2 shrink-0"
-              >
-                <Sparkles className="w-4 h-4 text-rose-300" />
-                <span>Tạo Bài AI Mới</span>
-              </button>
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                Bắt Đầu Bài Học Tiếng Hàn Hôm Nay
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-500 max-w-2xl leading-relaxed">
+                Hệ thống Flashcard thông minh giúp ghi nhớ từ vựng tiếng Hàn nhanh chóng, tích hợp phát âm chuẩn và kết nối tự động qua Gemini MCP.
+              </p>
             </div>
 
-            {/* Quick Stats Cards Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-              <div className="bg-amber-50/60 border border-amber-200 rounded-2xl p-3.5 space-y-1">
-                <span className="text-[11px] font-bold text-amber-700 uppercase flex items-center gap-1">
-                  <Flame className="w-3.5 h-3.5 fill-current" /> Chuỗi Học
+            {/* Clean Stats Bar (No multicolored pastel boxes) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1 border-t border-slate-100">
+              <div className="p-3 space-y-0.5">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                  <Flame className="w-3.5 h-3.5 text-amber-500 fill-current" /> Chuỗi Học
                 </span>
-                <div className="text-lg sm:text-xl font-black text-slate-900">5 Ngày</div>
-                <span className="text-[10px] text-slate-500 font-semibold block">Duy trì lật thẻ!</span>
+                <div className="text-base sm:text-lg font-black text-slate-900">5 Ngày liên tiếp</div>
               </div>
 
-              <div className="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-3.5 space-y-1">
-                <span className="text-[11px] font-bold text-emerald-700 uppercase flex items-center gap-1">
-                  <TrendingUp className="w-3.5 h-3.5" /> Từ Đã Thuộc
+              <div className="p-3 space-y-0.5">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-600" /> Từ Đã Thuộc
                 </span>
-                <div className="text-lg sm:text-xl font-black text-slate-900">32 / 100</div>
-                <span className="text-[10px] text-slate-500 font-semibold block">Đạt 32% mục tiêu</span>
+                <div className="text-base sm:text-lg font-black text-slate-900">32 / 100 từ</div>
               </div>
 
-              <div className="bg-blue-50/60 border border-blue-200 rounded-2xl p-3.5 space-y-1">
-                <span className="text-[11px] font-bold text-blue-700 uppercase flex items-center gap-1">
-                  <Layers className="w-3.5 h-3.5" /> Bộ Từ Vựng
+              <div className="p-3 space-y-0.5">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                  <Layers className="w-3.5 h-3.5 text-blue-600" /> Bộ Từ Vựng
                 </span>
-                <div className="text-lg sm:text-xl font-black text-slate-900">{decks.length} Bộ</div>
-                <span className="text-[10px] text-slate-500 font-semibold block">Tự động đồng bộ</span>
+                <div className="text-base sm:text-lg font-black text-slate-900">{decks.length} Bộ bài</div>
               </div>
 
-              <div className="bg-rose-50/60 border border-rose-200 rounded-2xl p-3.5 space-y-1">
-                <span className="text-[11px] font-bold text-rose-700 uppercase flex items-center gap-1">
-                  <Award className="w-3.5 h-3.5" /> Thẻ Từ Vựng
+              <div className="p-3 space-y-0.5">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                  <Award className="w-3.5 h-3.5 text-rose-600" /> Thẻ Từ Vựng
                 </span>
-                <div className="text-lg sm:text-xl font-black text-slate-900">{totalCardsCount} Thẻ</div>
-                <span className="text-[10px] text-slate-500 font-semibold block">Sẵn sàng lật bài</span>
+                <div className="text-base sm:text-lg font-black text-slate-900">{totalCardsCount} Thẻ</div>
               </div>
             </div>
           </div>
 
           {/* RECOMMENDED DECK OF THE DAY */}
           {recommendedDeck && (
-            <section className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-3">
+            <section className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
-                <span className="px-3 py-1 bg-rose-50 text-rose-700 font-extrabold text-[11px] sm:text-xs rounded-full border border-rose-200 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-rose-600" /> BỘ BÀI GỢI Ý HÔM NAY
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-rose-600" />
+                  <span className="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                    Bài Học Gợi Ý Hôm Nay
+                  </span>
+                </div>
+                <span className="text-xs text-rose-700 font-bold bg-rose-50 border border-rose-200/60 px-2.5 py-0.5 rounded-full">
+                  {recommendedDeck.category}
                 </span>
-                <span className="text-xs text-slate-500 font-semibold">{recommendedDeck.category}</span>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
                 <div className="space-y-1">
-                  <h2 className="text-lg sm:text-2xl font-black text-slate-900">
+                  <h2 className="text-lg sm:text-xl font-black text-slate-900">
                     {recommendedDeck.title}
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                     {recommendedDeck.description}
                   </p>
-                  <div className="text-xs text-slate-500 pt-1 font-semibold">
-                    📚 Số lượng: <strong className="text-slate-900">{recommendedDeck.cards.length} thẻ từ vựng</strong>
+                  <div className="text-xs text-slate-500 pt-1 font-medium">
+                    📚 Quy mô: <strong className="text-slate-900">{recommendedDeck.cards.length} thẻ từ vựng</strong>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2.5 shrink-0">
                   <Link
                     href={`/deck/${recommendedDeck.id}`}
-                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-sm flex items-center gap-2 transition-all hover:scale-102"
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-xs flex items-center gap-2 transition-all"
                   >
                     <span>Bắt Đầu Học Ngay</span>
                     <ArrowRight className="w-4 h-4" />
@@ -204,7 +192,7 @@ function DashboardContent() {
 
                   <Link
                     href={`/quiz?deck=${recommendedDeck.id}`}
-                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm rounded-full flex items-center gap-1.5"
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs sm:text-sm rounded-full flex items-center gap-1.5 transition-colors"
                   >
                     <Play className="w-3.5 h-3.5 fill-current text-blue-600" />
                     <span>Ôn Quiz</span>
@@ -217,20 +205,15 @@ function DashboardContent() {
           {/* DECK LIBRARY GRID */}
           <section className="space-y-4 pt-2">
             {/* Section Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
-              <div>
-                <div className="flex items-center gap-2">
-                  <FolderOpen className="w-5 h-5 text-blue-600" />
-                  <h3 className="text-base sm:text-xl font-black text-slate-900">
-                    {activeCategory === 'Tất cả' ? 'Thư Viện Bài Học Tiếng Hàn' : `Danh Mục: ${activeCategory}`}
-                  </h3>
-                  <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full border border-blue-200">
-                    {filteredDecks.length} bộ bài
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Chọn một bộ từ vựng bên dưới để mở giao diện lật thẻ Flashcard tập trung
-                </p>
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-2">
+                <FolderOpen className="w-5 h-5 text-blue-600" />
+                <h3 className="text-base sm:text-lg font-black text-slate-900">
+                  {activeCategory === 'Tất cả' ? 'Thư Viện Bài Học Tiếng Hàn' : `Danh Mục: ${activeCategory}`}
+                </h3>
+                <span className="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-full border border-slate-200">
+                  {filteredDecks.length} bộ bài
+                </span>
               </div>
             </div>
 
@@ -240,14 +223,14 @@ function DashboardContent() {
                 {displayedDecks.map((deck) => (
                   <div
                     key={deck.id}
-                    className="bg-white border border-slate-200 rounded-3xl p-5 hover:border-blue-400 hover:shadow-md transition-all flex flex-col justify-between space-y-4"
+                    className="bg-white border border-slate-200/80 rounded-2xl p-5 hover:border-blue-400 hover:shadow-xs transition-all flex flex-col justify-between space-y-4"
                   >
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[11px] font-bold rounded-full border border-rose-200">
+                        <span className="px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[11px] font-bold rounded-full border border-rose-200/60">
                           {deck.category}
                         </span>
-                        <span className="text-[11px] font-semibold text-slate-500">
+                        <span className="text-[11px] font-semibold text-slate-400">
                           {deck.cards.length} thẻ từ
                         </span>
                       </div>
@@ -264,14 +247,14 @@ function DashboardContent() {
                     <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                       <Link
                         href={`/deck/${deck.id}`}
-                        className="flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full text-center transition-colors shadow-xs"
+                        className="flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full text-center transition-colors shadow-2xs"
                       >
                         Bắt Đầu Học →
                       </Link>
 
                       <Link
                         href={`/quiz?deck=${deck.id}`}
-                        className="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-full flex items-center gap-1 transition-colors"
+                        className="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-full flex items-center gap-1 transition-colors"
                       >
                         <Play className="w-3 h-3 fill-current text-blue-600" /> Ôn Quiz
                       </Link>
@@ -280,7 +263,7 @@ function DashboardContent() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white border border-slate-200 rounded-3xl p-8 text-center text-slate-500 text-xs space-y-1">
+              <div className="bg-white border border-slate-200/80 rounded-2xl p-8 text-center text-slate-500 text-xs space-y-1">
                 <p className="font-bold text-slate-900 text-sm">
                   Không tìm thấy bộ từ vựng nào
                 </p>
@@ -293,7 +276,7 @@ function DashboardContent() {
               <div className="flex justify-center pt-3">
                 <button
                   onClick={() => setVisibleLimit((prev) => prev + 9)}
-                  className="px-5 py-2 text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-full shadow-sm flex items-center gap-1.5 hover:bg-slate-50"
+                  className="px-5 py-2 text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-full shadow-2xs flex items-center gap-1.5 hover:bg-slate-50"
                 >
                   <span>Xem Thêm Bộ Bài ({filteredDecks.length - visibleLimit} bộ nữa)</span>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
