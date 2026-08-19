@@ -146,6 +146,24 @@ export default function TypingStage({
                     } animate-pulse rounded-full inline-block ml-1 shrink-0 align-middle z-10`}
                   />
                 )}
+                
+                {/* BACKSPACE TOAST IF ERROR */}
+                <AnimatePresence>
+                  {hasError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                      className="absolute -top-12 sm:-top-16 left-1/2 -translate-x-1/2 whitespace-nowrap bg-slate-800 text-white text-xs sm:text-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-lg flex items-center gap-2 z-50 font-medium tracking-normal"
+                    >
+                      Press 
+                      <span className="bg-slate-700/50 border border-slate-600 px-2 py-0.5 rounded-md flex items-center gap-1 font-bold text-slate-200">
+                        Backspace
+                      </span> 
+                      fix your mistake
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </span>
             );
           }
