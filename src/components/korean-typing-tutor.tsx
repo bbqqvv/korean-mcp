@@ -334,6 +334,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
       return allCards.map((c) => ({ target: c.korean, meaning: c.vietnamese }));
     }
     return [
+      { target: '집', meaning: 'Nhà / Căn nhà' },
       { target: '시장', meaning: 'Chợ / Thị trường' },
       { target: '식당', meaning: 'Nhà ăn / Nhà hàng' },
       { target: '화장실', meaning: 'Nhà vệ sinh / Phòng tắm' },
@@ -608,20 +609,20 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
       {/* CENTER STAGE: Floating Target Korean Character with Thin Gray Blinking Cursor (|) Positioned After Character */}
       <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER - THIN GRAY BLINKING CURSOR POSITIONED AFTER ACTIVE CHARACTER */}
-        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest flex items-center justify-center gap-2 transition-all">
+        {/* GIANT TARGET KOREAN CHARACTER - FULL WORD VISIBILITY (MATCHING TYPE.TODAY) */}
+        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest flex items-center justify-center gap-3 transition-all">
           {targetText.split('').map((originalChar, index) => {
             const isCompleted = index < completedSyllableCount;
             const isActive = index === completedSyllableCount;
 
             return (
               <span key={index} className="inline-flex items-center relative">
-                {/* SYLLABLE CHARACTER RENDERING */}
+                {/* SYLLABLE CHARACTER RENDERING: FULL WORD ALWAYS VISIBLE IN BOLD DARK SLATE */}
                 {isCompleted ? (
                   <span className="text-emerald-600 font-black">{originalChar === ' ' ? '␣' : originalChar}</span>
                 ) : isActive ? (
                   hasError ? (
-                    <span className="text-rose-500 bg-rose-50 rounded-2xl px-2.5 py-0.5 animate-pulse shadow-2xs">
+                    <span className="text-rose-500 bg-rose-50 rounded-2xl px-3 py-0.5 animate-pulse shadow-2xs">
                       {originalChar === ' ' ? '␣' : originalChar}
                     </span>
                   ) : activeTypedJamoSlice.length > 0 ? (
@@ -629,10 +630,10 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                       {livePartialHangul}
                     </span>
                   ) : (
-                    <span className="text-slate-300 font-medium">{originalChar === ' ' ? '␣' : originalChar}</span>
+                    <span className="text-slate-900 font-black">{originalChar === ' ' ? '␣' : originalChar}</span>
                   )
                 ) : (
-                  <span className="text-slate-300 font-medium">{originalChar === ' ' ? '␣' : originalChar}</span>
+                  <span className="text-slate-900 font-black">{originalChar === ' ' ? '␣' : originalChar}</span>
                 )}
 
                 {/* THIN GRAY BLINKING CURSOR (|) ALWAYS POSITIONED AFTER THE ACTIVE CHARACTER */}
