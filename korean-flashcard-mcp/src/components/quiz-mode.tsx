@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'motion/react';
-import { Award, CheckCircle2, XCircle, RotateCw, Volume2, HelpCircle } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Award, CheckCircle2, XCircle, RotateCw, Volume2, HelpCircle, ArrowRight, Sparkles, Home } from 'lucide-react';
 import { Flashcard } from '@/lib/types';
 import confetti from 'canvas-confetti';
+import Link from 'next/link';
 
 interface QuizModeProps {
   cards: Flashcard[];
@@ -18,33 +19,38 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
+  const total = cards.length;
   const currentCard = cards[currentIndex];
 
-  const options = useState(() => {
-    return shuffleArray([
-      currentCard.vietnamese,
-      ...cards
-        .filter((c) => c.id !== currentCard.id)
-        .map((c) => c.vietnamese)
-        .slice(0, 3)
-    ]);
-  })[0];
-
-  function shuffleArray(arr: any[]) {
+  // Helper function to shuffle array
+  function shuffleArray<T>(arr: T[]): T[] {
     return [...arr].sort(() => Math.random() - 0.5);
   }
 
-  const handleSelect = (option: string) => {
-    if (isSubmitted) return;
-    setSelectedAnswer(option);
-    setIsSubmitted(true);
+  // Generate 4 randomized options for the current question index
+  const options = useMemo(() => {
+    if (!currentCard) return [];
+    const wrongChoices = cards
+      .filter((c) => c.id !== currentCard.id)
+      .map((c) => c.vietnamese);
+    const shuffledWrong = shuffleArray(wrongChoices).slice(0, 3);
+    return shuffleArray([currentCard.vietnamese, ...shuffledWrong]);
+  }, [currentIndex, currentCard, cards]);
 
-    if (option === currentCard.vietnamese) {
-      setScore((prev) => prev + 1);
-    }
-  };
+  const handleSelect = useCallback(
+    (option: string) => {
+      if (isSubmitted) return;
+      setSelectedAnswer(option);
+      setIsSubmitted(true);
 
-  const handleNext = () => {
+      if (currentCard && option === currentCard.vietnamese) {
+        setScore((prev) => prev + 1);
+      }
+    },
+    [isSubmitted, currentCard]
+  );
+
+  const handleNext = useCallback(() => {
     setSelectedAnswer(null);
     setIsSubmitted(false);
 
@@ -52,96 +58,176 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
       setCurrentIndex((prev) => prev + 1);
     } else {
       setIsCompleted(true);
-      confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+      confetti({ particleCount: 140, spread: 80, origin: { y: 0.6 } });
     }
-  };
+  }, [currentIndex, cards.length]);
+
+  // Keyboard Shortcuts Listener (1, 2, 3, 4 and Enter)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isCompleted) return;
+
+      if (!isSubmitted) {
+        if (['1', 'Numpad1', 'KeyA'].includes(e.code) && options[0]) {
+          handleSelect(options[0]);
+        } else if (['2', 'Numpad2', 'KeyB'].includes(e.code) && options[1]) {
+          handleSelect(options[1]);
+        } else if (['3', 'Numpad3', 'KeyC'].includes(e.code) && options[2]) {
+          handleSelect(options[2]);
+        } else if (['4', 'Numpad4', 'KeyD'].includes(e.code) && options[3]) {
+          handleSelect(options[3]);
+        }
+      } else {
+        if (['Enter', 'Space'].includes(e.code)) {
+          e.preventDefault();
+          handleNext();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSubmitted, isCompleted, options, handleSelect, handleNext]);
 
   const speakKorean = (text: string) => {
     if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ko-KR';
+      utterance.rate = 0.85;
       window.speechSynthesis.speak(utterance);
     }
   };
 
-  if (isCompleted) {
-    const percentage = Math.round((score / cards.length) * 100);
+  const progressPercentage = Math.round(((currentIndex + (isSubmitted ? 1 : 0)) / total) * 100);
+
+  if (isCompleted || !currentCard) {
+    const percentage = Math.round((score / total) * 100);
     return (
-      <div className="flex flex-col items-center justify-center p-8 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl max-w-xl mx-auto text-center space-y-4 shadow-xl">
-        <div className="w-14 h-14 bg-rose-600 text-white rounded-full flex items-center justify-center mb-2 shadow-sm">
-          <Award className="w-8 h-8" />
+      <div className="flex flex-col items-center justify-center p-8 bg-white border border-slate-200/80 rounded-2xl max-w-xl mx-auto text-center space-y-5 shadow-xs">
+        <div className="w-16 h-16 bg-slate-900 text-white rounded-full flex items-center justify-center shadow-xs">
+          <Award className="w-8 h-8 text-indigo-400" />
         </div>
-        <h3 className="text-xl font-black text-slate-900 dark:text-white">
-          Kết Quả Bài Trắc Nghiệm 🇰🇷
-        </h3>
-        <p className="text-slate-500 dark:text-slate-400 text-xs">Bộ từ vựng: {deckTitle}</p>
 
-        <div className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-1">
-          <div className="text-4xl font-black text-slate-900 dark:text-white">
-            {score} / {cards.length}
+        <div className="space-y-1">
+          <h3 className="text-xl font-black text-slate-900">
+            Hoàn Thành Bài Trắc Nghiệm! 🇰🇷
+          </h3>
+          <p className="text-slate-500 text-xs font-medium">Bộ từ vựng: {deckTitle}</p>
+        </div>
+
+        <div className="w-full bg-slate-50 border border-slate-200/80 rounded-2xl p-6 space-y-2">
+          <div className="text-4xl font-black text-slate-900">
+            {score} / {total}
           </div>
-          <p className="text-[13px] font-bold text-slate-600 dark:text-slate-400">
-            Tỷ lệ chính xác: <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">{percentage}%</span>
+          <p className="text-xs font-bold text-slate-600">
+            Tỷ lệ chính xác: <span className="text-emerald-600 font-extrabold text-sm">{percentage}%</span>
           </p>
+          <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-3">
+            <div
+              className="bg-emerald-500 h-full transition-all duration-500"
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
         </div>
 
-        <button
-          onClick={() => {
-            setCurrentIndex(0);
-            setScore(0);
-            setIsCompleted(false);
-          }}
-          className="px-6 py-2.5 text-[14px] font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-sm flex items-center gap-2"
-        >
-          <RotateCw className="w-4 h-4" /> Thử Lại Bài Quiz
-        </button>
+        <div className="flex items-center gap-3 pt-2">
+          <button
+            onClick={() => {
+              setCurrentIndex(0);
+              setScore(0);
+              setIsSubmitted(false);
+              setSelectedAnswer(null);
+              setIsCompleted(false);
+            }}
+            className="px-6 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-2 transition-all"
+          >
+            <RotateCw className="w-4 h-4" /> Thử Lại Quiz
+          </button>
+
+          <Link
+            href="/"
+            className="px-5 py-2.5 text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center gap-1.5 transition-colors"
+          >
+            <Home className="w-4 h-4 text-slate-600" />
+            <span>Về Trang Chủ</span>
+          </Link>
+        </div>
       </div>
     );
   }
 
+  const optionLabels = ['A', 'B', 'C', 'D'];
+
   return (
-    <div className="max-w-xl mx-auto space-y-4">
-      <div className="flex justify-between items-center text-[13px] text-slate-600 dark:text-slate-400 font-bold">
-        <span>Bài Trắc Nghiệm Từ Vựng</span>
-        <span className="bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 px-2.5 py-0.5 rounded-full">
-          Câu {currentIndex + 1} / {cards.length} | Điểm: {score}
-        </span>
+    <div className="max-w-xl mx-auto space-y-4 font-sans">
+      {/* Progress Bar & Header */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-2xs space-y-2.5">
+        <div className="flex justify-between items-center text-xs text-slate-600 font-bold">
+          <span className="flex items-center gap-1.5">
+            <Sparkles className="w-4 h-4 text-rose-600" /> Câu Hỏi {currentIndex + 1} / {total}
+          </span>
+          <span className="text-slate-900 font-black">
+            Điểm: <span className="text-blue-600">{score}</span>
+          </span>
+        </div>
+
+        {/* Smooth Animated Progress Bar */}
+        <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+          <div
+            className="bg-blue-600 h-full transition-all duration-300 ease-out"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 sm:p-8 text-center space-y-6 shadow-md">
+      {/* Main Question Card */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 text-center space-y-6 shadow-xs">
+        {/* Korean Question Word */}
         <div className="flex justify-center items-center gap-3">
-          <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
             {currentCard.korean}
           </h2>
           <button
             onClick={() => speakKorean(currentCard.korean)}
             className="ios-glass-circle"
+            title="Nghe phát âm"
           >
-            <Volume2 className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+            <Volume2 className="w-4 h-4 text-slate-700" />
           </button>
         </div>
 
-        <p className="text-xs text-blue-600 dark:text-blue-400 font-semibold font-mono">
-          [{currentCard.pronunciation}]
+        {currentCard.pronunciation && (
+          <p className="text-xs text-slate-500 font-semibold font-mono tracking-widest">
+            [{currentCard.pronunciation}]
+          </p>
+        )}
+
+        <p className="text-xs text-slate-600 font-bold flex items-center justify-center gap-1.5">
+          <HelpCircle className="w-4 h-4 text-rose-600" /> Chọn nghĩa tiếng Việt đúng nhất bên dưới:
+          <span className="text-[10px] text-slate-400 font-normal hidden sm:inline">(Dùng chuột hoặc phím 1, 2, 3, 4)</span>
         </p>
 
-        <p className="text-[13px] text-slate-600 dark:text-slate-400 font-bold flex items-center justify-center gap-1.5">
-          <HelpCircle className="w-4 h-4 text-rose-500" /> Chọn nghĩa tiếng Việt đúng nhất bên dưới:
-        </p>
-
-        <div className="grid grid-cols-1 gap-2.5 text-left">
+        {/* Option Cards Grid with Shortcuts 1, 2, 3, 4 */}
+        <div className="grid grid-cols-1 gap-3 text-left">
           {options.map((option, idx) => {
             const isCorrect = option === currentCard.vietnamese;
             const isSelected = selectedAnswer === option;
+            const label = optionLabels[idx] || `${idx + 1}`;
 
-            let btnStyle =
-              'bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800';
+            let cardStyle =
+              'bg-slate-50 border-slate-200/80 text-slate-900 hover:bg-slate-100 hover:border-slate-300';
+            let badgeStyle = 'bg-white text-slate-700 border-slate-200';
 
             if (isSubmitted) {
               if (isCorrect) {
-                btnStyle = 'bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800 font-bold';
+                cardStyle = 'bg-emerald-50 border-emerald-300 text-emerald-950 font-bold ring-2 ring-emerald-400/20';
+                badgeStyle = 'bg-emerald-600 text-white border-emerald-600';
               } else if (isSelected) {
-                btnStyle = 'bg-rose-100 text-rose-900 border-rose-300 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800 font-bold';
+                cardStyle = 'bg-rose-50 border-rose-300 text-rose-950 font-bold ring-2 ring-rose-400/20';
+                badgeStyle = 'bg-rose-600 text-white border-rose-600';
+              } else {
+                cardStyle = 'bg-slate-50/50 border-slate-200 text-slate-400 opacity-60';
               }
             }
 
@@ -150,26 +236,64 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
                 key={idx}
                 disabled={isSubmitted}
                 onClick={() => handleSelect(option)}
-                className={`w-full p-3.5 rounded-2xl transition flex items-center justify-between text-[14px] font-semibold ${btnStyle}`}
+                className={`w-full p-4 rounded-xl border transition-all flex items-center justify-between text-xs sm:text-sm font-semibold shadow-2xs ${cardStyle}`}
               >
-                <span>{option}</span>
-                {isSubmitted && isCorrect && <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />}
-                {isSubmitted && isSelected && !isCorrect && <XCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />}
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`w-7 h-7 rounded-lg border flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs ${badgeStyle}`}
+                  >
+                    {label}
+                  </span>
+                  <span>{option}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 font-mono hidden sm:inline">[{idx + 1}]</span>
+                  {isSubmitted && isCorrect && <CheckCircle2 className="w-5 h-5 text-emerald-600" />}
+                  {isSubmitted && isSelected && !isCorrect && <XCircle className="w-5 h-5 text-rose-600" />}
+                </div>
               </button>
             );
           })}
         </div>
 
-        {isSubmitted && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
-            <button
-              onClick={handleNext}
-              className="w-full py-3 text-[14px] font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-2xl shadow-sm transition-colors"
+        {/* Explanation & Next Question Button */}
+        <AnimatePresence>
+          {isSubmitted && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="space-y-3 pt-2"
             >
-              Câu Tiếp Theo →
-            </button>
-          </motion.div>
-        )}
+              {/* Interactive Explanation Box */}
+              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs text-left space-y-1">
+                <div className="font-bold text-slate-900 flex items-center justify-between">
+                  <span>Đáp án đúng: &quot;{currentCard.vietnamese}&quot;</span>
+                  {currentCard.hanja && (
+                    <span className="text-[10px] px-2 py-0.5 bg-rose-50 text-rose-700 font-bold border border-rose-200/60 rounded">
+                      Hán Hàn: {currentCard.hanja}
+                    </span>
+                  )}
+                </div>
+                {currentCard.exampleKr && (
+                  <p className="text-slate-600 pt-1">
+                    💡 Ví dụ: <strong className="text-slate-900">&quot;{currentCard.exampleKr}&quot;</strong> {currentCard.exampleVi ? `👉 ${currentCard.exampleVi}` : ''}
+                  </p>
+                )}
+              </div>
+
+              {/* Next Question CTA */}
+              <button
+                onClick={handleNext}
+                className="w-full py-3 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center justify-center gap-2 transition-all"
+              >
+                <span>{currentIndex < total - 1 ? 'Câu Tiếp Theo' : 'Xem Kết Quả Quiz'}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
