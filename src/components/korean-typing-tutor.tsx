@@ -172,7 +172,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         seen: number;
         correct: number;
         speedMs: number;
-        masteryLevel: number; // 0 - 100%
+        masteryLevel: number;
         mistakes: { char: string; count: number }[];
       }
     >
@@ -556,8 +556,8 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       )}
 
-      {/* BOTTOM STAGE: 3D Perspective Keyboard with Battery Gauge Mastery & Mistakes Hover Tooltip */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs overflow-hidden shrink-0 [perspective:600px] relative">
+      {/* BOTTOM STAGE: Giant 3D Perspective Keyboard floating cleanly without outer card box */}
+      <div className="relative shrink-0 pb-2 [perspective:800px]">
         {/* Exact Type.Today Hover Stat Popover Tooltip Box with Mistakes Badges */}
         <AnimatePresence>
           {hoveredStatData && (
@@ -565,7 +565,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 5, scale: 0.9 }}
-              className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-[#121215] text-white rounded-2xl p-3.5 shadow-2xl border border-slate-800 min-w-[240px] pointer-events-none"
+              className="absolute -top-32 left-1/2 -translate-x-1/2 z-50 bg-[#121215] text-white rounded-2xl p-3.5 shadow-2xl border border-slate-800 min-w-[240px] pointer-events-none"
             >
               <div className="text-center border-b border-slate-800 pb-2 mb-2">
                 <span className="text-2xl font-black text-white font-mono leading-none">
@@ -609,18 +609,18 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           )}
         </AnimatePresence>
 
-        {/* 3D Angled Container */}
-        <div className="space-y-1 sm:space-y-1.5 [transform:rotateX(34deg)_scale(0.92)] transition-transform duration-300 origin-bottom">
+        {/* 3D Angled Container Floating Cleanly (30% Larger Keycaps, Crisp 3D Bevel Depth) */}
+        <div className="space-y-1.5 sm:space-y-2 [transform:rotateX(28deg)] transition-transform duration-300 origin-bottom">
           {EXACT_TYPE_TODAY_ROWS.map((row, rIdx) => (
-            <div key={rIdx} className="flex justify-center gap-1 sm:gap-1.5">
+            <div key={rIdx} className="flex justify-center gap-1.5 sm:gap-2">
               {row.map((item) => {
                 if (item.isShiftKey) {
                   return (
                     <div
                       key={item.key}
-                      className="w-10 sm:w-14 h-9 sm:h-11 rounded-lg bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center font-bold text-xs shadow-[0_4px_0_#cbd5e1]"
+                      className="w-12 sm:w-16 h-11 sm:h-13 rounded-xl bg-slate-100 border border-slate-300 border-b-4 border-b-slate-400/80 text-slate-800 flex items-center justify-center font-bold text-xs shadow-md"
                     >
-                      <ArrowBigUp className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700 fill-current" />
+                      <ArrowBigUp className="w-5 h-5 sm:w-6 sm:h-6 text-slate-800 fill-current" />
                     </div>
                   );
                 }
@@ -631,20 +631,20 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                 const batteryLevel = stat ? stat.masteryLevel : 0;
 
                 let keyCapStyle =
-                  'bg-slate-50 border-slate-200/80 text-slate-900 shadow-[0_4px_0_#cbd5e1] hover:bg-slate-100';
+                  'bg-white border border-slate-200/90 border-b-4 border-b-slate-300 text-slate-900 shadow-md hover:bg-slate-50';
 
                 if (isTarget) {
                   keyCapStyle =
-                    'bg-blue-600 border-blue-600 text-white font-black ring-4 ring-blue-400/40 shadow-[0_4px_0_#1d4ed8] scale-105 animate-pulse';
+                    'bg-blue-600 border-blue-600 border-b-4 border-b-blue-800 text-white font-black ring-4 ring-blue-400/40 shadow-xl scale-105 animate-pulse';
                 }
 
                 if (isActive) {
                   if (keyFeedback === 'wrong') {
                     keyCapStyle =
-                      'bg-rose-600 text-white border-rose-600 translate-y-1 shadow-[0_1px_0_#9f1239] scale-95 transition-transform duration-75';
+                      'bg-rose-600 text-white border-rose-600 border-b-2 border-b-rose-800 translate-y-1 shadow-sm scale-95 transition-transform duration-75';
                   } else {
                     keyCapStyle =
-                      'bg-emerald-600 text-white border-emerald-600 translate-y-1 shadow-[0_1px_0_#065f46] scale-95 transition-transform duration-75';
+                      'bg-emerald-600 text-white border-emerald-600 border-b-2 border-b-emerald-800 translate-y-1 shadow-sm scale-95 transition-transform duration-75';
                   }
                 }
 
@@ -653,19 +653,19 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                     key={item.key}
                     onMouseEnter={() => setHoveredKeyChar(item.hangul || item.native || null)}
                     onMouseLeave={() => setHoveredKeyChar(null)}
-                    className={`w-8 h-10 sm:w-11 sm:h-12 rounded-lg border flex flex-col justify-between p-1 transition-all duration-100 relative cursor-pointer overflow-hidden ${keyCapStyle}`}
+                    className={`w-10 h-12 sm:w-14 sm:h-14 rounded-xl flex flex-col justify-between p-1.5 transition-all duration-100 relative cursor-pointer overflow-hidden ${keyCapStyle}`}
                   >
-                    {/* BLUE BATTERY GAUGE MASTERY FILL (Matches Type.Today Battery Meter) */}
+                    {/* BLUE BATTERY GAUGE MASTERY FILL */}
                     {batteryLevel > 0 && !isTarget && !isActive && (
                       <div
-                        className="absolute bottom-0 left-0 right-0 bg-blue-600/30 border-t border-blue-500/50 rounded-b-md transition-all duration-500 pointer-events-none"
+                        className="absolute bottom-0 left-0 right-0 bg-blue-500/25 border-t border-blue-400/40 rounded-b-lg transition-all duration-500 pointer-events-none"
                         style={{ height: `${batteryLevel}%` }}
                       />
                     )}
 
                     {/* Top Hanguel Character */}
                     <span
-                      className={`text-xs sm:text-sm font-black leading-none text-left z-10 ${
+                      className={`text-sm sm:text-lg font-black leading-none text-left z-10 ${
                         isTarget || isActive ? 'text-white' : 'text-slate-900'
                       }`}
                     >
@@ -674,7 +674,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
                     {/* Bottom Native QWERTY Character */}
                     <span
-                      className={`text-[9px] font-mono uppercase text-right leading-none z-10 ${
+                      className={`text-[10px] font-mono font-bold uppercase text-right leading-none z-10 ${
                         isTarget || isActive ? 'text-blue-100' : 'text-slate-400'
                       }`}
                     >
@@ -684,7 +684,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                     {/* Home Finger Dot Indicator */}
                     {item.isHomeFinger && (
                       <span
-                        className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full z-10 ${
+                        className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full z-10 ${
                           isTarget || isActive ? 'bg-white' : 'bg-slate-400'
                         }`}
                       />
@@ -696,18 +696,18 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           ))}
 
           {/* Row 4: Spacebar Row */}
-          <div className="flex justify-center gap-1.5 pt-0.5">
-            <div className="w-10 sm:w-14 h-9 sm:h-11" />
+          <div className="flex justify-center gap-2 pt-0.5">
+            <div className="w-12 sm:w-16 h-11 sm:h-13" />
             <div
-              className={`w-64 sm:w-80 h-9 sm:h-11 rounded-lg border flex items-center justify-center text-xs font-bold transition-all shadow-[0_4px_0_#cbd5e1] ${
+              className={`w-72 sm:w-[26rem] h-11 sm:h-13 rounded-xl border border-slate-200/90 border-b-4 border-b-slate-300 flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                 nextQwertyKey === 'space'
-                  ? 'bg-blue-600 border-blue-600 text-white ring-4 ring-blue-400/40 animate-pulse'
-                  : 'bg-slate-50 border-slate-200/80 text-slate-500'
-              } ${activeKey === 'space' ? 'translate-y-1 shadow-[0_1px_0_#cbd5e1]' : ''}`}
+                  ? 'bg-blue-600 border-blue-600 border-b-blue-800 text-white ring-4 ring-blue-400/40 animate-pulse'
+                  : 'bg-white text-slate-500'
+              } ${activeKey === 'space' ? 'translate-y-1 border-b-2 shadow-sm' : ''}`}
             >
-              <span className="text-[11px] font-mono font-bold">SPACEBAR</span>
+              <span className="text-xs font-mono font-black text-slate-600">SPACEBAR</span>
             </div>
-            <div className="w-10 sm:w-14 h-9 sm:h-11" />
+            <div className="w-12 sm:w-16 h-11 sm:h-13" />
           </div>
         </div>
       </div>
