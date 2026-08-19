@@ -395,10 +395,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     return typedJamos.slice(startPos);
   }, [typedJamos, activeSyllableBound]);
 
-  const livePartialHangul = useMemo(() => {
-    return composeJamosToHangul(activeTypedJamoSlice);
-  }, [activeTypedJamoSlice]);
-
   const speakKorean = useCallback((text: string) => {
     if (isSoundOn && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
@@ -607,9 +603,9 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       </div>
 
-      {/* CENTER STAGE: Floating Target Korean Character with Thin Gray Blinking Cursor (|) Positioned After Character */}
+      {/* CENTER STAGE: Floating Target Korean Character (FULL WORD ALWAYS 100% VISIBLE MATCHING TYPE.TODAY) */}
       <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER - FULL WORD VISIBILITY (MATCHING TYPE.TODAY) */}
+        {/* GIANT TARGET KOREAN CHARACTER - FULL WORD ALWAYS VISIBLE IN BOLD DARK SLATE */}
         <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest flex items-center justify-center gap-3 transition-all">
           {targetText.split('').map((originalChar, index) => {
             const isCompleted = index < completedSyllableCount;
@@ -617,7 +613,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
             return (
               <span key={index} className="inline-flex items-center relative">
-                {/* SYLLABLE CHARACTER RENDERING: FULL WORD ALWAYS VISIBLE IN BOLD DARK SLATE */}
+                {/* SYLLABLE CHARACTER RENDERING: ORIGINAL TARGET CHARACTER IS ALWAYS PRESERVED */}
                 {isCompleted ? (
                   <span className="text-emerald-600 font-black">{originalChar === ' ' ? '␣' : originalChar}</span>
                 ) : isActive ? (
@@ -627,7 +623,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                     </span>
                   ) : activeTypedJamoSlice.length > 0 ? (
                     <span className={`${themeConfig.primaryText} font-black`}>
-                      {livePartialHangul}
+                      {originalChar === ' ' ? '␣' : originalChar}
                     </span>
                   ) : (
                     <span className="text-slate-900 font-black">{originalChar === ' ' ? '␣' : originalChar}</span>
