@@ -1,230 +1,24 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import {
-  Volume2,
-  VolumeX,
-  RotateCw,
-  CheckCircle2,
-  ArrowRight,
-  ArrowBigUp
-} from 'lucide-react';
-import { Flashcard, Deck } from '@/lib/types';
-import { useTheme } from '@/lib/theme-context';
 import confetti from 'canvas-confetti';
+import { Flashcard, Deck } from '@/lib/types';
+import {
+  QWERTY_TO_HANGUL,
+  HANGUL_TO_QWERTY,
+  decomposeTextToJamoSequence,
+  JAMO_LESSONS,
+  SENTENCE_LESSONS
+} from '@/lib/hangul-engine';
+import TypingHeader from './typing/typing-header';
+import TypingStage from './typing/typing-stage';
+import TypingKeyboard3D from './typing/typing-keyboard-3d';
 
 interface KoreanTypingTutorProps {
   decks?: Deck[];
 }
 
-// 2-Bolsik QWERTY to Hangul Mapping (Lower & Upper Shift Cases)
-const QWERTY_TO_HANGUL: Record<string, string> = {
-  q: 'ㅂ', Q: 'ㅃ', w: 'ㅈ', W: 'ㅉ', e: 'ㄷ', E: 'ㄸ', r: 'ㄱ', R: 'ㄲ', t: 'ㅅ', T: 'ㅆ',
-  y: 'ㅛ', Y: 'ㅛ', u: 'ㅕ', U: 'ㅕ', i: 'ㅑ', I: 'ㅑ', o: 'ㅐ', O: 'ㅒ', p: 'ㅔ', P: 'ㅖ',
-  a: 'ㅁ', A: 'ㅁ', s: 'ㄴ', S: 'ㄴ', d: 'ㅇ', D: 'ㅇ', f: 'ㄹ', F: 'ㄹ', g: 'ㅎ', G: 'ㅎ',
-  h: 'ㅗ', H: 'ㅗ', j: 'ㅓ', J: 'ㅓ', k: 'ㅏ', K: 'ㅏ', l: 'ㅣ', L: 'ㅣ',
-  z: 'ㅋ', Z: 'ㅋ', x: 'ㅌ', X: 'ㅌ', c: 'ㅊ', C: 'ㅊ', v: 'ㅍ', V: 'ㅍ',
-  b: 'ㅠ', B: 'ㅠ', n: 'ㅜ', N: 'ㅜ', m: 'ㅡ', M: 'ㅡ'
-};
-
-// Inverse Hangul to QWERTY key
-const HANGUL_TO_QWERTY: Record<string, string> = {};
-Object.entries(QWERTY_TO_HANGUL).forEach(([qwerty, hangul]) => {
-  if (!HANGUL_TO_QWERTY[hangul]) {
-    HANGUL_TO_QWERTY[hangul] = qwerty.toLowerCase();
-  }
-});
-
-// Unicode Hangul Decomposition & Composition Helpers
-const INITIAL_CONSONANTS = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-const MEDIAL_VOWELS = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ'];
-const FINAL_CONSONANTS = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-
-const COMPOUND_VOWEL_SPLIT: Record<string, string[]> = {
-  'ㅘ': ['ㅗ', 'ㅏ'],
-  'ㅙ': ['ㅗ', 'ㅐ'],
-  'ㅚ': ['ㅗ', 'ㅣ'],
-  'ㅝ': ['ㅜ', 'ㅓ'],
-  'ㅞ': ['ㅜ', 'ㅔ'],
-  'ㅟ': ['ㅜ', 'ㅣ'],
-  'ㅢ': ['ㅡ', 'ㅣ']
-};
-
-const COMPOUND_BATCHIM_SPLIT: Record<string, string[]> = {
-  'ㄳ': ['ㄱ', 'ㅅ'],
-  'ㄵ': ['ㄴ', 'ㅈ'],
-  'ㄶ': ['ㄴ', 'ㅎ'],
-  'ㄺ': ['ㄹ', 'ㄱ'],
-  'ㄻ': ['ㄹ', 'ㅁ'],
-  'ㄼ': ['ㄹ', 'ㅂ'],
-  'ㄽ': ['ㄹ', 'ㅅ'],
-  'ㄾ': ['ㄹ', 'ㅌ'],
-  'ㄿ': ['ㄹ', 'ㅍ'],
-  'ㅀ': ['ㄹ', 'ㅎ'],
-  'ㅄ': ['ㅂ', 'ㅅ']
-};
-
-function decomposeSyllableToJamo(char: string): string[] {
-  const code = char.charCodeAt(0);
-  if (code >= 0xAC00 && code <= 0xD7A3) {
-    const index = code - 0xAC00;
-    const initIdx = Math.floor(index / 588);
-    const medIdx = Math.floor((index % 588) / 28);
-    const finalIdx = index % 28;
-
-    const jamos: string[] = [];
-    jamos.push(INITIAL_CONSONANTS[initIdx]);
-
-    const medVowel = MEDIAL_VOWELS[medIdx];
-    if (COMPOUND_VOWEL_SPLIT[medVowel]) {
-      jamos.push(...COMPOUND_VOWEL_SPLIT[medVowel]);
-    } else {
-      jamos.push(medVowel);
-    }
-
-    if (finalIdx > 0) {
-      const finalCons = FINAL_CONSONANTS[finalIdx];
-      if (COMPOUND_BATCHIM_SPLIT[finalCons]) {
-        jamos.push(...COMPOUND_BATCHIM_SPLIT[finalCons]);
-      } else {
-        jamos.push(finalCons);
-      }
-    }
-    return jamos;
-  }
-  return [char];
-}
-
-function decomposeTextToJamoSequence(text: string): { jamos: string[]; boundaries: { start: number; end: number }[] } {
-  const jamos: string[] = [];
-  const boundaries: { start: number; end: number }[] = [];
-
-  let currentPos = 0;
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const decomposed = decomposeSyllableToJamo(char);
-    const start = currentPos;
-    jamos.push(...decomposed);
-    currentPos += decomposed.length;
-    boundaries.push({ start, end: currentPos });
-  }
-
-  return { jamos, boundaries };
-}
-
-interface KeyDef {
-  key: string;
-  hangul: string;
-  shiftHangul?: string;
-  native: string;
-  isHomeFinger?: boolean;
-  isShiftKey?: boolean;
-}
-
-const EXACT_TYPE_TODAY_ROWS: KeyDef[][] = [
-  // Row 0: Number Row
-  [
-    { key: '1', hangul: '1', native: '' },
-    { key: '2', hangul: '2', native: '' },
-    { key: '3', hangul: '3', native: '' },
-    { key: '4', hangul: '4', native: '' },
-    { key: '5', hangul: '5', native: '' },
-    { key: '6', hangul: '6', native: '' },
-    { key: '7', hangul: '7', native: '' },
-    { key: '8', hangul: '8', native: '' },
-    { key: '9', hangul: '9', native: '' },
-    { key: '0', hangul: '0', native: '' },
-    { key: '-', hangul: '-', native: '' },
-    { key: '=', hangul: '=', native: '' }
-  ],
-  // Row 1: Top QWERTY Row (with Shift Double Consonants & Compound Vowels)
-  [
-    { key: 'q', hangul: 'ㅂ', shiftHangul: 'ㅃ', native: 'Q' },
-    { key: 'w', hangul: 'ㅈ', shiftHangul: 'ㅉ', native: 'W' },
-    { key: 'e', hangul: 'ㄷ', shiftHangul: 'ㄸ', native: 'E' },
-    { key: 'r', hangul: 'ㄱ', shiftHangul: 'ㄲ', native: 'R' },
-    { key: 't', hangul: 'ㅅ', shiftHangul: 'ㅆ', native: 'T' },
-    { key: 'y', hangul: 'ㅛ', native: 'Y' },
-    { key: 'u', hangul: 'ㅕ', native: 'U' },
-    { key: 'i', hangul: 'ㅑ', native: 'I' },
-    { key: 'o', hangul: 'ㅐ', shiftHangul: 'ㅒ', native: 'O' },
-    { key: 'p', hangul: 'ㅔ', shiftHangul: 'ㅖ', native: 'P' },
-    { key: '[', hangul: '[', native: '' }
-  ],
-  // Row 2: Home Row (with Home Finger Guides on ㄹ/F and ㅓ/J)
-  [
-    { key: 'a', hangul: 'ㅁ', native: 'A' },
-    { key: 's', hangul: 'ㄴ', native: 'S' },
-    { key: 'd', hangul: 'ㅇ', native: 'D' },
-    { key: 'f', hangul: 'ㄹ', native: 'F', isHomeFinger: true },
-    { key: 'g', hangul: 'ㅎ', native: 'G' },
-    { key: 'h', hangul: 'ㅗ', native: 'H' },
-    { key: 'j', hangul: 'ㅓ', native: 'J', isHomeFinger: true },
-    { key: 'k', hangul: 'ㅏ', native: 'K' },
-    { key: 'l', hangul: 'ㅣ', native: 'L' },
-    { key: ';', hangul: ';', native: '' }
-  ],
-  // Row 3: Bottom Row (with Left & Right Shift Keys)
-  [
-    { key: 'shift_left', hangul: '', native: '', isShiftKey: true },
-    { key: 'z', hangul: 'ㅋ', native: 'Z' },
-    { key: 'x', hangul: 'ㅌ', native: 'X' },
-    { key: 'c', hangul: 'ㅊ', native: 'C' },
-    { key: 'v', hangul: 'ㅍ', native: 'V' },
-    { key: 'b', hangul: 'ㅠ', native: 'B' },
-    { key: 'n', hangul: 'ㅜ', native: 'N' },
-    { key: 'm', hangul: 'ㅡ', native: 'M' },
-    { key: ',', hangul: ',', native: '' },
-    { key: '.', hangul: '.', native: '' },
-    { key: 'shift_right', hangul: '', native: '', isShiftKey: true }
-  ]
-];
-
-// Basic Jamo Lessons
-const JAMO_LESSONS = [
-  { target: 'ㄱ', meaning: '' },
-  { target: 'ㄴ', meaning: '' },
-  { target: 'ㄷ', meaning: '' },
-  { target: 'ㄹ', meaning: '' },
-  { target: 'ㅁ', meaning: '' },
-  { target: 'ㅂ', meaning: '' },
-  { target: 'ㅅ', meaning: '' },
-  { target: 'ㅇ', meaning: '' },
-  { target: 'ㅈ', meaning: '' },
-  { target: 'ㅊ', meaning: '' },
-  { target: 'ㅋ', meaning: '' },
-  { target: 'ㅌ', meaning: '' },
-  { target: 'ㅍ', meaning: '' },
-  { target: 'ㅎ', meaning: '' },
-  { target: 'ㅏ', meaning: '' },
-  { target: 'ㅑ', meaning: '' },
-  { target: 'ㅓ', meaning: '' },
-  { target: 'ㅕ', meaning: '' },
-  { target: 'ㅗ', meaning: '' },
-  { target: 'ㅛ', meaning: '' },
-  { target: 'ㅜ', meaning: '' },
-  { target: 'ㅠ', meaning: '' },
-  { target: 'ㅡ', meaning: '' },
-  { target: 'ㅣ', meaning: '' },
-  { target: 'ㅐ', meaning: '' },
-  { target: 'ㅒ', meaning: '' },
-  { target: 'ㅔ', meaning: '' },
-  { target: 'ㅖ', meaning: '' }
-];
-
-// Sentences Lessons
-const SENTENCE_LESSONS = [
-  { target: '안녕하세요', meaning: 'xin chào' },
-  { target: '몇 시', meaning: 'mấy giờ / what time' },
-  { target: '감사합니다', meaning: 'cảm ơn' },
-  { target: '만나서 반갑습니다', meaning: 'rất vui được gặp bạn' },
-  { target: '한국어를 공부하고 있어요', meaning: 'tôi đang học tiếng Hàn' },
-  { target: '오늘 날씨가 정말 좋아요', meaning: 'thời tiết hôm nay rất đẹp' }
-];
-
 export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps) {
-  const { themeConfig } = useTheme();
   const [practiceMode, setPracticeMode] = useState<'jamo' | 'vocab' | 'sentence'>('jamo');
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [targetText, setTargetText] = useState('ㄱ');
@@ -236,12 +30,10 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const [isShiftActive, setIsShiftActive] = useState(false);
   const [keyFeedback, setKeyFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [isSoundOn, setIsSoundOn] = useState(true);
-
-  // Hover Popover State for Keycaps
   const [hoveredKeyChar, setHoveredKeyChar] = useState<string | null>(null);
 
   // Per-Key Statistics Engine
-  const [perKeyStats, setPerKeyStats] = useState<
+  const [perKeyStats] = useState<
     Record<
       string,
       {
@@ -274,7 +66,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     'ㅣ': { seen: 490, correct: 470, speedMs: 640, masteryLevel: 15, mistakes: [{ char: 'ㅡ', count: 5 }] }
   });
 
-  // Performance Stats
   const [startTime, setStartTime] = useState<number | null>(null);
   const [isLessonComplete, setIsLessonComplete] = useState(false);
 
@@ -307,50 +98,10 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     return vocabList;
   }, [practiceMode, vocabList]);
 
-  // Decomposed Jamo sequence & boundaries of targetText
   const { jamos: targetJamoSeq, boundaries: syllableBoundaries } = useMemo(() => {
     return decomposeTextToJamoSequence(targetText);
   }, [targetText]);
 
-  // Dynamic Font Size & Responsive Cursor Metrics Matrix
-  const { fontSizeClass, focusBoxPaddingClass, cursorHeightClass } = useMemo(() => {
-    const textLen = targetText.length;
-    if (practiceMode === 'sentence' || textLen > 5) {
-      if (textLen > 14) {
-        return {
-          fontSizeClass: 'text-2xl sm:text-3xl md:text-4xl',
-          focusBoxPaddingClass: 'px-2 py-0.5 sm:px-3 sm:py-1',
-          cursorHeightClass: 'h-6 sm:h-8 md:h-10'
-        };
-      }
-      if (textLen > 8) {
-        return {
-          fontSizeClass: 'text-3xl sm:text-4xl md:text-5xl',
-          focusBoxPaddingClass: 'px-2.5 py-0.5 sm:px-3.5 sm:py-1',
-          cursorHeightClass: 'h-8 sm:h-10 md:h-12'
-        };
-      }
-      return {
-        fontSizeClass: 'text-4xl sm:text-5xl md:text-6xl',
-        focusBoxPaddingClass: 'px-3 py-1 sm:px-4 sm:py-1.5',
-        cursorHeightClass: 'h-10 sm:h-12 md:h-14'
-      };
-    }
-    if (practiceMode === 'vocab' || textLen > 1) {
-      return {
-        fontSizeClass: 'text-6xl sm:text-7xl md:text-8xl',
-        focusBoxPaddingClass: 'px-3.5 py-1 sm:px-5 sm:py-2',
-        cursorHeightClass: 'h-14 sm:h-18'
-      };
-    }
-    return {
-      fontSizeClass: 'text-7xl sm:text-8xl md:text-9xl',
-      focusBoxPaddingClass: 'px-4 py-1.5 sm:px-6 sm:py-2.5',
-      cursorHeightClass: 'h-16 sm:h-20'
-    };
-  }, [targetText, practiceMode]);
-
-  // Update target text when mode or lesson index changes
   useEffect(() => {
     setTypedJamos([]);
     setHasError(false);
@@ -361,11 +112,9 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     setTargetMeaning(item.meaning || '');
   }, [practiceMode, currentLessonIndex, currentLessonsList]);
 
-  // Next expected Jamo character & QWERTY key
   const nextJamoChar = targetJamoSeq[typedJamos.length] || '';
   const nextQwertyKey = HANGUL_TO_QWERTY[nextJamoChar] || (nextJamoChar === ' ' ? 'space' : null);
 
-  // Completed syllables count
   const completedSyllableCount = useMemo(() => {
     let completed = 0;
     for (let i = 0; i < syllableBoundaries.length; i++) {
@@ -378,7 +127,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     return completed;
   }, [typedJamos, syllableBoundaries]);
 
-  // Active syllable slice of typed Jamos
   const activeSyllableBound = syllableBoundaries[completedSyllableCount];
   const activeTypedJamoSlice = useMemo(() => {
     if (!activeSyllableBound) return [];
@@ -386,15 +134,18 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     return typedJamos.slice(startPos);
   }, [typedJamos, activeSyllableBound]);
 
-  const speakKorean = useCallback((text: string) => {
-    if (isSoundOn && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ko-KR';
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
-    }
-  }, [isSoundOn]);
+  const speakKorean = useCallback(
+    (text: string) => {
+      if (isSoundOn && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    },
+    [isSoundOn]
+  );
 
   const handleNextLesson = useCallback(() => {
     setCurrentLessonIndex((prev) => prev + 1);
@@ -407,12 +158,10 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     setStartTime(null);
   }, []);
 
-  // GLOBAL KEYBOARD LISTENER (Shift Keycaps + Spacebar 3D Bounce + Realtime Syllables)
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.altKey || e.metaKey) return;
 
-      // Handle Shift Down
       if (e.key === 'Shift' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
         setIsShiftActive(true);
         return;
@@ -426,7 +175,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         return;
       }
 
-      // Handle Backspace Erase
       if (e.key === 'Backspace') {
         e.preventDefault();
         if (hasError) {
@@ -437,7 +185,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         return;
       }
 
-      // Handle Spacebar Press
       let inputHangulChar = '';
       if (e.key === ' ' || e.code === 'Space') {
         e.preventDefault();
@@ -511,353 +258,43 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const currentLessonNum = (currentLessonIndex % totalLessonsCount) + 1;
   const progressPercent = Math.round((currentLessonNum / totalLessonsCount) * 100);
 
-  // Selected hovered key stats for popover tooltip
-  const hoveredStatData = useMemo(() => {
-    if (!hoveredKeyChar) return null;
-    const stat = perKeyStats[hoveredKeyChar] || {
-      seen: 42,
-      correct: 38,
-      speedMs: 780,
-      masteryLevel: 65,
-      mistakes: [{ char: 'ㄱ', count: 3 }]
-    };
-    const acc = Math.round((stat.correct / (stat.seen || 1)) * 100);
-    const speedSec = (stat.speedMs / 1000).toFixed(2);
-    return {
-      char: hoveredKeyChar,
-      seen: stat.seen,
-      accuracy: acc,
-      speedSec,
-      mistakes: stat.mistakes || []
-    };
-  }, [hoveredKeyChar, perKeyStats]);
-
   return (
     <div className="h-full flex flex-col justify-between select-none font-sans overflow-hidden relative">
-      {/* Type.Today Top Header Bar (Soothing Porcelain & Ocean Blue / Lime Style) */}
-      <div className="bg-white text-slate-900 border border-slate-200/80 rounded-2xl px-4 py-2.5 shadow-xs flex items-center justify-between gap-4 shrink-0">
-        {/* Left: Exercise Counter & Progress Bar */}
-        <div className="flex items-center gap-3 flex-1">
-          <div className="space-y-0.5">
-            <span className="text-xs font-bold text-slate-700 block">
-              Exercise {currentLessonNum} of {totalLessonsCount}
-            </span>
-            <div className="w-32 sm:w-44 bg-slate-100 h-1.5 rounded-full overflow-hidden border border-slate-200/80">
-              <div
-                className={`${themeConfig.primaryBg} h-full transition-all duration-300`}
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          </div>
+      {/* Top Header Bar */}
+      <TypingHeader
+        currentLessonNum={currentLessonNum}
+        totalLessonsCount={totalLessonsCount}
+        progressPercent={progressPercent}
+        practiceMode={practiceMode}
+        setPracticeMode={setPracticeMode}
+        isSoundOn={isSoundOn}
+        setIsSoundOn={setIsSoundOn}
+      />
 
-          <span className="text-xs text-slate-500 font-medium hidden sm:inline border-l border-slate-200/80 pl-3">
-            {practiceMode === 'jamo' ? 'Learn the stroke' : practiceMode === 'vocab' ? 'Vocabulary' : 'Phrases'}
-          </span>
-        </div>
+      {/* Center Stage */}
+      <TypingStage
+        targetText={targetText}
+        targetMeaning={targetMeaning}
+        completedSyllableCount={completedSyllableCount}
+        activeTypedJamoSlice={activeTypedJamoSlice}
+        hasError={hasError}
+        isLessonComplete={isLessonComplete}
+        practiceMode={practiceMode}
+        handleResetLesson={handleResetLesson}
+        handleNextLesson={handleNextLesson}
+      />
 
-        {/* Mode Tabs & Sound Toggle */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center bg-slate-100 p-0.5 rounded-full border border-slate-200/80 text-xs font-bold">
-            <button
-              onClick={() => setPracticeMode('jamo')}
-              className={`px-2.5 py-0.5 rounded-full transition-all ${
-                practiceMode === 'jamo' ? `${themeConfig.primaryBg} text-white shadow-2xs` : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Phím
-            </button>
-            <button
-              onClick={() => setPracticeMode('vocab')}
-              className={`px-2.5 py-0.5 rounded-full transition-all ${
-                practiceMode === 'vocab' ? `${themeConfig.primaryBg} text-white shadow-2xs` : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Từ Vựng
-            </button>
-            <button
-              onClick={() => setPracticeMode('sentence')}
-              className={`px-2.5 py-0.5 rounded-full transition-all ${
-                practiceMode === 'sentence' ? `${themeConfig.primaryBg} text-white shadow-2xs` : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Câu
-            </button>
-          </div>
-
-          <button
-            onClick={() => setIsSoundOn(!isSoundOn)}
-            className="p-1.5 text-slate-600 hover:text-slate-900 bg-white border border-slate-200/80 rounded-full shadow-2xs transition-colors"
-            title="Bật/Tắt Âm Thanh"
-          >
-            {isSoundOn ? <Volume2 className={`w-3.5 h-3.5 ${themeConfig.primaryText}`} /> : <VolumeX className="w-3.5 h-3.5 text-slate-400" />}
-          </button>
-        </div>
-      </div>
-
-      {/* CENTER STAGE: Floating Target Korean Character with Type.Today Active Focus Box & 100% Character Preservation */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER - 100% TARGET CHARACTER VISIBILITY PRESERVED */}
-        <div className={`${fontSizeClass} font-black tracking-widest flex flex-wrap items-center justify-center gap-2 sm:gap-4 max-w-full px-4 transition-all`}>
-          {targetText.split('').map((originalChar, index) => {
-            const isCompleted = index < completedSyllableCount;
-            const isActive = index === completedSyllableCount;
-
-            if (isCompleted) {
-              return (
-                <span key={index} className="text-emerald-600 font-black px-0.5 sm:px-1">
-                  {originalChar === ' ' ? '␣' : originalChar}
-                </span>
-              );
-            }
-
-            if (isActive) {
-              return (
-                <span
-                  key={index}
-                  className={`inline-flex items-center justify-center ${focusBoxPaddingClass} rounded-2xl transition-all border shadow-xs animate-pulse ${
-                    hasError
-                      ? 'bg-rose-100/90 border-rose-300 text-rose-600'
-                      : 'bg-blue-50/70 border-blue-200/90 text-blue-600'
-                  }`}
-                >
-                  {/* ALWAYS RENDER THE COMPLETE TARGET CHARACTER originalChar SO THE USER CAN SEE ALL STROKES */}
-                  <span
-                    className={`${
-                      hasError
-                        ? 'text-rose-600'
-                        : activeTypedJamoSlice.length > 0
-                        ? themeConfig.primaryText
-                        : 'text-slate-300'
-                    } font-black`}
-                  >
-                    {originalChar === ' ' ? '␣' : originalChar}
-                  </span>
-
-                  {/* THIN GRAY BLINKING CURSOR (|) INSIDE THE ACTIVE FOCUS BOX */}
-                  {!isLessonComplete && (
-                    <span
-                      className={`w-[2.5px] ${cursorHeightClass} ${
-                        hasError ? 'bg-rose-500' : 'bg-slate-400'
-                      } animate-pulse rounded-full inline-block ml-1.5 shrink-0 align-middle`}
-                    />
-                  )}
-                </span>
-              );
-            }
-
-            // Upcoming characters: Soft Neutral Gray text-slate-300 font-medium
-            return (
-              <span key={index} className="text-slate-300 font-medium px-0.5 sm:px-1">
-                {originalChar === ' ' ? '␣' : originalChar}
-              </span>
-            );
-          })}
-        </div>
-
-        {/* Clean Subtext */}
-        <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
-          {isLessonComplete ? (
-            <span className="text-emerald-600 font-bold flex items-center gap-1.5 justify-center">
-              <CheckCircle2 className="w-4 h-4" /> Hoàn thành bài tập! Bấm phím tiếp theo (Enter ↵)
-            </span>
-          ) : targetMeaning ? (
-            <span className="text-slate-500 font-medium text-sm sm:text-base">{targetMeaning}</span>
-          ) : (
-            <span>Press key to continue</span>
-          )}
-        </div>
-
-        {/* Inline Completion Action Buttons */}
-        <AnimatePresence>
-          {isLessonComplete && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="pt-1 flex items-center justify-center gap-3"
-            >
-              <button
-                onClick={handleResetLesson}
-                className="px-4 py-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center gap-1.5 transition-colors border border-slate-200/80"
-              >
-                <RotateCw className="w-3.5 h-3.5" /> Gõ Lại
-              </button>
-
-              <button
-                onClick={handleNextLesson}
-                className={`px-5 py-1.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full shadow-xs flex items-center gap-1.5 transition-all`}
-              >
-                <span>Bài Tiếp Theo (Enter ↵)</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* BOTTOM STAGE: Giant 3D Perspective Keyboard Floating Cleanly */}
-      <div className="relative shrink-0 pb-2 [perspective:800px]">
-        {/* Hover Stat Popover Tooltip Box */}
-        <AnimatePresence>
-          {hoveredStatData && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 5, scale: 0.9 }}
-              className="absolute -top-32 left-1/2 -translate-x-1/2 z-50 bg-[#121215] text-white rounded-2xl p-3.5 shadow-2xl border border-slate-800 min-w-[240px] pointer-events-none"
-            >
-              <div className="text-center border-b border-slate-800 pb-2 mb-2">
-                <span className="text-2xl font-black text-white font-mono leading-none">
-                  {hoveredStatData.char}
-                </span>
-              </div>
-
-              <div className="space-y-1.5 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400 font-medium">Seen</span>
-                  <span className="font-bold text-white font-mono">{hoveredStatData.seen}x</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400 font-medium">Accuracy</span>
-                  <span className="font-bold text-white font-mono">{hoveredStatData.accuracy}%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400 font-medium">Speed</span>
-                  <span className="font-bold text-white font-mono">{hoveredStatData.speedSec}s</span>
-                </div>
-
-                {hoveredStatData.mistakes.length > 0 && (
-                  <div className="flex items-center justify-between pt-1.5 border-t border-slate-800/80">
-                    <span className="text-slate-400 font-medium">Mistakes</span>
-                    <div className="flex items-center gap-1">
-                      {hoveredStatData.mistakes.map((m, idx) => (
-                        <span
-                          key={idx}
-                          className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] font-bold text-slate-200 flex items-center gap-0.5"
-                        >
-                          {m.char}
-                          <span className="text-[9px] text-slate-400 font-mono">x{m.count}</span>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* 3D Angled Container Floating Cleanly */}
-        <div className="space-y-1.5 sm:space-y-2 [transform:rotateX(28deg)] transition-transform duration-300 origin-bottom">
-          {EXACT_TYPE_TODAY_ROWS.map((row, rIdx) => (
-            <div key={rIdx} className="flex justify-center gap-1.5 sm:gap-2">
-              {row.map((item) => {
-                if (item.isShiftKey) {
-                  return (
-                    <div
-                      key={item.key}
-                      onClick={() => setIsShiftActive(!isShiftActive)}
-                      className={`w-12 sm:w-16 h-11 sm:h-13 rounded-xl border border-b-4 text-xs font-bold shadow-md flex items-center justify-center cursor-pointer transition-all ${
-                        isShiftActive
-                          ? `${themeConfig.primaryBg} border-blue-800 text-white ring-4 ${themeConfig.accentRing}`
-                          : 'bg-slate-100 border-slate-300 border-b-slate-400/80 text-slate-800 hover:bg-slate-200'
-                      }`}
-                    >
-                      <ArrowBigUp className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
-                    </div>
-                  );
-                }
-
-                const displayedHangul = (isShiftActive && item.shiftHangul) ? item.shiftHangul : item.hangul;
-                const isTarget = nextQwertyKey === item.key;
-                const isActive = activeKey === item.key;
-                const stat = displayedHangul ? perKeyStats[displayedHangul] : null;
-                const batteryLevel = stat ? stat.masteryLevel : 0;
-
-                let keyCapStyle =
-                  'bg-white border border-slate-200/90 border-b-4 border-b-slate-300 text-slate-900 shadow-md hover:bg-slate-50';
-
-                if (isTarget) {
-                  keyCapStyle =
-                    `${themeConfig.primaryBg} border-blue-600 border-b-4 border-b-blue-800 text-white font-black ring-4 ${themeConfig.accentRing} shadow-xl scale-105 animate-pulse`;
-                }
-
-                if (isActive) {
-                  if (keyFeedback === 'wrong') {
-                    keyCapStyle =
-                      'bg-rose-600 text-white border-rose-600 border-b-2 border-b-rose-800 translate-y-1 shadow-sm scale-95 transition-transform duration-75';
-                  } else {
-                    keyCapStyle =
-                      'bg-emerald-600 text-white border-emerald-600 border-b-2 border-b-emerald-800 translate-y-1 shadow-sm scale-95 transition-transform duration-75';
-                  }
-                }
-
-                return (
-                  <div
-                    key={item.key}
-                    onMouseEnter={() => setHoveredKeyChar(displayedHangul || item.native || null)}
-                    onMouseLeave={() => setHoveredKeyChar(null)}
-                    className={`w-10 h-12 sm:w-14 sm:h-14 rounded-xl flex flex-col justify-between p-1.5 transition-all duration-100 relative cursor-pointer overflow-hidden ${keyCapStyle}`}
-                  >
-                    {/* BATTERY GAUGE MASTERY FILL */}
-                    {batteryLevel > 0 && !isTarget && !isActive && (
-                      <div
-                        className="absolute bottom-0 left-0 right-0 bg-blue-500/25 border-t border-blue-400/40 rounded-b-lg transition-all duration-500 pointer-events-none"
-                        style={{ height: `${batteryLevel}%` }}
-                      />
-                    )}
-
-                    {/* Top Hanguel Character (Dynamic Shift Support) */}
-                    <span
-                      className={`text-sm sm:text-lg font-black leading-none text-left z-10 ${
-                        isTarget || isActive ? 'text-white' : 'text-slate-900'
-                      }`}
-                    >
-                      {displayedHangul}
-                    </span>
-
-                    {/* Bottom Native QWERTY Character */}
-                    <span
-                      className={`text-[10px] font-mono font-bold uppercase text-right leading-none z-10 ${
-                        isTarget || isActive ? 'text-blue-100' : 'text-slate-400'
-                      }`}
-                    >
-                      {item.native}
-                    </span>
-
-                    {/* Home Finger Dot Indicator */}
-                    {item.isHomeFinger && (
-                      <span
-                        className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full z-10 ${
-                          isTarget || isActive ? 'bg-white' : 'bg-slate-400'
-                        }`}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-
-          {/* Row 4: Spacebar Row */}
-          <div className="flex justify-center gap-2 pt-0.5">
-            <div className="w-12 sm:w-16 h-11 sm:h-13" />
-            <div
-              className={`w-72 sm:w-[26rem] h-11 sm:h-13 rounded-xl border border-slate-200/90 border-b-4 border-b-slate-300 flex items-center justify-center text-xs font-bold transition-all shadow-md ${
-                nextQwertyKey === 'space'
-                  ? `${themeConfig.primaryBg} border-blue-600 border-b-blue-800 text-white ring-4 ${themeConfig.accentRing} animate-pulse`
-                  : activeKey === 'space'
-                  ? `${themeConfig.primaryBg} text-white border-b-2 translate-y-1 shadow-sm`
-                  : 'bg-white text-slate-500'
-              }`}
-            >
-              <span className={`text-xs font-mono font-black ${activeKey === 'space' || nextQwertyKey === 'space' ? 'text-white' : 'text-slate-600'}`}>
-                SPACEBAR
-              </span>
-            </div>
-            <div className="w-12 sm:w-16 h-11 sm:h-13" />
-          </div>
-        </div>
-      </div>
+      {/* 3D Perspective Keyboard */}
+      <TypingKeyboard3D
+        nextQwertyKey={nextQwertyKey}
+        activeKey={activeKey}
+        isShiftActive={isShiftActive}
+        setIsShiftActive={setIsShiftActive}
+        keyFeedback={keyFeedback}
+        hoveredKeyChar={hoveredKeyChar}
+        setHoveredKeyChar={setHoveredKeyChar}
+        perKeyStats={perKeyStats}
+      />
     </div>
   );
 }
