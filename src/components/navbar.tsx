@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Sparkles, Layers, Award, Bot } from 'lucide-react';
 import { SmoothDropdown } from '@/components/smooth-dropdown';
+import { useTheme } from '@/lib/theme-context';
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { themeConfig } = useTheme();
 
   const navLinks = [
     { href: '/', label: 'Trang Chủ', icon: Layers },
@@ -23,7 +25,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16 gap-3">
             {/* Logo with Korean Taegeuk solid badge */}
             <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-rose-600 text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
+              <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-2xl ${themeConfig.primaryBg} text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm`}>
                 <span className="font-black text-sm sm:text-base">한</span>
               </div>
               <div>
@@ -49,7 +51,7 @@ export default function Navbar() {
                     href={link.href}
                     className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-[13px] lg:text-[14px] font-medium transition-all ${
                       isActive
-                        ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                        ? `${themeConfig.primaryBg} text-white font-semibold shadow-sm`
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >
@@ -59,8 +61,8 @@ export default function Navbar() {
                       <span
                         className={`px-1.5 py-0.2 text-[10px] font-bold rounded-full ${
                           isActive
-                            ? 'bg-white text-blue-700'
-                            : 'bg-blue-100 text-blue-700'
+                            ? 'bg-white text-slate-900'
+                            : `${themeConfig.badgeBg}`
                         }`}
                       >
                         {link.badge}
@@ -77,7 +79,7 @@ export default function Navbar() {
                 href="/mcp-guide"
                 className="hidden sm:inline-flex ios-chip gap-1.5 px-3.5 py-[7px] text-[12px] font-semibold text-slate-800 bg-white border border-slate-200 shadow-sm"
               >
-                <Bot className="size-[15px] text-blue-600" />
+                <Bot className={`size-[15px] ${themeConfig.primaryText}`} />
                 <span>MCP Endpoint</span>
               </Link>
 
@@ -104,11 +106,11 @@ export default function Navbar() {
                 href={link.href}
                 className={`flex flex-col items-center gap-0.5 px-4 py-1 rounded-2xl transition ${
                   isActive
-                    ? 'text-blue-600 font-bold'
+                    ? `${themeConfig.primaryText} font-bold`
                     : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-blue-600 scale-110' : 'text-slate-400'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? `${themeConfig.primaryText} scale-110` : 'text-slate-400'}`} />
                 <span className="text-[10px]">{link.label}</span>
               </Link>
             );

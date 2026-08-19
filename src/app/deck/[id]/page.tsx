@@ -6,6 +6,7 @@ import Header from '@/components/header';
 import FlashcardView from '@/components/flashcard-view';
 import CreateDeckModal from '@/components/create-deck-modal';
 import { Deck } from '@/lib/types';
+import { useTheme } from '@/lib/theme-context';
 import { ArrowLeft, Play } from 'lucide-react';
 import Link from 'next/link';
 
@@ -17,6 +18,7 @@ const YoutubeIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export default function DeckStudyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const { themeConfig } = useTheme();
   const [deck, setDeck] = useState<Deck | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -43,9 +45,9 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#faf8f5] text-slate-900 flex items-center justify-center font-sans">
+      <div className={`min-h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} flex items-center justify-center font-sans`}>
         <div className="text-center space-y-2">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className={`w-8 h-8 border-4 border-t-transparent ${themeConfig.primaryText} rounded-full animate-spin mx-auto`} />
           <p className="text-xs text-slate-500 font-bold">Đang tải bộ thẻ từ vựng tiếng Hàn...</p>
         </div>
       </div>
@@ -54,7 +56,7 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
 
   if (!deck) {
     return (
-      <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans">
+      <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
         <Sidebar
           isOpenMobile={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -68,7 +70,7 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
               <p className="text-slate-500 text-sm">Bộ từ vựng này không tồn tại hoặc đã bị xóa.</p>
               <Link
                 href="/"
-                className="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full inline-flex items-center gap-1.5 shadow-xs"
+                className={`px-4 py-2 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full inline-flex items-center gap-1.5 shadow-xs`}
               >
                 <ArrowLeft className="w-4 h-4" /> Quay Về Trang Chủ
               </Link>
@@ -80,7 +82,7 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
   }
 
   return (
-    <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans">
+    <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -105,7 +107,7 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
 
             <Link
               href={`/quiz?deck=${deck.id}`}
-              className="px-4 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full flex items-center gap-1.5 shadow-2xs"
+              className={`px-4 py-1.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full flex items-center gap-1.5 shadow-2xs`}
             >
               <Play className="w-3.5 h-3.5 fill-current text-white" /> Ôn Quiz Ngay
             </Link>
@@ -114,12 +116,12 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
           {/* Compact Deck Header */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 space-y-1.5 shadow-xs">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-rose-50 text-rose-700 text-[10px] font-bold rounded-full border border-rose-200/60">
+              <span className={`px-2 py-0.5 ${themeConfig.badgeBg} text-[10px] font-bold rounded-full`}>
                 {deck.category}
               </span>
               {deck.youtubeUrl && (
-                <span className="flex items-center gap-1 text-[10px] text-rose-700 bg-rose-50 border border-rose-200/60 px-2 py-0.5 rounded-full font-bold">
-                  <YoutubeIcon className="w-3 h-3 text-rose-600" /> YouTube Video
+                <span className={`flex items-center gap-1 text-[10px] ${themeConfig.badgeBg} px-2 py-0.5 rounded-full font-bold`}>
+                  <YoutubeIcon className={`w-3 h-3 ${themeConfig.primaryText}`} /> YouTube Video
                 </span>
               )}
             </div>

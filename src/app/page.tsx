@@ -6,6 +6,7 @@ import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
 import CreateDeckModal from '@/components/create-deck-modal';
 import { Deck } from '@/lib/types';
+import { useTheme } from '@/lib/theme-context';
 import {
   Layers,
   Play,
@@ -24,6 +25,7 @@ function DashboardContent() {
   const router = useRouter();
   const catParam = searchParams.get('category');
 
+  const { themeConfig } = useTheme();
   const [decks, setDecks] = useState<Deck[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('Tất cả');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -82,7 +84,7 @@ function DashboardContent() {
   const recommendedDeck = decks.length > 0 ? decks[0] : null;
 
   return (
-    <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans">
+    <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
       {/* Left Sidebar Command Center */}
       <Sidebar
         categories={categoriesList}
@@ -109,7 +111,7 @@ function DashboardContent() {
           <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3.5">
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
-                <span className="text-[11px] text-rose-600 font-extrabold tracking-wide uppercase">
+                <span className={`text-[11px] ${themeConfig.primaryText} font-extrabold tracking-wide uppercase`}>
                   안녕하세요! 🇰🇷 LynKore Learning Hub
                 </span>
               </div>
@@ -146,7 +148,7 @@ function DashboardContent() {
 
               <div className="p-2 space-y-0.5">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                  <Award className="w-3 h-3 text-rose-600" /> Thẻ Từ Vựng
+                  <Award className={`w-3 h-3 ${themeConfig.primaryText}`} /> Thẻ Từ Vựng
                 </span>
                 <div className="text-sm sm:text-base font-black text-slate-900">{totalCardsCount} Thẻ</div>
               </div>
@@ -158,12 +160,12 @@ function DashboardContent() {
             <section className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-2.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-rose-600" />
+                  <Sparkles className={`w-3.5 h-3.5 ${themeConfig.primaryText}`} />
                   <span className="text-xs font-bold text-slate-900 uppercase tracking-wide">
                     Bài Học Gợi Ý Hôm Nay
                   </span>
                 </div>
-                <span className="text-[11px] text-rose-700 font-bold bg-rose-50 border border-rose-200/60 px-2 py-0.5 rounded-full">
+                <span className={`text-[11px] font-bold ${themeConfig.badgeBg} px-2.5 py-0.5 rounded-full`}>
                   {recommendedDeck.category}
                 </span>
               </div>
@@ -181,7 +183,7 @@ function DashboardContent() {
                 <div className="flex items-center gap-2 shrink-0">
                   <Link
                     href={`/deck/${recommendedDeck.id}`}
-                    className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-full shadow-xs flex items-center gap-1.5 transition-all"
+                    className={`px-4 py-2 ${themeConfig.primaryBg} ${themeConfig.primaryHover} text-white font-bold text-xs rounded-full shadow-xs flex items-center gap-1.5 transition-all`}
                   >
                     <span>Bắt Đầu Học Ngay</span>
                     <ArrowRight className="w-3.5 h-3.5 text-white" />
@@ -204,11 +206,11 @@ function DashboardContent() {
             {/* Section Header */}
             <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
               <div className="flex items-center gap-2">
-                <FolderOpen className="w-4 h-4 text-blue-600" />
+                <FolderOpen className={`w-4 h-4 ${themeConfig.primaryText}`} />
                 <h3 className="text-sm sm:text-base font-black text-slate-900">
                   {activeCategory === 'Tất cả' ? 'Thư Viện Bài Học Tiếng Hàn' : `Danh Mục: ${activeCategory}`}
                 </h3>
-                <span className="px-2 py-0.5 bg-blue-50 text-blue-800 text-[11px] font-bold rounded-full border border-blue-200/60">
+                <span className={`px-2 py-0.5 ${themeConfig.badgeBg} text-[11px] font-bold rounded-full`}>
                   {filteredDecks.length} bộ bài
                 </span>
               </div>
@@ -220,11 +222,11 @@ function DashboardContent() {
                 {displayedDecks.map((deck) => (
                   <div
                     key={deck.id}
-                    className="bg-white border border-slate-200/80 rounded-2xl p-4 hover:border-blue-400 hover:shadow-xs transition-all flex flex-col justify-between space-y-3"
+                    className="bg-white border border-slate-200/80 rounded-2xl p-4 hover:border-slate-400 hover:shadow-xs transition-all flex flex-col justify-between space-y-3"
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <span className="px-2 py-0.5 bg-rose-50 text-rose-700 text-[10px] font-bold rounded-full border border-rose-200/60">
+                        <span className={`px-2 py-0.5 ${themeConfig.badgeBg} text-[10px] font-bold rounded-full`}>
                           {deck.category}
                         </span>
                         <span className="text-[10px] font-semibold text-slate-400">
@@ -244,7 +246,7 @@ function DashboardContent() {
                     <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
                       <Link
                         href={`/deck/${deck.id}`}
-                        className="flex-1 py-1.5 px-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full text-center transition-colors shadow-2xs"
+                        className={`flex-1 py-1.5 px-3 ${themeConfig.primaryBg} ${themeConfig.primaryHover} text-white font-bold text-xs rounded-full text-center transition-colors shadow-2xs`}
                       >
                         Bắt Đầu Học →
                       </Link>
