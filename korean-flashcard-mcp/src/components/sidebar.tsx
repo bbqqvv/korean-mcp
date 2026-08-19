@@ -10,8 +10,7 @@ import {
   Flame,
   FolderOpen,
   ChevronRight,
-  Settings,
-  BookOpen
+  Settings
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -64,15 +63,15 @@ export default function Sidebar({
       {/* Brand Header */}
       <div className="p-5 border-b border-slate-100 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs font-black text-sm">
+          <div className="w-8.5 h-8.5 rounded-xl bg-rose-600 text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs font-black text-base">
             한
           </div>
           <div>
-            <span className="font-black text-base tracking-tight text-slate-900 block leading-none">
+            <span className="font-black text-lg tracking-tight text-slate-900 block leading-none">
               LynKore
             </span>
             <span className="text-[10px] text-slate-400 font-bold tracking-wider uppercase block mt-1">
-              Korean EdTech
+              Korean Learning
             </span>
           </div>
         </Link>
@@ -87,16 +86,16 @@ export default function Sidebar({
         )}
       </div>
 
-      {/* Primary Action Button (Midnight Slate) */}
+      {/* Primary Action Button (Bright Taegeuk Crimson Red) */}
       <div className="p-4 border-b border-slate-100">
         <button
           onClick={() => {
             if (onOpenCreateModal) onOpenCreateModal();
             if (onCloseMobile) onCloseMobile();
           }}
-          className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-full shadow-xs flex items-center justify-center gap-2 transition-all"
+          className="w-full py-2.5 px-4 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-full shadow-xs flex items-center justify-center gap-2 transition-all hover:shadow-sm"
         >
-          <Plus className="w-4 h-4 text-indigo-400" />
+          <Plus className="w-4 h-4 text-white" />
           <span>Tạo Bộ Bài AI Mới</span>
         </button>
       </div>
@@ -118,15 +117,15 @@ export default function Sidebar({
                 onClick={onCloseMobile}
                 className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
                   isActive
-                    ? 'bg-slate-900 text-white font-bold shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                    ? 'bg-rose-50 text-rose-700 font-bold border border-rose-200/60'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-rose-600' : 'text-slate-400'}`} />
                   <span>{link.label}</span>
                 </div>
-                {isActive && <ChevronRight className="w-3.5 h-3.5 text-indigo-400" />}
+                {isActive && <ChevronRight className="w-3.5 h-3.5 text-rose-600" />}
               </Link>
             );
           })}
@@ -134,7 +133,7 @@ export default function Sidebar({
 
         {/* Category List */}
         <div className="space-y-1">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-3 block mb-2 flex items-center justify-between">
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-rose-600 px-3 block mb-2 flex items-center justify-between">
             <span>DANH MỤC TIẾNG HÀN</span>
             <FolderOpen className="w-3.5 h-3.5" />
           </span>
@@ -147,7 +146,7 @@ export default function Sidebar({
                 onClick={() => handleCategoryClick(cat.name)}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all text-left ${
                   isSelected
-                    ? 'bg-indigo-50 text-indigo-900 font-bold border border-indigo-200/80'
+                    ? 'bg-blue-50 text-blue-800 font-bold border border-blue-200/60'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
@@ -155,7 +154,7 @@ export default function Sidebar({
                 <span
                   className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
                     isSelected
-                      ? 'bg-indigo-600 text-white'
+                      ? 'bg-blue-600 text-white'
                       : 'bg-slate-100 text-slate-500'
                   }`}
                 >
@@ -174,12 +173,12 @@ export default function Sidebar({
             <span className="flex items-center gap-1 text-slate-800">
               <Flame className="w-3.5 h-3.5 text-amber-500 fill-current" /> Chuỗi 5 Ngày
             </span>
-            <span className="text-slate-600 text-[11px] font-bold">
+            <span className="text-rose-600 text-[11px] font-extrabold">
               32/100 từ
             </span>
           </div>
           <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-            <div className="bg-indigo-600 h-full w-[32%]" />
+            <div className="bg-rose-600 h-full w-[32%]" />
           </div>
           <p className="text-[10px] text-slate-500 text-center font-medium">
             Học từ vựng tiếng Hàn mỗi ngày 🇰🇷

@@ -43,9 +43,9 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[#faf8f5] text-slate-900 flex items-center justify-center font-sans">
         <div className="text-center space-y-2">
-          <div className="w-8 h-8 border-4 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-xs text-slate-500 font-bold">Đang tải bộ thẻ từ vựng tiếng Hàn...</p>
         </div>
       </div>
@@ -54,7 +54,7 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
 
   if (!deck) {
     return (
-      <div className="flex h-screen bg-[#f8fafc] text-slate-900 overflow-hidden font-sans">
+      <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans">
         <Sidebar
           isOpenMobile={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -68,7 +68,7 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
               <p className="text-slate-500 text-sm">Bộ từ vựng này không tồn tại hoặc đã bị xóa.</p>
               <Link
                 href="/"
-                className="px-4 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-full inline-flex items-center gap-1.5"
+                className="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full inline-flex items-center gap-1.5 shadow-xs"
               >
                 <ArrowLeft className="w-4 h-4" /> Quay Về Trang Chủ
               </Link>
@@ -80,7 +80,7 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
   }
 
   return (
-    <div className="flex h-screen bg-[#f8fafc] text-slate-900 overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans">
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -105,16 +105,16 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
 
             <Link
               href={`/quiz?deck=${deck.id}`}
-              className="px-4 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-full flex items-center gap-1.5 shadow-2xs"
+              className="px-4 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full flex items-center gap-1.5 shadow-2xs"
             >
-              <Play className="w-4 h-4 fill-current text-indigo-400" /> Ôn Quiz Ngay
+              <Play className="w-4 h-4 fill-current text-white" /> Ôn Quiz Ngay
             </Link>
           </div>
 
           {/* Deck Title Header */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 space-y-2 shadow-xs">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-bold rounded-full border border-slate-200/60">
+              <span className="px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[11px] font-bold rounded-full border border-rose-200/60">
                 {deck.category}
               </span>
               {deck.youtubeUrl && (
