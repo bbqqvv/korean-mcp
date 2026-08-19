@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RotateCw, CheckCircle2, ArrowRight } from 'lucide-react';
-import { composeJamosToHangul } from '@/lib/hangul-engine';
+import { composeJamosToHangul, decomposeSyllableToJamo } from '@/lib/hangul-engine';
 import { useTheme } from '@/lib/theme-context';
 
 interface TypingStageProps {
@@ -91,22 +91,44 @@ export default function TypingStage({
           }
 
           if (isActive) {
+            const targetJamos = decomposeSyllableToJamo(originalChar);
             const typedCount = activeTypedJamoSlice.length;
+            const totalJamos = targetJamos.length;
             
-            // Determine dynamic clip-path mask for Layer 2 (Blue overlay)
-            // This replicates SVG path fill effect perfectly
+            // Structure-Aware SVG-Equivalent Clip-Mask Engine
             let clipMaskStyle: React.CSSProperties = {};
             if (typedCount === 0) {
-              clipMaskStyle = { opacity: 0 }; // Hide overlay entirely
-            } else if (typedCount === 1) {
-              // Only initial consonant (Left side or top)
-              clipMaskStyle = { clipPath: 'polygon(0 0, 50% 0, 50% 60%, 0 60%)' };
-            } else if (typedCount === 2) {
-              // Initial consonant + Vowel (Left + Right, leaving bottom for batchim)
-              clipMaskStyle = { clipPath: 'polygon(0 0, 100% 0, 100% 60%, 0 60%)' };
-            } else if (typedCount >= 3) {
-              // Full syllable completed
+              clipMaskStyle = { opacity: 0 };
+            } else if (typedCount >= totalJamos) {
               clipMaskStyle = { clipPath: 'inset(0)' };
+            } else {
+              const isHorizontal = ['ㅗ', 'ㅛ', 'ㅜ', 'ㅠ', 'ㅡ'].includes(targetJamos[1]);
+              const isCompound = totalJamos >= 3 && ['ㅗ', 'ㅜ', 'ㅡ'].includes(targetJamos[1]) && ['ㅏ', 'ㅐ', 'ㅣ', 'ㅓ', 'ㅔ'].includes(targetJamos[2]);
+              const hasBatchim = totalJamos > (isCompound ? 3 : 2);
+
+              if (typedCount === 1) {
+                if (isCompound) {
+                  clipMaskStyle = { clipPath: 'polygon(0 0, 55% 0, 55% 50%, 0 50%)' };
+                } else if (isHorizontal) {
+                  clipMaskStyle = { clipPath: 'polygon(0 0, 100% 0, 100% 50%, 0 50%)' };
+                } else {
+                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 55% 0, 55% 65%, 0 65%)' : 'polygon(0 0, 55% 0, 55% 100%, 0 100%)' };
+                }
+              } else if (typedCount === 2) {
+                if (isCompound) {
+                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 55% 0, 55% 65%, 0 65%)' : 'polygon(0 0, 55% 0, 55% 100%, 0 100%)' };
+                } else if (isHorizontal) {
+                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 100% 0, 100% 70%, 0 70%)' : 'inset(0)' };
+                } else {
+                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 100% 0, 100% 65%, 0 65%)' : 'inset(0)' };
+                }
+              } else if (typedCount === 3) {
+                if (isCompound) {
+                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 100% 0, 100% 65%, 0 65%)' : 'inset(0)' };
+                } else {
+                  clipMaskStyle = { clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0 85%)' };
+                }
+              }
             }
 
             return (
