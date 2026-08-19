@@ -411,7 +411,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           confetti({ particleCount: 140, spread: 80, origin: { y: 0.6 } });
         }
       } else {
-        // MISTAKE TRIGGER: Turn current syllable RED!
+        // MISTAKE TRIGGER: Turn current syllable RED cleanly
         setKeyFeedback('wrong');
         setHasError(true);
       }
@@ -448,7 +448,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
   return (
     <div className="h-full flex flex-col justify-between select-none font-sans overflow-hidden relative">
-      {/* Type.Today Top Header Bar (Bright Porcelain Style) */}
+      {/* Type.Today Top Header Bar (Soothing Porcelain & Ocean Blue Style) */}
       <div className="bg-white text-slate-900 border border-slate-200/80 rounded-2xl px-4 py-2.5 shadow-xs flex items-center justify-between gap-4 shrink-0">
         {/* Left: Exercise Counter & Progress Bar */}
         <div className="flex items-center gap-3 flex-1">
@@ -458,7 +458,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             </span>
             <div className="w-32 sm:w-44 bg-slate-100 h-1.5 rounded-full overflow-hidden border border-slate-200/80">
               <div
-                className="bg-rose-600 h-full transition-all duration-300"
+                className="bg-blue-600 h-full transition-all duration-300"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -475,7 +475,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             <button
               onClick={() => setPracticeMode('jamo')}
               className={`px-2.5 py-0.5 rounded-full transition-all ${
-                practiceMode === 'jamo' ? 'bg-rose-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                practiceMode === 'jamo' ? 'bg-blue-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Phím
@@ -483,7 +483,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             <button
               onClick={() => setPracticeMode('vocab')}
               className={`px-2.5 py-0.5 rounded-full transition-all ${
-                practiceMode === 'vocab' ? 'bg-rose-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                practiceMode === 'vocab' ? 'bg-blue-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Từ Vựng
@@ -491,7 +491,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             <button
               onClick={() => setPracticeMode('sentence')}
               className={`px-2.5 py-0.5 rounded-full transition-all ${
-                practiceMode === 'sentence' ? 'bg-rose-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                practiceMode === 'sentence' ? 'bg-blue-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Câu
@@ -503,36 +503,36 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             className="p-1.5 text-slate-600 hover:text-slate-900 bg-white border border-slate-200/80 rounded-full shadow-2xs transition-colors"
             title="Bật/Tắt Âm Thanh"
           >
-            {isSoundOn ? <Volume2 className="w-3.5 h-3.5 text-rose-600" /> : <VolumeX className="w-3.5 h-3.5 text-slate-400" />}
+            {isSoundOn ? <Volume2 className="w-3.5 h-3.5 text-blue-600" /> : <VolumeX className="w-3.5 h-3.5 text-slate-400" />}
           </button>
         </div>
       </div>
 
-      {/* CENTER STAGE: Floating Target Korean Character with Instant Syllable Green/Red Transitions */}
+      {/* CENTER STAGE: Floating Target Korean Character (Deep Slate Eye-Friendly Style) */}
       <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER - REALTIME SYLLABLE COLOR FEEDBACK */}
+        {/* GIANT TARGET KOREAN CHARACTER - SOOTHING DEEP SLATE / EMERALD GREEN */}
         <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest flex items-center justify-center gap-3 transition-all">
           {targetText.split('').map((char, index) => {
             const boundary = syllableBoundaries[index];
             const startIdx = boundary ? boundary.start : 0;
             const endIdx = boundary ? boundary.end : 0;
 
-            let charStyle = 'text-slate-300'; // Default un-typed
+            let charStyle = 'text-slate-900 font-black'; // Default soothing deep slate
 
             if (typedJamos.length >= endIdx) {
-              // COMPLETED SYLLABLE: VIVID GREEN!
+              // COMPLETED SYLLABLE: FRESH EMERALD MINT!
               charStyle = 'text-emerald-600 font-black';
             } else if (typedJamos.length >= startIdx && typedJamos.length < endIdx) {
               if (hasError) {
-                // MISTAKE SYLLABLE: VIVID RED HIGHLIGHT!
-                charStyle = 'text-rose-600 bg-rose-100/90 rounded-2xl px-3 py-1 animate-pulse shadow-sm';
+                // MISTAKE SYLLABLE: SOFT ROSE RED CLEAN HIGHLIGHT (NO TEXT WARNING BELOW!)
+                charStyle = 'text-rose-500 bg-rose-50 rounded-2xl px-3 py-1 animate-pulse';
               } else {
-                // CURRENTLY TYPING SYLLABLE: VIVID ROSE/PURPLE
-                charStyle = 'text-rose-600 font-black';
+                // CURRENTLY TYPING SYLLABLE: ROYAL OCEAN BLUE
+                charStyle = 'text-blue-600 font-black';
               }
             } else {
-              // UPCOMING SYLLABLE: SLEEK ROSE DEEP
-              charStyle = 'text-rose-600/90 font-bold';
+              // UPCOMING SYLLABLE: SOOTHING DEEP SLATE
+              charStyle = 'text-slate-900 font-black';
             }
 
             return (
@@ -543,18 +543,14 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           })}
         </div>
 
-        {/* Clean Subtext */}
+        {/* Clean Subtext (Meaning or Guidance Only - ZERO Warning Text) */}
         <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
           {isLessonComplete ? (
             <span className="text-emerald-600 font-bold flex items-center gap-1.5 justify-center">
               <CheckCircle2 className="w-4 h-4" /> Hoàn thành bài tập! Bấm phím tiếp theo (Enter ↵)
             </span>
-          ) : hasError ? (
-            <span className="text-rose-600 font-bold flex items-center gap-1.5 justify-center">
-              ⚠️ Gõ sai phím! Bấm phím Backspace ⌫ để xóa gõ lại
-            </span>
           ) : targetMeaning ? (
-            <span className="text-slate-600 font-bold text-sm sm:text-base">{targetMeaning}</span>
+            <span className="text-slate-500 font-medium text-sm sm:text-base">{targetMeaning}</span>
           ) : (
             <span>Press key to continue</span>
           )}
