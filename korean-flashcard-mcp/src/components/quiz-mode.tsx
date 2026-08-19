@@ -2,17 +2,19 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Award, CheckCircle2, XCircle, RotateCw, Volume2, HelpCircle, ArrowRight, Sparkles, Home } from 'lucide-react';
-import { Flashcard } from '@/lib/types';
+import { Award, CheckCircle2, XCircle, RotateCw, Volume2, HelpCircle, ArrowRight, Sparkles, Home, BookOpen } from 'lucide-react';
+import { Flashcard, Deck } from '@/lib/types';
 import confetti from 'canvas-confetti';
 import Link from 'next/link';
 
 interface QuizModeProps {
   cards: Flashcard[];
   deckTitle: string;
+  decks?: Deck[];
+  onSelectDeck?: (deck: Deck) => void;
 }
 
-export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
+export default function QuizMode({ cards, deckTitle, decks, onSelectDeck }: QuizModeProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -161,23 +163,45 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
 
   return (
     <div className="max-w-xl mx-auto space-y-4 font-sans">
-      {/* Progress Bar & Header */}
+      {/* Sleek Top Header Bar (With Optional Integrated Deck Selector) */}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-2xs space-y-2.5">
-        <div className="flex justify-between items-center text-xs text-slate-600 font-bold">
-          <span className="flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-rose-600" /> Câu Hỏi {currentIndex + 1} / {total}
-          </span>
-          <span className="text-slate-900 font-black">
-            Điểm: <span className="text-blue-600">{score}</span>
-          </span>
+        <div className="flex justify-between items-center text-xs text-slate-600 font-bold gap-2">
+          <div className="flex items-center gap-2 truncate">
+            <Award className="w-4 h-4 text-rose-600 shrink-0" />
+            <span className="truncate text-slate-900 font-extrabold">Quiz: {deckTitle}</span>
+          </div>
+
+          {decks && onSelectDeck && (
+            <div className="flex items-center gap-1.5 shrink-0">
+              <BookOpen className="w-3.5 h-3.5 text-blue-600 hidden sm:inline" />
+              <select
+                value={decks.find((d) => d.title === deckTitle)?.id || ''}
+                onChange={(e) => {
+                  const found = decks.find((d) => d.id === e.target.value);
+                  if (found) onSelectDeck(found);
+                }}
+                className="bg-slate-50 border border-slate-200/80 rounded-full px-3 py-1 text-xs font-bold text-slate-900 focus:outline-none focus:border-blue-500 max-w-[180px] sm:max-w-[220px] truncate cursor-pointer shadow-2xs"
+              >
+                {decks.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.title} ({d.cards.length} từ)
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Smooth Animated Progress Bar */}
-        <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-          <div
-            className="bg-blue-600 h-full transition-all duration-300 ease-out"
-            style={{ width: `${progressPercentage}%` }}
-          />
+        <div className="flex items-center justify-between gap-3 text-[11px] font-bold text-slate-500 pt-0.5">
+          <span>Câu {currentIndex + 1} / {total}</span>
+          <div className="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden">
+            <div
+              className="bg-blue-600 h-full transition-all duration-300 ease-out"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+          <span className="text-slate-900 font-extrabold">Điểm: <span className="text-blue-600">{score}</span></span>
         </div>
       </div>
 
@@ -205,7 +229,7 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
 
         <p className="text-xs text-slate-600 font-bold flex items-center justify-center gap-1.5">
           <HelpCircle className="w-4 h-4 text-rose-600" /> Chọn nghĩa tiếng Việt đúng nhất bên dưới:
-          <span className="text-[10px] text-slate-400 font-normal hidden sm:inline">(Dùng chuột hoặc phím 1, 2, 3, 4)</span>
+          <span className="text-[10px] text-slate-400 font-normal hidden sm:inline">(Dùng phím 1, 2, 3, 4)</span>
         </p>
 
         {/* Option Cards Grid with Shortcuts 1, 2, 3, 4 */}
