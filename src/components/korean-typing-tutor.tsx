@@ -18,7 +18,7 @@ interface KoreanTypingTutorProps {
   decks?: Deck[];
 }
 
-// 2-Bolsik QWERTY to Hangul Mapping
+// 2-Bolsik QWERTY to Hangul Mapping (Lower & Upper Shift Cases)
 const QWERTY_TO_HANGUL: Record<string, string> = {
   q: 'ㅂ', Q: 'ㅃ', w: 'ㅈ', W: 'ㅉ', e: 'ㄷ', E: 'ㄸ', r: 'ㄱ', R: 'ㄲ', t: 'ㅅ', T: 'ㅆ',
   y: 'ㅛ', Y: 'ㅛ', u: 'ㅕ', U: 'ㅕ', i: 'ㅑ', I: 'ㅑ', o: 'ㅐ', O: 'ㅒ', p: 'ㅔ', P: 'ㅖ',
@@ -36,7 +36,7 @@ Object.entries(QWERTY_TO_HANGUL).forEach(([qwerty, hangul]) => {
   }
 });
 
-// Unicode Hangul Decomposition Helpers
+// Unicode Hangul Decomposition & Composition Helpers
 const INITIAL_CONSONANTS = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
 const MEDIAL_VOWELS = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ'];
 const FINAL_CONSONANTS = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
@@ -96,6 +96,55 @@ function decomposeSyllableToJamo(char: string): string[] {
   return [char];
 }
 
+function composeJamosToHangul(jamoList: string[]): string {
+  if (jamoList.length === 0) return '';
+  if (jamoList.length === 1) return jamoList[0];
+
+  const initJamo = jamoList[0];
+  const initIdx = INITIAL_CONSONANTS.indexOf(initJamo);
+  if (initIdx === -1) return jamoList.join('');
+
+  let medJamo = jamoList[1];
+  let medIdx = MEDIAL_VOWELS.indexOf(medJamo);
+  let nextIdx = 2;
+
+  if (jamoList.length >= 3) {
+    for (const [compVowel, parts] of Object.entries(COMPOUND_VOWEL_SPLIT)) {
+      if (parts[0] === jamoList[1] && parts[1] === jamoList[2]) {
+        medJamo = compVowel;
+        medIdx = MEDIAL_VOWELS.indexOf(compVowel);
+        nextIdx = 3;
+        break;
+      }
+    }
+  }
+
+  if (medIdx === -1) return jamoList.join('');
+
+  let finalIdx = 0;
+  if (jamoList.length > nextIdx) {
+    const remaining = jamoList.slice(nextIdx);
+    if (remaining.length === 1) {
+      finalIdx = FINAL_CONSONANTS.indexOf(remaining[0]);
+    } else if (remaining.length === 2) {
+      for (const [compBatchim, parts] of Object.entries(COMPOUND_BATCHIM_SPLIT)) {
+        if (parts[0] === remaining[0] && parts[1] === remaining[1]) {
+          finalIdx = FINAL_CONSONANTS.indexOf(compBatchim);
+          break;
+        }
+      }
+      if (finalIdx <= 0) {
+        finalIdx = FINAL_CONSONANTS.indexOf(remaining[0]);
+      }
+    }
+  }
+
+  if (finalIdx === -1) finalIdx = 0;
+
+  const code = 0xAC00 + (initIdx * 588) + (medIdx * 28) + finalIdx;
+  return String.fromCharCode(code);
+}
+
 function decomposeTextToJamoSequence(text: string): { jamos: string[]; boundaries: { start: number; end: number }[] } {
   const jamos: string[] = [];
   const boundaries: { start: number; end: number }[] = [];
@@ -116,6 +165,7 @@ function decomposeTextToJamoSequence(text: string): { jamos: string[]; boundarie
 interface KeyDef {
   key: string;
   hangul: string;
+  shiftHangul?: string;
   native: string;
   isHomeFinger?: boolean;
   isShiftKey?: boolean;
@@ -137,18 +187,18 @@ const EXACT_TYPE_TODAY_ROWS: KeyDef[][] = [
     { key: '-', hangul: '-', native: '' },
     { key: '=', hangul: '=', native: '' }
   ],
-  // Row 1: Top QWERTY Row
+  // Row 1: Top QWERTY Row (with Shift Double Consonants & Compound Vowels)
   [
-    { key: 'q', hangul: 'ㅂ', native: 'Q' },
-    { key: 'w', hangul: 'ㅈ', native: 'W' },
-    { key: 'e', hangul: 'ㄷ', native: 'E' },
-    { key: 'r', hangul: 'ㄱ', native: 'R' },
-    { key: 't', hangul: 'ㅅ', native: 'T' },
+    { key: 'q', hangul: 'ㅂ', shiftHangul: 'ㅃ', native: 'Q' },
+    { key: 'w', hangul: 'ㅈ', shiftHangul: 'ㅉ', native: 'W' },
+    { key: 'e', hangul: 'ㄷ', shiftHangul: 'ㄸ', native: 'E' },
+    { key: 'r', hangul: 'ㄱ', shiftHangul: 'ㄲ', native: 'R' },
+    { key: 't', hangul: 'ㅅ', shiftHangul: 'ㅆ', native: 'T' },
     { key: 'y', hangul: 'ㅛ', native: 'Y' },
     { key: 'u', hangul: 'ㅕ', native: 'U' },
     { key: 'i', hangul: 'ㅑ', native: 'I' },
-    { key: 'o', hangul: 'ㅐ', native: 'O' },
-    { key: 'p', hangul: 'ㅔ', native: 'P' },
+    { key: 'o', hangul: 'ㅐ', shiftHangul: 'ㅒ', native: 'O' },
+    { key: 'p', hangul: 'ㅔ', shiftHangul: 'ㅖ', native: 'P' },
     { key: '[', hangul: '[', native: '' }
   ],
   // Row 2: Home Row (with Home Finger Guides on ㄹ/F and ㅓ/J)
@@ -232,6 +282,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const [typedJamos, setTypedJamos] = useState<string[]>([]);
   const [hasError, setHasError] = useState(false);
   const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [isShiftActive, setIsShiftActive] = useState(false);
   const [keyFeedback, setKeyFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [isSoundOn, setIsSoundOn] = useState(true);
 
@@ -283,6 +334,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
       return allCards.map((c) => ({ target: c.korean, meaning: c.vietnamese }));
     }
     return [
+      { target: '시장', meaning: 'Chợ / Thị trường' },
       { target: '식당', meaning: 'Nhà ăn / Nhà hàng' },
       { target: '화장실', meaning: 'Nhà vệ sinh / Phòng tắm' },
       { target: '몇 시', meaning: 'mấy giờ' },
@@ -321,6 +373,31 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const nextJamoChar = targetJamoSeq[typedJamos.length] || '';
   const nextQwertyKey = HANGUL_TO_QWERTY[nextJamoChar] || (nextJamoChar === ' ' ? 'space' : null);
 
+  // Completed syllables count
+  const completedSyllableCount = useMemo(() => {
+    let completed = 0;
+    for (let i = 0; i < syllableBoundaries.length; i++) {
+      if (typedJamos.length >= syllableBoundaries[i].end) {
+        completed++;
+      } else {
+        break;
+      }
+    }
+    return completed;
+  }, [typedJamos, syllableBoundaries]);
+
+  // Active syllable slice of typed Jamos
+  const activeSyllableBound = syllableBoundaries[completedSyllableCount];
+  const activeTypedJamoSlice = useMemo(() => {
+    if (!activeSyllableBound) return [];
+    const startPos = activeSyllableBound.start;
+    return typedJamos.slice(startPos);
+  }, [typedJamos, activeSyllableBound]);
+
+  const livePartialHangul = useMemo(() => {
+    return composeJamosToHangul(activeTypedJamoSlice);
+  }, [activeTypedJamoSlice]);
+
   const speakKorean = useCallback((text: string) => {
     if (isSoundOn && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
@@ -342,10 +419,16 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     setStartTime(null);
   }, []);
 
-  // GLOBAL KEYBOARD LISTENER (Realtime Syllable Engine + Red Mistake Highlights + Backspace Correction)
+  // GLOBAL KEYBOARD LISTENER (Shift Keycaps + Spacebar 3D Bounce + Realtime Syllables)
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+      // Handle Shift Down
+      if (e.key === 'Shift' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        setIsShiftActive(true);
+        return;
+      }
 
       if (isLessonComplete) {
         if (['Enter', 'Space'].includes(e.code)) {
@@ -366,21 +449,26 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         return;
       }
 
-      // Translate physical key to Korean Hangul
+      // Handle Spacebar Press
       let inputHangulChar = '';
-      if (e.key === ' ') {
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault();
         inputHangulChar = ' ';
+        setActiveKey('space');
+        setTimeout(() => setActiveKey(null), 180);
       } else if (QWERTY_TO_HANGUL[e.key]) {
         inputHangulChar = QWERTY_TO_HANGUL[e.key];
+        const qwertyKeyLower = HANGUL_TO_QWERTY[inputHangulChar] || e.key.toLowerCase();
+        setActiveKey(qwertyKeyLower);
+        setTimeout(() => setActiveKey(null), 180);
       } else if (HANGUL_TO_QWERTY[e.key]) {
         inputHangulChar = e.key;
+        const qwertyKeyLower = HANGUL_TO_QWERTY[inputHangulChar] || e.key.toLowerCase();
+        setActiveKey(qwertyKeyLower);
+        setTimeout(() => setActiveKey(null), 180);
       } else {
         return;
       }
-
-      const qwertyKeyLower = HANGUL_TO_QWERTY[inputHangulChar] || e.key.toLowerCase();
-      setActiveKey(qwertyKeyLower);
-      setTimeout(() => setActiveKey(null), 180);
 
       if (!startTime) {
         setStartTime(Date.now());
@@ -388,7 +476,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
       const expectedJamo = targetJamoSeq[typedJamos.length];
 
-      // If user currently has an uncorrected error, block further typing until Backspace or correct key
       if (hasError) {
         setKeyFeedback('wrong');
         return;
@@ -413,14 +500,23 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           confetti({ particleCount: 140, spread: 80, origin: { y: 0.6 } });
         }
       } else {
-        // MISTAKE TRIGGER: Turn current syllable RED cleanly
         setKeyFeedback('wrong');
         setHasError(true);
       }
     };
 
+    const handleGlobalKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Shift' || e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        setIsShiftActive(false);
+      }
+    };
+
     window.addEventListener('keydown', handleGlobalKeyDown);
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+    window.addEventListener('keyup', handleGlobalKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown);
+      window.removeEventListener('keyup', handleGlobalKeyUp);
+    };
   }, [typedJamos, targetJamoSeq, targetText, isLessonComplete, startTime, practiceMode, hasError, speakKorean, handleNextLesson]);
 
   const totalLessonsCount = currentLessonsList.length;
@@ -510,42 +606,45 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       </div>
 
-      {/* CENTER STAGE: Floating Target Korean Character (Deep Slate Eye-Friendly Style) */}
+      {/* CENTER STAGE: Floating Target Korean Character with Thin Gray Blinking Cursor (|) Positioned After Character */}
       <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER - SOOTHING DEEP SLATE / EMERALD GREEN */}
-        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest flex items-center justify-center gap-3 transition-all">
-          {targetText.split('').map((char, index) => {
-            const boundary = syllableBoundaries[index];
-            const startIdx = boundary ? boundary.start : 0;
-            const endIdx = boundary ? boundary.end : 0;
-
-            let charStyle = 'text-slate-900 font-black'; // Default soothing deep slate
-
-            if (typedJamos.length >= endIdx) {
-              // COMPLETED SYLLABLE: FRESH EMERALD MINT!
-              charStyle = 'text-emerald-600 font-black';
-            } else if (typedJamos.length >= startIdx && typedJamos.length < endIdx) {
-              if (hasError) {
-                // MISTAKE SYLLABLE: SOFT ROSE RED CLEAN HIGHLIGHT (NO TEXT WARNING BELOW!)
-                charStyle = 'text-rose-500 bg-rose-50 rounded-2xl px-3 py-1 animate-pulse';
-              } else {
-                // CURRENTLY TYPING SYLLABLE: DYNAMIC THEME ACCENT
-                charStyle = `${themeConfig.primaryText} font-black`;
-              }
-            } else {
-              // UPCOMING SYLLABLE: SOOTHING DEEP SLATE
-              charStyle = 'text-slate-900 font-black';
-            }
+        {/* GIANT TARGET KOREAN CHARACTER - THIN GRAY BLINKING CURSOR POSITIONED AFTER ACTIVE CHARACTER */}
+        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest flex items-center justify-center gap-2 transition-all">
+          {targetText.split('').map((originalChar, index) => {
+            const isCompleted = index < completedSyllableCount;
+            const isActive = index === completedSyllableCount;
 
             return (
-              <span key={index} className={`transition-all duration-150 ${charStyle}`}>
-                {char === ' ' ? '␣' : char}
+              <span key={index} className="inline-flex items-center relative">
+                {/* SYLLABLE CHARACTER RENDERING */}
+                {isCompleted ? (
+                  <span className="text-emerald-600 font-black">{originalChar === ' ' ? '␣' : originalChar}</span>
+                ) : isActive ? (
+                  hasError ? (
+                    <span className="text-rose-500 bg-rose-50 rounded-2xl px-2.5 py-0.5 animate-pulse shadow-2xs">
+                      {originalChar === ' ' ? '␣' : originalChar}
+                    </span>
+                  ) : activeTypedJamoSlice.length > 0 ? (
+                    <span className={`${themeConfig.primaryText} font-black`}>
+                      {livePartialHangul}
+                    </span>
+                  ) : (
+                    <span className="text-slate-300 font-medium">{originalChar === ' ' ? '␣' : originalChar}</span>
+                  )
+                ) : (
+                  <span className="text-slate-300 font-medium">{originalChar === ' ' ? '␣' : originalChar}</span>
+                )}
+
+                {/* THIN GRAY BLINKING CURSOR (|) ALWAYS POSITIONED AFTER THE ACTIVE CHARACTER */}
+                {isActive && !isLessonComplete && (
+                  <span className={`w-[2.5px] h-16 sm:h-20 ${hasError ? 'bg-rose-500' : 'bg-slate-400'} animate-pulse rounded-full inline-block ml-1.5 shrink-0 align-middle`} />
+                )}
               </span>
             );
           })}
         </div>
 
-        {/* Clean Subtext (Meaning or Guidance Only - ZERO Warning Text) */}
+        {/* Clean Subtext */}
         <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
           {isLessonComplete ? (
             <span className="text-emerald-600 font-bold flex items-center gap-1.5 justify-center">
@@ -646,16 +745,22 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                   return (
                     <div
                       key={item.key}
-                      className="w-12 sm:w-16 h-11 sm:h-13 rounded-xl bg-slate-100 border border-slate-300 border-b-4 border-b-slate-400/80 text-slate-800 flex items-center justify-center font-bold text-xs shadow-md"
+                      onClick={() => setIsShiftActive(!isShiftActive)}
+                      className={`w-12 sm:w-16 h-11 sm:h-13 rounded-xl border border-b-4 text-xs font-bold shadow-md flex items-center justify-center cursor-pointer transition-all ${
+                        isShiftActive
+                          ? `${themeConfig.primaryBg} border-blue-800 text-white ring-4 ${themeConfig.accentRing}`
+                          : 'bg-slate-100 border-slate-300 border-b-slate-400/80 text-slate-800 hover:bg-slate-200'
+                      }`}
                     >
-                      <ArrowBigUp className="w-5 h-5 sm:w-6 sm:h-6 text-slate-800 fill-current" />
+                      <ArrowBigUp className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
                     </div>
                   );
                 }
 
+                const displayedHangul = (isShiftActive && item.shiftHangul) ? item.shiftHangul : item.hangul;
                 const isTarget = nextQwertyKey === item.key;
                 const isActive = activeKey === item.key;
-                const stat = item.hangul ? perKeyStats[item.hangul] : null;
+                const stat = displayedHangul ? perKeyStats[displayedHangul] : null;
                 const batteryLevel = stat ? stat.masteryLevel : 0;
 
                 let keyCapStyle =
@@ -679,7 +784,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                 return (
                   <div
                     key={item.key}
-                    onMouseEnter={() => setHoveredKeyChar(item.hangul || item.native || null)}
+                    onMouseEnter={() => setHoveredKeyChar(displayedHangul || item.native || null)}
                     onMouseLeave={() => setHoveredKeyChar(null)}
                     className={`w-10 h-12 sm:w-14 sm:h-14 rounded-xl flex flex-col justify-between p-1.5 transition-all duration-100 relative cursor-pointer overflow-hidden ${keyCapStyle}`}
                   >
@@ -691,13 +796,13 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                       />
                     )}
 
-                    {/* Top Hanguel Character */}
+                    {/* Top Hanguel Character (Dynamic Shift Support) */}
                     <span
                       className={`text-sm sm:text-lg font-black leading-none text-left z-10 ${
                         isTarget || isActive ? 'text-white' : 'text-slate-900'
                       }`}
                     >
-                      {item.hangul}
+                      {displayedHangul}
                     </span>
 
                     {/* Bottom Native QWERTY Character */}
@@ -730,10 +835,14 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
               className={`w-72 sm:w-[26rem] h-11 sm:h-13 rounded-xl border border-slate-200/90 border-b-4 border-b-slate-300 flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                 nextQwertyKey === 'space'
                   ? `${themeConfig.primaryBg} border-blue-600 border-b-blue-800 text-white ring-4 ${themeConfig.accentRing} animate-pulse`
+                  : activeKey === 'space'
+                  ? `${themeConfig.primaryBg} text-white border-b-2 translate-y-1 shadow-sm`
                   : 'bg-white text-slate-500'
-              } ${activeKey === 'space' ? 'translate-y-1 border-b-2 shadow-sm' : ''}`}
+              }`}
             >
-              <span className="text-xs font-mono font-black text-slate-600">SPACEBAR</span>
+              <span className={`text-xs font-mono font-black ${activeKey === 'space' || nextQwertyKey === 'space' ? 'text-white' : 'text-slate-600'}`}>
+                SPACEBAR
+              </span>
             </div>
             <div className="w-12 sm:w-16 h-11 sm:h-13" />
           </div>
