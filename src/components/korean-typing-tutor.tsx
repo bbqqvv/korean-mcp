@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Volume2,
@@ -104,25 +104,51 @@ const EXACT_TYPE_TODAY_ROWS: KeyDef[][] = [
 
 // Basic Jamo Lessons
 const JAMO_LESSONS = [
-  'ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ',
-  'ㅏ', 'ㅑ', 'ㅓ', 'ㅕ', 'ㅗ', 'ㅛ', 'ㅜ', 'ㅠ', 'ㅡ', 'ㅣ',
-  'ㅐ', 'ㅒ', 'ㅔ', 'ㅖ', 'ㄲ', 'ㄸ', 'ㅃ', 'ㅆ', 'ㅉ'
+  { target: 'ㄱ', meaning: '' },
+  { target: 'ㄴ', meaning: '' },
+  { target: 'ㄷ', meaning: '' },
+  { target: 'ㄹ', meaning: '' },
+  { target: 'ㅁ', meaning: '' },
+  { target: 'ㅂ', meaning: '' },
+  { target: 'ㅅ', meaning: '' },
+  { target: 'ㅇ', meaning: '' },
+  { target: 'ㅈ', meaning: '' },
+  { target: 'ㅊ', meaning: '' },
+  { target: 'ㅋ', meaning: '' },
+  { target: 'ㅌ', meaning: '' },
+  { target: 'ㅍ', meaning: '' },
+  { target: 'ㅎ', meaning: '' },
+  { target: 'ㅏ', meaning: '' },
+  { target: 'ㅑ', meaning: '' },
+  { target: 'ㅓ', meaning: '' },
+  { target: 'ㅕ', meaning: '' },
+  { target: 'ㅗ', meaning: '' },
+  { target: 'ㅛ', meaning: '' },
+  { target: 'ㅜ', meaning: '' },
+  { target: 'ㅠ', meaning: '' },
+  { target: 'ㅡ', meaning: '' },
+  { target: 'ㅣ', meaning: '' },
+  { target: 'ㅐ', meaning: '' },
+  { target: 'ㅒ', meaning: '' },
+  { target: 'ㅔ', meaning: '' },
+  { target: 'ㅖ', meaning: '' }
 ];
 
 // Sentences Lessons
 const SENTENCE_LESSONS = [
-  '안녕하세요',
-  '감사합니다',
-  '만나서 반갑습니다',
-  '한국어를 공부하고 있어요',
-  '오늘 날씨가 정말 좋아요',
-  '맛있게 드세요'
+  { target: '안녕하세요', meaning: 'xin chào' },
+  { target: '몇 시', meaning: 'mấy giờ / what time' },
+  { target: '감사합니다', meaning: 'cảm ơn' },
+  { target: '만나서 반갑습니다', meaning: 'rất vui được gặp bạn' },
+  { target: '한국어를 공부하고 있어요', meaning: 'tôi đang học tiếng Hàn' },
+  { target: '오늘 날씨가 정말 좋아요', meaning: 'thời tiết hôm nay rất đẹp' }
 ];
 
 export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps) {
   const [practiceMode, setPracticeMode] = useState<'jamo' | 'vocab' | 'sentence'>('jamo');
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [targetText, setTargetText] = useState('ㄱ');
+  const [targetMeaning, setTargetMeaning] = useState('');
 
   const [userInput, setUserInput] = useState('');
   const [activeKey, setActiveKey] = useState<string | null>(null);
@@ -140,9 +166,17 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const vocabList = useMemo(() => {
     const allCards: Flashcard[] = decks.flatMap((d) => d.cards);
     if (allCards.length > 0) {
-      return allCards.map((c) => c.korean);
+      return allCards.map((c) => ({ target: c.korean, meaning: c.vietnamese }));
     }
-    return ['학교', '학생', '선생님', '한국', '친구', '사랑', '음식', '커피'];
+    return [
+      { target: '몇 시', meaning: 'mấy giờ' },
+      { target: '학교', meaning: 'trường học' },
+      { target: '학생', meaning: 'học sinh' },
+      { target: '선생님', meaning: 'giáo viên' },
+      { target: '한국', meaning: 'Hàn Quốc' },
+      { target: '친구', meaning: 'bạn bè' },
+      { target: '사랑', meaning: 'tình yêu' }
+    ];
   }, [decks]);
 
   const currentLessonsList = useMemo(() => {
@@ -156,7 +190,9 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     setUserInput('');
     setIsLessonComplete(false);
     setStartTime(null);
-    setTargetText(currentLessonsList[currentLessonIndex % currentLessonsList.length]);
+    const item = currentLessonsList[currentLessonIndex % currentLessonsList.length];
+    setTargetText(item.target);
+    setTargetMeaning(item.meaning || '');
   }, [practiceMode, currentLessonIndex, currentLessonsList]);
 
   // Next expected character & QWERTY key
@@ -331,9 +367,9 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       </div>
 
-      {/* CENTER STAGE: Giant Floating Korean Character (Type.Today Style) */}
+      {/* CENTER STAGE: Giant Floating Target Korean Character (NO UNDERLINE!) */}
       <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER */}
+        {/* GIANT TARGET KOREAN CHARACTER - CLEAN FLOATING IN MID-AIR */}
         <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest text-rose-600 drop-shadow-2xs flex items-center justify-center gap-2 transition-all">
           {targetText.split('').map((char, index) => {
             let charStyle = 'text-rose-600';
@@ -341,10 +377,10 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
               if (userInput[index] === char) {
                 charStyle = 'text-emerald-600 font-black';
               } else {
-                charStyle = 'text-rose-800 underline';
+                charStyle = 'text-rose-800';
               }
             } else if (index === userInput.length) {
-              charStyle = 'text-rose-500 underline decoration-rose-600 underline-offset-8 animate-pulse';
+              charStyle = 'text-rose-500 font-black';
             }
 
             return (
@@ -355,16 +391,16 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           })}
         </div>
 
-        {/* Typing Guidance Text ("Press key to continue") */}
+        {/* Clean Subtext (Meaning or Guidance - Type.Today Style) */}
         <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
           {isLessonComplete ? (
-            <span className="text-emerald-600 flex items-center gap-1.5 justify-center">
+            <span className="text-emerald-600 flex items-center gap-1.5 justify-center font-bold">
               <CheckCircle2 className="w-4 h-4" /> Press Enter or Space to continue
             </span>
+          ) : targetMeaning ? (
+            <span className="text-slate-600 font-bold text-sm sm:text-base">{targetMeaning}</span>
           ) : (
-            <span>
-              Gõ phím <strong className="text-blue-600 uppercase font-mono font-black">&apos;{nextQwertyKey || ''}&apos;</strong> trên bàn phím để tiếp tục
-            </span>
+            <span>Press key to continue</span>
           )}
         </div>
 
