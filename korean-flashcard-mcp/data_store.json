@@ -1,0 +1,309 @@
+{
+  "decks": [
+    {
+      "id": "deck-1786764512268-19pi4",
+      "title": "adsdasdasd",
+      "category": "YouTube Video",
+      "description": "Trích xuất từ vựng từ clip YouTube: Bài học tiếng Hàn",
+      "cards": [
+        {
+          "id": "yt-card-1",
+          "korean": "배우다",
+          "pronunciation": "bae-u-da",
+          "vietnamese": "Học tập / Học hỏi",
+          "hanja": "學 (Học)",
+          "exampleKr": "저는 한국어를 배우고 있습니다.",
+          "exampleVi": "Tôi đang học tiếng Hàn Quốc."
+        },
+        {
+          "id": "yt-card-2",
+          "korean": "말하다",
+          "pronunciation": "mal-ha-da",
+          "vietnamese": "Nói / Trò chuyện",
+          "exampleKr": "천천히 말해 주세요.",
+          "exampleVi": "Xin hãy nói chậm một chút ạ."
+        },
+        {
+          "id": "yt-card-3",
+          "korean": "듣다",
+          "pronunciation": "deut-da",
+          "vietnamese": "Nghe / Lắng nghe",
+          "exampleKr": "K-pop 음악을 들어요.",
+          "exampleVi": "Tôi nghe nhạc K-pop."
+        }
+      ],
+      "createdAt": "2026-08-15T03:28:32.268Z",
+      "updatedAt": "2026-08-15T03:28:32.268Z",
+      "isDailyReminder": true
+    },
+    {
+      "id": "deck-places-work",
+      "title": "Địa Điểm & Công Sở (Công ty, Thị trường)",
+      "description": "Bộ từ vựng tiếng Hàn cơ bản về các địa điểm công cộng, văn phòng và cửa hàng.",
+      "category": "Công sở & Địa điểm",
+      "createdAt": "2026-08-15T03:23:26.062Z",
+      "updatedAt": "2026-08-15T03:23:26.062Z",
+      "isDailyReminder": true,
+      "cards": [
+        {
+          "id": "card-1",
+          "korean": "회사",
+          "pronunciation": "hoe-sa",
+          "vietnamese": "Công ty",
+          "hanja": "會社 (Hội xã)",
+          "exampleKr": "저는 내일 회사에 갑니다.",
+          "exampleVi": "Ngày mai tôi đi đến công ty.",
+          "difficulty": "easy",
+          "timesReviewed": 3
+        },
+        {
+          "id": "card-2",
+          "korean": "식당",
+          "pronunciation": "sik-dang",
+          "vietnamese": "Nhà ăn / Nhà hàng",
+          "hanja": "食堂 (Thực đường)",
+          "exampleKr": "한국 식당에서 비빔밥을 먹어요.",
+          "exampleVi": "Tôi ăn cơm trộn ở nhà hàng Hàn Quốc.",
+          "difficulty": "medium",
+          "timesReviewed": 2
+        },
+        {
+          "id": "card-3",
+          "korean": "가게",
+          "pronunciation": "ga-ge",
+          "vietnamese": "Cửa hàng / Tiệm",
+          "exampleKr": "가게에서 과일을 샀어요.",
+          "exampleVi": "Tôi đã mua trái cây ở cửa hàng.",
+          "difficulty": "easy",
+          "timesReviewed": 1
+        },
+        {
+          "id": "card-4",
+          "korean": "마트",
+          "pronunciation": "ma-teu",
+          "vietnamese": "Siêu thị (Mart)",
+          "exampleKr": "주말에 마트에 장 보러 가요.",
+          "exampleVi": "Cuối tuần tôi đi siêu thị mua đồ.",
+          "difficulty": "easy",
+          "timesReviewed": 4
+        },
+        {
+          "id": "card-5",
+          "korean": "시장",
+          "pronunciation": "si-jang",
+          "vietnamese": "Chợ",
+          "hanja": "市場 (Thị trường)",
+          "exampleKr": "전통 시장은 물건이 싸요.",
+          "exampleVi": "Chợ truyền thống đồ đạc rất rẻ.",
+          "difficulty": "medium",
+          "timesReviewed": 2
+        },
+        {
+          "id": "card-6",
+          "korean": "약국",
+          "pronunciation": "yak-guk",
+          "vietnamese": "Hiệu thuốc",
+          "hanja": "藥局 (Dược cục)",
+          "exampleKr": "머리가 아파서 약국에 갔어요.",
+          "exampleVi": "Vì đau đầu nên tôi đã đến hiệu thuốc.",
+          "difficulty": "medium",
+          "timesReviewed": 1
+        },
+        {
+          "id": "card-7",
+          "korean": "집",
+          "pronunciation": "jip",
+          "vietnamese": "Nhà",
+          "exampleKr": "퇴근하고 집으로 돌아갔습니다.",
+          "exampleVi": "Tan làm xong tôi đã trở về nhà.",
+          "difficulty": "easy",
+          "timesReviewed": 5
+        },
+        {
+          "id": "card-8",
+          "korean": "아파트",
+          "pronunciation": "a-pa-teu",
+          "vietnamese": "Chung cư (Apartment)",
+          "exampleKr": "우리 집은 아파트 10층이에요.",
+          "exampleVi": "Nhà tôi ở tầng 10 của chung cư.",
+          "difficulty": "easy",
+          "timesReviewed": 2
+        },
+        {
+          "id": "card-9",
+          "korean": "사무실",
+          "pronunciation": "sa-mu-sil",
+          "vietnamese": "Văn phòng",
+          "hanja": "事務室 (Sự vụ thất)",
+          "exampleKr": "사무실에서 회의를 하고 있습니다.",
+          "exampleVi": "Chúng tôi đang họp trong văn phòng.",
+          "difficulty": "medium",
+          "timesReviewed": 3
+        }
+      ]
+    },
+    {
+      "id": "deck-house-rooms",
+      "title": "Các Khu Vực & Vị Trí Trong Nhà",
+      "description": "Các từ vựng về phòng ngủ, phòng khách, bếp và nhà vệ sinh.",
+      "category": "Nhà cửa & Vật dụng",
+      "createdAt": "2026-08-15T03:23:26.062Z",
+      "updatedAt": "2026-08-15T03:23:26.062Z",
+      "isDailyReminder": true,
+      "cards": [
+        {
+          "id": "card-10",
+          "korean": "침실",
+          "pronunciation": "chim-sil",
+          "vietnamese": "Phòng ngủ",
+          "hanja": "寢室 (Tẩm thất)",
+          "exampleKr": "침실에 큰 침대가 있어요.",
+          "exampleVi": "Trong phòng ngủ có một chiếc giường lớn.",
+          "difficulty": "easy",
+          "timesReviewed": 2
+        },
+        {
+          "id": "card-11",
+          "korean": "거실",
+          "pronunciation": "geo-sil",
+          "vietnamese": "Phòng khách",
+          "hanja": "居室 (Cư thất)",
+          "exampleKr": "가족들이 거실에서 TV를 봐요.",
+          "exampleVi": "Cả gia đình xem TV ở phòng khách.",
+          "difficulty": "medium",
+          "timesReviewed": 1
+        },
+        {
+          "id": "card-12",
+          "korean": "화장실",
+          "pronunciation": "hwa-jang-sil",
+          "vietnamese": "Nhà vệ sinh / Phòng tắm",
+          "hanja": "化妝室 (Hóa trang thất)",
+          "exampleKr": "화장실이 어디에 있나요?",
+          "exampleVi": "Nhà vệ sinh ở đâu vậy ạ?",
+          "difficulty": "easy",
+          "timesReviewed": 4
+        },
+        {
+          "id": "card-13",
+          "korean": "부엌 / 주방",
+          "pronunciation": "bu-eok / ju-bang",
+          "vietnamese": "Khu bếp / Nhà bếp",
+          "hanja": "廚房 (Trù phòng)",
+          "exampleKr": "어머니께서 부엌에서 요리를 하십니다.",
+          "exampleVi": "Mẹ tôi đang nấu ăn trong bếp.",
+          "difficulty": "hard",
+          "timesReviewed": 1
+        }
+      ]
+    },
+    {
+      "id": "deck-youtube-daily-korean",
+      "title": "Từ Vựng Trích Từ YouTube: Giao Tiếp Hàn Quốc Hằng Ngày",
+      "description": "Bộ từ vựng được tự động trích xuất từ clip YouTube bài học tiếng Hàn thông dụng.",
+      "category": "YouTube Video",
+      "youtubeUrl": "https://www.youtube.com/watch?v=korean_daily_lesson",
+      "createdAt": "2026-08-15T03:23:26.062Z",
+      "updatedAt": "2026-08-15T03:23:26.062Z",
+      "cards": [
+        {
+          "id": "card-yt-1",
+          "korean": "안녕하세요",
+          "pronunciation": "an-nyeong-ha-se-yo",
+          "vietnamese": "Xin chào (Lịch sự)",
+          "exampleKr": "안녕하세요! 만나서 반갑습니다.",
+          "exampleVi": "Xin chào! Rất vui được gặp bạn.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=korean_daily_lesson",
+          "timestampStart": 12,
+          "difficulty": "easy",
+          "timesReviewed": 5
+        },
+        {
+          "id": "card-yt-2",
+          "korean": "감사합니다",
+          "pronunciation": "gam-sa-ham-ni-da",
+          "vietnamese": "Cảm ơn",
+          "hanja": "感謝 (Cảm tạ)",
+          "exampleKr": "도와주셔서 감사합니다.",
+          "exampleVi": "Cảm ơn vì đã giúp đỡ tôi.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=korean_daily_lesson",
+          "timestampStart": 45,
+          "difficulty": "easy",
+          "timesReviewed": 5
+        },
+        {
+          "id": "card-yt-3",
+          "korean": "죄송합니다",
+          "pronunciation": "joe-song-ham-ni-da",
+          "vietnamese": "Xin lỗi",
+          "hanja": "罪悚 (Tội tủng)",
+          "exampleKr": "늦어서 정말 죄송합니다.",
+          "exampleVi": "Tôi thành thật xin lỗi vì đến muộn.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=korean_daily_lesson",
+          "timestampStart": 90,
+          "difficulty": "medium",
+          "timesReviewed": 3
+        },
+        {
+          "id": "card-yt-4",
+          "korean": "얼마예요?",
+          "pronunciation": "eol-ma-ye-yo?",
+          "vietnamese": "Bao nhiêu tiền ạ?",
+          "exampleKr": "이 사과 한 개에 얼마예요?",
+          "exampleVi": "Quả táo này bao nhiêu tiền một quả vậy ạ?",
+          "youtubeUrl": "https://www.youtube.com/watch?v=korean_daily_lesson",
+          "timestampStart": 140,
+          "difficulty": "medium",
+          "timesReviewed": 2
+        },
+        {
+          "id": "card-yt-5",
+          "korean": "맛있어요",
+          "pronunciation": "mas-is-seo-yo",
+          "vietnamese": "Ngon lắm",
+          "exampleKr": "이 음식이 정말 맛있어요!",
+          "exampleVi": "Món ăn này thật sự rất ngon!",
+          "youtubeUrl": "https://www.youtube.com/watch?v=korean_daily_lesson",
+          "timestampStart": 195,
+          "difficulty": "easy",
+          "timesReviewed": 3
+        }
+      ]
+    }
+  ],
+  "emailLogs": [
+    {
+      "recipient": "vanbuiquoc@gmail.com",
+      "deckId": "deck-places-work",
+      "deckTitle": "Địa Điểm & Công Sở (Công ty, Thị trường)",
+      "cardCount": 9,
+      "status": "sent",
+      "note": "Gemini Spark đã lập lịch học từ vựng cho bạn: Địa Điểm & Công Sở (Công ty, Thị trường)",
+      "previewUrl": "http://localhost:3001/deck/deck-places-work",
+      "id": "log-1786764913992",
+      "sentAt": "2026-08-15T03:35:13.992Z"
+    },
+    {
+      "recipient": "vanbuiquoc@gmail.com",
+      "deckId": "deck-places-work",
+      "deckTitle": "Địa Điểm & Công Sở (Công ty, Thị trường)",
+      "cardCount": 9,
+      "status": "sent",
+      "note": "Gemini Spark đã lập lịch học từ vựng cho bạn: Địa Điểm & Công Sở (Công ty, Thị trường)",
+      "previewUrl": "http://localhost:3001/deck/deck-places-work",
+      "id": "log-1786764475006",
+      "sentAt": "2026-08-15T03:27:55.006Z"
+    },
+    {
+      "id": "log-1",
+      "sentAt": "2026-08-14T03:23:26.062Z",
+      "recipient": "vanbuiquoc@gmail.com",
+      "deckId": "deck-places-work",
+      "deckTitle": "Địa Điểm & Công Sở (Công ty, Thị trường)",
+      "cardCount": 9,
+      "status": "sent",
+      "note": "Đã gửi từ vựng buổi sáng theo lịch Gemini Spark.",
+      "previewUrl": "/deck/deck-places-work"
+    }
+  ]
+}

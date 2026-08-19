@@ -1,0 +1,276 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: var(--font-noto-kr), var(--font-inter), -apple-system, BlinkMacSystemFont, 'SF Pro Display', ui-sans-serif, sans-serif;
+  --color-ios-canvas: #faf9f6;
+  --color-ios-card: #ffffff;
+  --color-ios-card-back: #f8fafc;
+  --color-ios-muted: #64748b;
+  --color-ios-fg: #0f172a;
+  --color-ios-switch-off: #cbd5e1;
+  --color-ios-switch-on: #10b981;
+  --color-ios-hairline: #e2e8f0;
+  --color-fg: #0f172a;
+  --color-muted: #64748b;
+}
+
+:root {
+  --color-ios-canvas: #faf9f6;
+  --color-ios-card: #ffffff;
+  --color-ios-card-back: #f8fafc;
+  --color-ios-muted: #64748b;
+  --color-ios-fg: #0f172a;
+  --color-ios-switch-off: #cbd5e1;
+  --color-ios-switch-on: #10b981;
+  --color-ios-hairline: #e2e8f0;
+  --color-fg: #0f172a;
+  --color-muted: #64748b;
+  color-scheme: light;
+}
+
+html {
+  font-family: var(--font-sans);
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  min-height: 100svh;
+  background-color: var(--color-ios-canvas);
+  color: var(--color-ios-fg);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safe areas + responsive padding */
+.safe-screen {
+  padding-top: max(1rem, env(safe-area-inset-top, 0px));
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+}
+
+@media (min-width: 640px) {
+  .safe-screen {
+    padding-top: max(1.5rem, env(safe-area-inset-top, 0px));
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+    padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+  }
+}
+
+@media (min-width: 1024px) {
+  .safe-screen {
+    padding-left: max(2rem, env(safe-area-inset-left, 0px));
+    padding-right: max(2rem, env(safe-area-inset-right, 0px));
+  }
+}
+
+/* Glass & Solid Materials (NO GRADIENTS, STRICTLY LIGHT) */
+.ios-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  border-radius: 20px;
+  color: #0f172a;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ios-chip:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.ios-chip:active {
+  transform: scale(0.97);
+}
+
+.ios-glass-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.375rem;
+  height: 2.375rem;
+  padding: 0;
+  line-height: 0;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+  border-radius: 9999px;
+  color: #0f172a;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.ios-glass-circle:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.ios-glass-circle:active {
+  transform: scale(0.94);
+}
+
+/* Floating bottom toolbar */
+.ios-toolbar {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+  border-radius: 22px;
+  animation: ios-toolbar-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ios-toolbar-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ios-pager-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.1875rem 0.375rem;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+}
+
+.ios-pager-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.ios-pager-btn:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+.ios-pager-btn:active {
+  transform: scale(0.92);
+}
+
+.ios-switch-track {
+  position: relative;
+  width: 51px;
+  height: 31px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.ios-switch-track[data-on='false'] {
+  background-color: #cbd5e1;
+}
+
+.ios-switch-track[data-on='true'] {
+  background-color: #10b981;
+}
+
+.ios-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ios-switch-track[data-on='true'] .ios-switch-thumb {
+  transform: translateX(20px);
+}
+
+/* Elevated flashcard sheet */
+.ios-flashcard-face {
+  background-color: var(--color-ios-card);
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  border-radius: 28px;
+}
+
+.ios-flashcard-face--back {
+  background-color: var(--color-ios-card-back);
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  border-radius: 28px;
+}
+
+.ios-card-pressable {
+  border-radius: 28px;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ios-card-pressable:active {
+  transform: scale(0.988);
+}
+
+.ios-hint-panel {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+.flashcard-scene {
+  perspective: 1200px;
+}
+
+.flashcard-flipper {
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.flashcard-flipper[data-flipped='true'] {
+  transform: rotateX(180deg);
+}
+
+.flashcard-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flashcard-face--back {
+  transform: rotateX(180deg);
+}
+
+.ios-dropdown-panel {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+  border-radius: 18px;
+}
+
+.ios-dropdown-divider {
+  border-color: #f1f5f9;
+}
+
+.ios-dropdown-indicator {
+  background-color: #e2e8f0;
+}
