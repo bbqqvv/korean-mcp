@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Volume2,
@@ -9,13 +9,11 @@ import {
   CheckCircle2,
   ArrowRight,
   ArrowBigUp,
-  Award,
-  Sparkles,
   Trophy,
   Activity,
   Target,
-  Home,
-  Info
+  Sparkles,
+  Home
 } from 'lucide-react';
 import { Flashcard, Deck } from '@/lib/types';
 import confetti from 'canvas-confetti';
@@ -166,26 +164,38 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   // Hover Popover State for Keycaps
   const [hoveredKeyChar, setHoveredKeyChar] = useState<string | null>(null);
 
-  // Per-Key Statistics Engine
-  const [perKeyStats, setPerKeyStats] = useState<Record<string, { seen: number; correct: number; speedMs: number }>>({
-    'ㅅ': { seen: 344, correct: 300, speedMs: 830 },
-    'ㅆ': { seen: 20, correct: 18, speedMs: 1190 },
-    'ㄱ': { seen: 412, correct: 380, speedMs: 720 },
-    'ㄴ': { seen: 290, correct: 275, speedMs: 750 },
-    'ㄷ': { seen: 210, correct: 195, speedMs: 810 },
-    'ㄹ': { seen: 310, correct: 280, speedMs: 790 },
-    'ㅁ': { seen: 250, correct: 235, speedMs: 740 },
-    'ㅂ': { seen: 198, correct: 182, speedMs: 860 },
-    'ㅇ': { seen: 450, correct: 420, speedMs: 690 },
-    'ㅈ': { seen: 220, correct: 200, speedMs: 840 },
-    'ㅏ': { seen: 510, correct: 490, speedMs: 650 },
-    'ㅓ': { seen: 380, correct: 350, speedMs: 710 },
-    'ㅗ': { seen: 410, correct: 390, speedMs: 680 },
-    'ㅜ': { seen: 320, correct: 298, speedMs: 730 },
-    'ㅡ': { seen: 280, correct: 260, speedMs: 770 },
-    'ㅣ': { seen: 490, correct: 470, speedMs: 640 },
-    'ㅕ': { seen: 180, correct: 165, speedMs: 910 },
-    'ㅑ': { seen: 140, correct: 125, speedMs: 950 }
+  // Per-Key Statistics Engine with Battery Gauge Mastery & Mistakes
+  const [perKeyStats, setPerKeyStats] = useState<
+    Record<
+      string,
+      {
+        seen: number;
+        correct: number;
+        speedMs: number;
+        masteryLevel: number; // 0 - 100%
+        mistakes: { char: string; count: number }[];
+      }
+    >
+  >({
+    'ㅂ': { seen: 380, correct: 360, speedMs: 710, masteryLevel: 100, mistakes: [{ char: 'ㅃ', count: 12 }, { char: 'ㅍ', count: 4 }] },
+    'ㅈ': { seen: 310, correct: 285, speedMs: 740, masteryLevel: 92, mistakes: [{ char: 'ㅉ', count: 8 }, { char: 'ㅊ', count: 5 }] },
+    'ㄷ': { seen: 290, correct: 260, speedMs: 760, masteryLevel: 88, mistakes: [{ char: 'ㄸ', count: 10 }] },
+    'ㄱ': { seen: 450, correct: 425, speedMs: 680, masteryLevel: 95, mistakes: [{ char: 'ㄲ', count: 15 }, { char: 'ㅋ', count: 3 }] },
+    'ㅅ': { seen: 344, correct: 300, speedMs: 830, masteryLevel: 87, mistakes: [{ char: 'ㅆ', count: 16 }, { char: 'ㅈ', count: 3 }] },
+    'ㅛ': { seen: 124, correct: 102, speedMs: 800, masteryLevel: 82, mistakes: [{ char: 'ㅕ', count: 16 }, { char: 'ㅅ', count: 3 }, { char: 'ㅠ', count: 3 }] },
+    'ㅕ': { seen: 180, correct: 145, speedMs: 850, masteryLevel: 75, mistakes: [{ char: 'ㅑ', count: 9 }, { char: 'ㅛ', count: 4 }] },
+    'ㅑ': { seen: 140, correct: 105, speedMs: 920, masteryLevel: 68, mistakes: [{ char: 'ㅕ', count: 14 }] },
+    'ㅐ': { seen: 210, correct: 180, speedMs: 790, masteryLevel: 80, mistakes: [{ char: 'ㅔ', count: 11 }] },
+    'ㅔ': { seen: 195, correct: 168, speedMs: 810, masteryLevel: 72, mistakes: [{ char: 'ㅐ', count: 13 }] },
+    'ㅁ': { seen: 250, correct: 235, speedMs: 740, masteryLevel: 55, mistakes: [{ char: 'ㄴ', count: 6 }] },
+    'ㄴ': { seen: 290, correct: 275, speedMs: 750, masteryLevel: 50, mistakes: [{ char: 'ㅇ', count: 8 }] },
+    'ㅇ': { seen: 450, correct: 420, speedMs: 690, masteryLevel: 45, mistakes: [{ char: 'ㅁ', count: 5 }] },
+    'ㄹ': { seen: 310, correct: 280, speedMs: 790, masteryLevel: 40, mistakes: [{ char: 'ㅎ', count: 7 }] },
+    'ㅎ': { seen: 230, correct: 200, speedMs: 820, masteryLevel: 35, mistakes: [{ char: 'ㅗ', count: 6 }] },
+    'ㅗ': { seen: 410, correct: 390, speedMs: 680, masteryLevel: 30, mistakes: [{ char: 'ㅜ', count: 9 }] },
+    'ㅓ': { seen: 380, correct: 350, speedMs: 710, masteryLevel: 25, mistakes: [{ char: 'ㅏ', count: 10 }] },
+    'ㅏ': { seen: 510, correct: 490, speedMs: 650, masteryLevel: 20, mistakes: [{ char: 'ㅣ', count: 4 }] },
+    'ㅣ': { seen: 490, correct: 470, speedMs: 640, masteryLevel: 15, mistakes: [{ char: 'ㅡ', count: 5 }] }
   });
 
   // Performance Stats
@@ -294,16 +304,27 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
       const expectedChar = targetText[userInput.length];
 
-      // Update per-key statistics
+      // Update per-key statistics & battery gauge level
       if (inputHangulChar) {
         setPerKeyStats((prev) => {
-          const existing = prev[inputHangulChar] || { seen: 0, correct: 0, speedMs: 800 };
+          const existing = prev[inputHangulChar] || {
+            seen: 0,
+            correct: 0,
+            speedMs: 800,
+            masteryLevel: 20,
+            mistakes: []
+          };
+          const newSeen = existing.seen + 1;
+          const newCorrect = existing.correct + (inputHangulChar === expectedChar ? 1 : 0);
+          const newAcc = Math.round((newCorrect / newSeen) * 100);
+
           return {
             ...prev,
             [inputHangulChar]: {
-              seen: existing.seen + 1,
-              correct: existing.correct + (inputHangulChar === expectedChar ? 1 : 0),
-              speedMs: existing.speedMs
+              ...existing,
+              seen: newSeen,
+              correct: newCorrect,
+              masteryLevel: newAcc
             }
           };
         });
@@ -351,14 +372,21 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   // Selected hovered key stats for popover tooltip
   const hoveredStatData = useMemo(() => {
     if (!hoveredKeyChar) return null;
-    const stat = perKeyStats[hoveredKeyChar] || { seen: 42, correct: 38, speedMs: 780 };
+    const stat = perKeyStats[hoveredKeyChar] || {
+      seen: 42,
+      correct: 38,
+      speedMs: 780,
+      masteryLevel: 65,
+      mistakes: [{ char: 'ㄱ', count: 3 }]
+    };
     const acc = Math.round((stat.correct / (stat.seen || 1)) * 100);
     const speedSec = (stat.speedMs / 1000).toFixed(2);
     return {
       char: hoveredKeyChar,
       seen: stat.seen,
       accuracy: acc,
-      speedSec
+      speedSec,
+      mistakes: stat.mistakes || []
     };
   }, [hoveredKeyChar, perKeyStats]);
 
@@ -424,7 +452,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       </div>
 
-      {/* CENTER STAGE: Giant Floating Target Korean Character OR Full Lesson Summary Modal */}
+      {/* CENTER STAGE */}
       {isLessonComplete ? (
         /* COMPREHENSIVE CELEBRATION SUMMARY SCREEN */
         <motion.div
@@ -445,7 +473,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             </p>
           </div>
 
-          {/* Performance Dashboard Cards Grid */}
           <div className="grid grid-cols-3 gap-3 w-full pt-1">
             <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-center space-y-0.5">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-center gap-1">
@@ -469,7 +496,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             </div>
           </div>
 
-          {/* Action CTAs */}
           <div className="flex items-center gap-3 pt-2">
             <button
               onClick={handleResetLesson}
@@ -519,7 +545,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             })}
           </div>
 
-          {/* Clean Subtext (Meaning or Guidance) */}
+          {/* Clean Subtext */}
           <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
             {targetMeaning ? (
               <span className="text-slate-600 font-bold text-sm sm:text-base">{targetMeaning}</span>
@@ -530,39 +556,54 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       )}
 
-      {/* BOTTOM STAGE: 3D Perspective Keyboard with Interactive Keycap Hover Stat Popovers */}
+      {/* BOTTOM STAGE: 3D Perspective Keyboard with Battery Gauge Mastery & Mistakes Hover Tooltip */}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs overflow-hidden shrink-0 [perspective:600px] relative">
-        {/* Type.Today Hover Stat Popover Tooltip Box */}
+        {/* Exact Type.Today Hover Stat Popover Tooltip Box with Mistakes Badges */}
         <AnimatePresence>
           {hoveredStatData && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 5, scale: 0.9 }}
-              className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white rounded-2xl p-3.5 shadow-2xl border border-slate-700 min-w-[220px] pointer-events-none"
+              className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-[#121215] text-white rounded-2xl p-3.5 shadow-2xl border border-slate-800 min-w-[240px] pointer-events-none"
             >
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
-                <span className="text-lg font-black text-blue-400 font-mono">
-                  Phím &quot;{hoveredStatData.char}&quot;
-                </span>
-                <span className="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-300 rounded font-bold">
-                  2-Bolsik Key
+              <div className="text-center border-b border-slate-800 pb-2 mb-2">
+                <span className="text-2xl font-black text-white font-mono leading-none">
+                  {hoveredStatData.char}
                 </span>
               </div>
 
               <div className="space-y-1.5 text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 font-medium">Seen (Số lần gặp):</span>
+                  <span className="text-slate-400 font-medium">Seen</span>
                   <span className="font-bold text-white font-mono">{hoveredStatData.seen}x</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 font-medium">Accuracy (Chính xác):</span>
-                  <span className="font-bold text-emerald-400 font-mono">{hoveredStatData.accuracy}%</span>
+                  <span className="text-slate-400 font-medium">Accuracy</span>
+                  <span className="font-bold text-white font-mono">{hoveredStatData.accuracy}%</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400 font-medium">Speed (Tốc độ):</span>
-                  <span className="font-bold text-amber-400 font-mono">{hoveredStatData.speedSec}s</span>
+                  <span className="text-slate-400 font-medium">Speed</span>
+                  <span className="font-bold text-white font-mono">{hoveredStatData.speedSec}s</span>
                 </div>
+
+                {/* Mistakes Row matching Type.Today */}
+                {hoveredStatData.mistakes.length > 0 && (
+                  <div className="flex items-center justify-between pt-1.5 border-t border-slate-800/80">
+                    <span className="text-slate-400 font-medium">Mistakes</span>
+                    <div className="flex items-center gap-1">
+                      {hoveredStatData.mistakes.map((m, idx) => (
+                        <span
+                          key={idx}
+                          className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] font-bold text-slate-200 flex items-center gap-0.5"
+                        >
+                          {m.char}
+                          <span className="text-[9px] text-slate-400 font-mono">x{m.count}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
@@ -586,6 +627,8 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
                 const isTarget = nextQwertyKey === item.key;
                 const isActive = activeKey === item.key;
+                const stat = item.hangul ? perKeyStats[item.hangul] : null;
+                const batteryLevel = stat ? stat.masteryLevel : 0;
 
                 let keyCapStyle =
                   'bg-slate-50 border-slate-200/80 text-slate-900 shadow-[0_4px_0_#cbd5e1] hover:bg-slate-100';
@@ -610,11 +653,19 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                     key={item.key}
                     onMouseEnter={() => setHoveredKeyChar(item.hangul || item.native || null)}
                     onMouseLeave={() => setHoveredKeyChar(null)}
-                    className={`w-8 h-10 sm:w-11 sm:h-12 rounded-lg border flex flex-col justify-between p-1 transition-all duration-100 relative cursor-pointer ${keyCapStyle}`}
+                    className={`w-8 h-10 sm:w-11 sm:h-12 rounded-lg border flex flex-col justify-between p-1 transition-all duration-100 relative cursor-pointer overflow-hidden ${keyCapStyle}`}
                   >
+                    {/* BLUE BATTERY GAUGE MASTERY FILL (Matches Type.Today Battery Meter) */}
+                    {batteryLevel > 0 && !isTarget && !isActive && (
+                      <div
+                        className="absolute bottom-0 left-0 right-0 bg-blue-600/30 border-t border-blue-500/50 rounded-b-md transition-all duration-500 pointer-events-none"
+                        style={{ height: `${batteryLevel}%` }}
+                      />
+                    )}
+
                     {/* Top Hanguel Character */}
                     <span
-                      className={`text-xs sm:text-sm font-black leading-none text-left ${
+                      className={`text-xs sm:text-sm font-black leading-none text-left z-10 ${
                         isTarget || isActive ? 'text-white' : 'text-slate-900'
                       }`}
                     >
@@ -623,7 +674,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
                     {/* Bottom Native QWERTY Character */}
                     <span
-                      className={`text-[9px] font-mono uppercase text-right leading-none ${
+                      className={`text-[9px] font-mono uppercase text-right leading-none z-10 ${
                         isTarget || isActive ? 'text-blue-100' : 'text-slate-400'
                       }`}
                     >
@@ -633,7 +684,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                     {/* Home Finger Dot Indicator */}
                     {item.isHomeFinger && (
                       <span
-                        className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${
+                        className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full z-10 ${
                           isTarget || isActive ? 'bg-white' : 'bg-slate-400'
                         }`}
                       />
