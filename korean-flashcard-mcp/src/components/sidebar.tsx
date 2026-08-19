@@ -14,7 +14,8 @@ import {
   Flame,
   CheckCircle2,
   FolderOpen,
-  ChevronRight
+  ChevronRight,
+  Settings
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -47,8 +48,7 @@ export default function Sidebar({
   const mainNavLinks = [
     { href: '/', label: 'Trang Chủ', icon: Home },
     { href: '/quiz', label: 'Ôn Luyện Quiz', icon: Award },
-    { href: '/mcp-guide', label: 'Cấu Hình MCP', icon: Bot },
-    { href: '/email-settings', label: 'Lịch Nhắc Mail', icon: Mail }
+    { href: '/settings', label: 'Cài Đặt Hệ Thống', icon: Settings }
   ];
 
   const handleCategoryClick = (catName: string) => {

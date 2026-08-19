@@ -1,21 +1,31 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
-import FlashcardView from '@/components/flashcard-view';
 import CreateDeckModal from '@/components/create-deck-modal';
 import { Deck } from '@/lib/types';
-import { Layers, Play, ChevronDown, Sparkles, BookOpen, Flame, Award } from 'lucide-react';
+import {
+  Layers,
+  Play,
+  ChevronDown,
+  Sparkles,
+  BookOpen,
+  Flame,
+  Award,
+  ArrowRight,
+  TrendingUp,
+  FolderOpen
+} from 'lucide-react';
 import Link from 'next/link';
 
 function DashboardContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const catParam = searchParams.get('category');
 
   const [decks, setDecks] = useState<Deck[]>([]);
-  const [selectedDeck, setSelectedDeck] = useState<Deck | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('Tất cả');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [visibleLimit, setVisibleLimit] = useState<number>(9);
@@ -31,9 +41,6 @@ function DashboardContent() {
       const data = await res.json();
       if (data.success) {
         setDecks(data.decks);
-        if (!selectedDeck && data.decks.length > 0) {
-          setSelectedDeck(data.decks[0]);
-        }
       }
     } catch (err) {
       console.error('Failed to fetch decks', err);
@@ -51,11 +58,6 @@ function DashboardContent() {
       setActiveCategory(catParam);
     }
   }, [catParam]);
-
-  const handleSelectDeck = (deck: Deck) => {
-    setSelectedDeck(deck);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const categoriesList = [
     'Tất cả',
@@ -77,6 +79,9 @@ function DashboardContent() {
   const displayedDecks = filteredDecks.slice(0, visibleLimit);
   const totalCardsCount = decks.reduce((acc, d) => acc + d.cards.length, 0);
 
+  // Recommended deck for today
+  const recommendedDeck = decks.length > 0 ? decks[0] : null;
+
   return (
     <div className="flex h-screen bg-[#faf9f6] text-slate-900 overflow-hidden font-sans">
       {/* Left Sidebar Command Center */}
@@ -92,7 +97,7 @@ function DashboardContent() {
         onOpenCreateModal={() => setIsCreateModalOpen(true)}
       />
 
-      {/* Main Workspace (Header + Scrollable Main Content) */}
+      {/* Main Workspace */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <Header
           searchQuery={searchQuery}
@@ -102,76 +107,129 @@ function DashboardContent() {
         />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 pb-24 md:pb-8">
-          {/* Welcome Banner */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 bg-rose-50 text-rose-700 font-extrabold text-xs rounded-full border border-rose-200">
-                  안녕하세요! 🇰🇷
-                </span>
-                <span className="text-xs text-slate-500 font-semibold">Chào mừng bạn trở lại LynKore</span>
+          {/* Welcome & Progress Overview Banner */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-sm space-y-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 bg-rose-50 text-rose-700 font-extrabold text-xs rounded-full border border-rose-200">
+                    안녕하세요! 🇰🇷
+                  </span>
+                  <span className="text-xs text-slate-500 font-bold">Trung Tâm Học Tiếng Hàn LynKore</span>
+                </div>
+                <h1 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                  Bắt Đầu Bài Học Tiếng Hàn Hôm Nay
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-500">
+                  Lật thẻ Flashcard thông minh, tích hợp phát âm chuẩn và tự động hóa qua Gemini MCP
+                </p>
               </div>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900">
-                Hôm Nay Bạn Muốn Học Tiếng Hàn Về Chủ Đề Gì?
-              </h1>
+
+              <button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-sm flex items-center gap-2 shrink-0"
+              >
+                <Sparkles className="w-4 h-4 text-rose-300" />
+                <span>Tạo Bài AI Mới</span>
+              </button>
             </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2 text-center flex-1 sm:flex-initial">
-                <span className="text-[10px] text-slate-500 font-bold block uppercase">Bộ Từ Vựng</span>
-                <span className="text-base font-black text-blue-600">{decks.length} bộ</span>
+            {/* Quick Stats Cards Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+              <div className="bg-amber-50/60 border border-amber-200 rounded-2xl p-3.5 space-y-1">
+                <span className="text-[11px] font-bold text-amber-700 uppercase flex items-center gap-1">
+                  <Flame className="w-3.5 h-3.5 fill-current" /> Chuỗi Học
+                </span>
+                <div className="text-lg sm:text-xl font-black text-slate-900">5 Ngày</div>
+                <span className="text-[10px] text-slate-500 font-semibold block">Duy trì lật thẻ!</span>
               </div>
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2 text-center flex-1 sm:flex-initial">
-                <span className="text-[10px] text-slate-500 font-bold block uppercase">Thẻ Từ Vựng</span>
-                <span className="text-base font-black text-rose-600">{totalCardsCount} thẻ</span>
+
+              <div className="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-3.5 space-y-1">
+                <span className="text-[11px] font-bold text-emerald-700 uppercase flex items-center gap-1">
+                  <TrendingUp className="w-3.5 h-3.5" /> Từ Đã Thuộc
+                </span>
+                <div className="text-lg sm:text-xl font-black text-slate-900">32 / 100</div>
+                <span className="text-[10px] text-slate-500 font-semibold block">Đạt 32% mục tiêu</span>
+              </div>
+
+              <div className="bg-blue-50/60 border border-blue-200 rounded-2xl p-3.5 space-y-1">
+                <span className="text-[11px] font-bold text-blue-700 uppercase flex items-center gap-1">
+                  <Layers className="w-3.5 h-3.5" /> Bộ Từ Vựng
+                </span>
+                <div className="text-lg sm:text-xl font-black text-slate-900">{decks.length} Bộ</div>
+                <span className="text-[10px] text-slate-500 font-semibold block">Tự động đồng bộ</span>
+              </div>
+
+              <div className="bg-rose-50/60 border border-rose-200 rounded-2xl p-3.5 space-y-1">
+                <span className="text-[11px] font-bold text-rose-700 uppercase flex items-center gap-1">
+                  <Award className="w-3.5 h-3.5" /> Thẻ Từ Vựng
+                </span>
+                <div className="text-lg sm:text-xl font-black text-slate-900">{totalCardsCount} Thẻ</div>
+                <span className="text-[10px] text-slate-500 font-semibold block">Sẵn sàng lật bài</span>
               </div>
             </div>
           </div>
 
-          {/* MAIN FLASHCARD STUDY ARENA */}
-          {selectedDeck && (
-            <section className="space-y-4">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                <div>
-                  <span className="text-[11px] sm:text-[12px] text-rose-600 font-extrabold uppercase tracking-wider block">
-                    ĐANG HỌC BỘ THẺ:
-                  </span>
-                  <h2 className="text-lg sm:text-xl font-black text-slate-900">
-                    {selectedDeck.title}
+          {/* RECOMMENDED DECK OF THE DAY */}
+          {recommendedDeck && (
+            <section className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="px-3 py-1 bg-rose-50 text-rose-700 font-extrabold text-[11px] sm:text-xs rounded-full border border-rose-200 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-rose-600" /> BỘ BÀI GỢI Ý HÔM NAY
+                </span>
+                <span className="text-xs text-slate-500 font-semibold">{recommendedDeck.category}</span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+                <div className="space-y-1">
+                  <h2 className="text-lg sm:text-2xl font-black text-slate-900">
+                    {recommendedDeck.title}
                   </h2>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    {recommendedDeck.description}
+                  </p>
+                  <div className="text-xs text-slate-500 pt-1 font-semibold">
+                    📚 Số lượng: <strong className="text-slate-900">{recommendedDeck.cards.length} thẻ từ vựng</strong>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <div className="flex items-center gap-2 shrink-0">
                   <Link
-                    href={`/quiz?deck=${selectedDeck.id}`}
-                    className="px-4 py-2 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-sm flex items-center gap-1.5 transition-colors"
+                    href={`/deck/${recommendedDeck.id}`}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-full shadow-sm flex items-center gap-2 transition-all hover:scale-102"
                   >
-                    <Play className="w-4 h-4 fill-current" /> Ôn Quiz Ngay
+                    <span>Bắt Đầu Học Ngay</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+
+                  <Link
+                    href={`/quiz?deck=${recommendedDeck.id}`}
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm rounded-full flex items-center gap-1.5"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current text-blue-600" />
+                    <span>Ôn Quiz</span>
                   </Link>
                 </div>
               </div>
-
-              {/* Flashcard Component */}
-              <FlashcardView key={selectedDeck.id} cards={selectedDeck.cards} deckTitle={selectedDeck.title} />
             </section>
           )}
 
-          {/* DECKS EXPLORER SECTION */}
+          {/* DECK LIBRARY GRID */}
           <section className="space-y-4 pt-2">
-            {/* Header Row */}
+            {/* Section Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <Layers className="w-5 h-5 text-blue-600" />
-                  <h3 className="text-base sm:text-lg font-black text-slate-900">
-                    {activeCategory === 'Tất cả' ? 'Danh Sách Tất Cả Bộ Từ Vựng' : `Danh Mục: ${activeCategory}`}
+                  <FolderOpen className="w-5 h-5 text-blue-600" />
+                  <h3 className="text-base sm:text-xl font-black text-slate-900">
+                    {activeCategory === 'Tất cả' ? 'Thư Viện Bài Học Tiếng Hàn' : `Danh Mục: ${activeCategory}`}
                   </h3>
                   <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 text-[11px] font-bold rounded-full border border-blue-200">
-                    {filteredDecks.length} bộ
+                    {filteredDecks.length} bộ bài
                   </span>
                 </div>
-                <p className="text-[12px] sm:text-[13px] text-slate-500 mt-0.5">
-                  Tự động đồng bộ từ Gemini Spark qua MCP Server
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Chọn một bộ từ vựng bên dưới để mở giao diện lật thẻ Flashcard tập trung
                 </p>
               </div>
             </div>
@@ -179,59 +237,54 @@ function DashboardContent() {
             {/* Grid of Decks */}
             {displayedDecks.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {displayedDecks.map((deck) => {
-                  const isSelected = selectedDeck?.id === deck.id;
-                  return (
-                    <div
-                      key={deck.id}
-                      onClick={() => handleSelectDeck(deck)}
-                      className={`bg-white border rounded-2xl p-5 cursor-pointer flex flex-col justify-between transition-all ${
-                        isSelected
-                          ? 'border-blue-600 ring-2 ring-blue-600/30 bg-blue-50/30 shadow-md'
-                          : 'border-slate-200 hover:border-blue-400 hover:shadow-md'
-                      }`}
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[11px] font-bold rounded-full border border-rose-200">
-                            {deck.category}
-                          </span>
-                        </div>
-
-                        <h4 className="text-base font-bold text-slate-900">
-                          {deck.title}
-                        </h4>
-
-                        <p className="text-[12px] sm:text-[13px] text-slate-600 line-clamp-2">
-                          {deck.description}
-                        </p>
-                      </div>
-
-                      <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-[12px]">
-                        <span className="font-semibold text-slate-700">
-                          📚 {deck.cards.length} thẻ từ vựng
+                {displayedDecks.map((deck) => (
+                  <div
+                    key={deck.id}
+                    className="bg-white border border-slate-200 rounded-3xl p-5 hover:border-blue-400 hover:shadow-md transition-all flex flex-col justify-between space-y-4"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[11px] font-bold rounded-full border border-rose-200">
+                          {deck.category}
                         </span>
-
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSelectDeck(deck);
-                          }}
-                          className="text-blue-600 font-bold text-[12px] hover:underline"
-                        >
-                          Chạm để học →
-                        </button>
+                        <span className="text-[11px] font-semibold text-slate-500">
+                          {deck.cards.length} thẻ từ
+                        </span>
                       </div>
+
+                      <h4 className="text-base font-black text-slate-900 line-clamp-1">
+                        {deck.title}
+                      </h4>
+
+                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                        {deck.description}
+                      </p>
                     </div>
-                  );
-                })}
+
+                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                      <Link
+                        href={`/deck/${deck.id}`}
+                        className="flex-1 py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-full text-center transition-colors shadow-xs"
+                      >
+                        Bắt Đầu Học →
+                      </Link>
+
+                      <Link
+                        href={`/quiz?deck=${deck.id}`}
+                        className="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-full flex items-center gap-1 transition-colors"
+                      >
+                        <Play className="w-3 h-3 fill-current text-blue-600" /> Ôn Quiz
+                      </Link>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : (
-              <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center text-slate-500 text-xs space-y-1">
+              <div className="bg-white border border-slate-200 rounded-3xl p-8 text-center text-slate-500 text-xs space-y-1">
                 <p className="font-bold text-slate-900 text-sm">
                   Không tìm thấy bộ từ vựng nào
                 </p>
-                <p>Thử tìm với từ khóa khác hoặc chuyển danh mục &quot;Tất cả&quot;</p>
+                <p>Thử chọn lại danh mục &quot;Tất cả&quot; hoặc tìm từ khóa khác trên thanh tìm kiếm</p>
               </div>
             )}
 
@@ -257,7 +310,7 @@ function DashboardContent() {
         onClose={() => setIsCreateModalOpen(false)}
         onDeckCreated={(newDeck) => {
           setDecks((prev) => [newDeck, ...prev]);
-          setSelectedDeck(newDeck);
+          router.push(`/deck/${newDeck.id}`);
         }}
       />
     </div>
