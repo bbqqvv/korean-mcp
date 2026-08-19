@@ -35,6 +35,80 @@ Object.entries(QWERTY_TO_HANGUL).forEach(([qwerty, hangul]) => {
   }
 });
 
+// Unicode Hangul Decomposition Helpers
+const INITIAL_CONSONANTS = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+const MEDIAL_VOWELS = ['ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ'];
+const FINAL_CONSONANTS = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+
+const COMPOUND_VOWEL_SPLIT: Record<string, string[]> = {
+  'ㅘ': ['ㅗ', 'ㅏ'],
+  'ㅙ': ['ㅗ', 'ㅐ'],
+  'ㅚ': ['ㅗ', 'ㅣ'],
+  'ㅝ': ['ㅜ', 'ㅓ'],
+  'ㅞ': ['ㅜ', 'ㅔ'],
+  'ㅟ': ['ㅜ', 'ㅣ'],
+  'ㅢ': ['ㅡ', 'ㅣ']
+};
+
+const COMPOUND_BATCHIM_SPLIT: Record<string, string[]> = {
+  'ㄳ': ['ㄱ', 'ㅅ'],
+  'ㄵ': ['ㄴ', 'ㅈ'],
+  'ㄶ': ['ㄴ', 'ㅎ'],
+  'ㄺ': ['ㄹ', 'ㄱ'],
+  'ㄻ': ['ㄹ', 'ㅁ'],
+  'ㄼ': ['ㄹ', 'ㅂ'],
+  'ㄽ': ['ㄹ', 'ㅅ'],
+  'ㄾ': ['ㄹ', 'ㅌ'],
+  'ㄿ': ['ㄹ', 'ㅍ'],
+  'ㅀ': ['ㄹ', 'ㅎ'],
+  'ㅄ': ['ㅂ', 'ㅅ']
+};
+
+function decomposeSyllableToJamo(char: string): string[] {
+  const code = char.charCodeAt(0);
+  if (code >= 0xAC00 && code <= 0xD7A3) {
+    const index = code - 0xAC00;
+    const initIdx = Math.floor(index / 588);
+    const medIdx = Math.floor((index % 588) / 28);
+    const finalIdx = index % 28;
+
+    const jamos: string[] = [];
+    jamos.push(INITIAL_CONSONANTS[initIdx]);
+
+    const medVowel = MEDIAL_VOWELS[medIdx];
+    if (COMPOUND_VOWEL_SPLIT[medVowel]) {
+      jamos.push(...COMPOUND_VOWEL_SPLIT[medVowel]);
+    } else {
+      jamos.push(medVowel);
+    }
+
+    if (finalIdx > 0) {
+      const finalCons = FINAL_CONSONANTS[finalIdx];
+      if (COMPOUND_BATCHIM_SPLIT[finalCons]) {
+        jamos.push(...COMPOUND_BATCHIM_SPLIT[finalCons]);
+      } else {
+        jamos.push(finalCons);
+      }
+    }
+    return jamos;
+  }
+  return [char];
+}
+
+function decomposeTextToJamoSequence(text: string): { jamos: string[]; syllableBoundaries: number[] } {
+  const jamos: string[] = [];
+  const syllableBoundaries: number[] = [];
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const decomposed = decomposeSyllableToJamo(char);
+    jamos.push(...decomposed);
+    syllableBoundaries.push(jamos.length);
+  }
+
+  return { jamos, syllableBoundaries };
+}
+
 interface KeyDef {
   key: string;
   hangul: string;
@@ -150,7 +224,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const [targetText, setTargetText] = useState('ㄱ');
   const [targetMeaning, setTargetMeaning] = useState('');
 
-  const [userInput, setUserInput] = useState('');
+  const [typedJamoCount, setTypedJamoCount] = useState(0);
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [keyFeedback, setKeyFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [isSoundOn, setIsSoundOn] = useState(true);
@@ -158,7 +232,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   // Hover Popover State for Keycaps
   const [hoveredKeyChar, setHoveredKeyChar] = useState<string | null>(null);
 
-  // Per-Key Statistics Engine with Battery Gauge Mastery & Mistakes
+  // Per-Key Statistics Engine
   const [perKeyStats, setPerKeyStats] = useState<
     Record<
       string,
@@ -194,8 +268,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
   // Performance Stats
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [totalTypedKeys, setTotalTypedKeys] = useState(0);
-  const [correctTypedKeys, setCorrectTypedKeys] = useState(0);
   const [isLessonComplete, setIsLessonComplete] = useState(false);
 
   // Vocabulary list from decks
@@ -205,6 +277,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
       return allCards.map((c) => ({ target: c.korean, meaning: c.vietnamese }));
     }
     return [
+      { target: '화장실', meaning: 'Nhà vệ sinh / Phòng tắm' },
       { target: '몇 시', meaning: 'mấy giờ' },
       { target: '학교', meaning: 'trường học' },
       { target: '학생', meaning: 'học sinh' },
@@ -221,9 +294,14 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     return vocabList;
   }, [practiceMode, vocabList]);
 
+  // Decomposed Jamo sequence of targetText
+  const { jamos: targetJamoSeq, syllableBoundaries } = useMemo(() => {
+    return decomposeTextToJamoSequence(targetText);
+  }, [targetText]);
+
   // Update target text when mode or lesson index changes
   useEffect(() => {
-    setUserInput('');
+    setTypedJamoCount(0);
     setIsLessonComplete(false);
     setStartTime(null);
     const item = currentLessonsList[currentLessonIndex % currentLessonsList.length];
@@ -231,9 +309,22 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     setTargetMeaning(item.meaning || '');
   }, [practiceMode, currentLessonIndex, currentLessonsList]);
 
-  // Next expected character & QWERTY key
-  const nextChar = targetText[userInput.length] || '';
-  const nextQwertyKey = HANGUL_TO_QWERTY[nextChar] || (nextChar === ' ' ? 'space' : null);
+  // Next expected Jamo character & QWERTY key
+  const nextJamoChar = targetJamoSeq[typedJamoCount] || '';
+  const nextQwertyKey = HANGUL_TO_QWERTY[nextJamoChar] || (nextJamoChar === ' ' ? 'space' : null);
+
+  // Calculate completed syllables count for rendering on screen
+  const completedSyllableCount = useMemo(() => {
+    let completed = 0;
+    for (let i = 0; i < syllableBoundaries.length; i++) {
+      if (typedJamoCount >= syllableBoundaries[i]) {
+        completed++;
+      } else {
+        break;
+      }
+    }
+    return completed;
+  }, [typedJamoCount, syllableBoundaries]);
 
   const speakKorean = useCallback((text: string) => {
     if (isSoundOn && 'speechSynthesis' in window) {
@@ -250,12 +341,12 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   }, []);
 
   const handleResetLesson = useCallback(() => {
-    setUserInput('');
+    setTypedJamoCount(0);
     setIsLessonComplete(false);
     setStartTime(null);
   }, []);
 
-  // GLOBAL KEYBOARD LISTENER (Catches physical QWERTY keys & maps to Korean 2-Bolsik + 3D Bounce Animation)
+  // GLOBAL KEYBOARD LISTENER (Catches physical QWERTY keys & maps to Korean 2-Bolsik Jamo)
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.altKey || e.metaKey) return;
@@ -270,7 +361,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
       if (e.key === 'Backspace') {
         e.preventDefault();
-        setUserInput((prev) => prev.slice(0, -1));
+        setTypedJamoCount((prev) => Math.max(0, prev - 1));
         return;
       }
 
@@ -293,48 +384,18 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         setStartTime(Date.now());
       }
 
-      setTotalTypedKeys((prev) => prev + 1);
+      const expectedJamo = targetJamoSeq[typedJamoCount];
 
-      const expectedChar = targetText[userInput.length];
-
-      // Update per-key statistics & battery gauge level
-      if (inputHangulChar) {
-        setPerKeyStats((prev) => {
-          const existing = prev[inputHangulChar] || {
-            seen: 0,
-            correct: 0,
-            speedMs: 800,
-            masteryLevel: 20,
-            mistakes: []
-          };
-          const newSeen = existing.seen + 1;
-          const newCorrect = existing.correct + (inputHangulChar === expectedChar ? 1 : 0);
-          const newAcc = Math.round((newCorrect / newSeen) * 100);
-
-          return {
-            ...prev,
-            [inputHangulChar]: {
-              ...existing,
-              seen: newSeen,
-              correct: newCorrect,
-              masteryLevel: newAcc
-            }
-          };
-        });
-      }
-
-      if (inputHangulChar === expectedChar) {
-        setCorrectTypedKeys((prev) => prev + 1);
+      if (inputHangulChar === expectedJamo) {
         setKeyFeedback('correct');
-
-        const newInput = userInput + inputHangulChar;
-        setUserInput(newInput);
+        const nextCount = typedJamoCount + 1;
+        setTypedJamoCount(nextCount);
 
         if (practiceMode === 'jamo' && inputHangulChar) {
           speakKorean(inputHangulChar);
         }
 
-        if (newInput === targetText) {
+        if (nextCount === targetJamoSeq.length) {
           setIsLessonComplete(true);
           if (practiceMode !== 'jamo') {
             speakKorean(targetText);
@@ -348,7 +409,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [userInput, targetText, isLessonComplete, startTime, practiceMode, speakKorean, handleNextLesson]);
+  }, [typedJamoCount, targetJamoSeq, targetText, isLessonComplete, startTime, practiceMode, speakKorean, handleNextLesson]);
 
   const totalLessonsCount = currentLessonsList.length;
   const currentLessonNum = (currentLessonIndex % totalLessonsCount) + 1;
@@ -439,18 +500,14 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
       {/* CENTER STAGE: Floating Target Korean Character with Clean Completion Feedback */}
       <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER - FLOATING CLEANLY */}
+        {/* GIANT TARGET KOREAN CHARACTER - FLOATING CLEANLY WITH SYLLABLE COMPOUND RECOMPOSITION */}
         <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest text-rose-600 drop-shadow-2xs flex items-center justify-center gap-2 transition-all">
           {targetText.split('').map((char, index) => {
             let charStyle = 'text-rose-600';
-            if (index < userInput.length) {
-              if (userInput[index] === char) {
-                charStyle = 'text-emerald-600 font-black';
-              } else {
-                charStyle = 'text-rose-800';
-              }
-            } else if (index === userInput.length) {
-              charStyle = 'text-rose-500 font-black';
+            if (index < completedSyllableCount) {
+              charStyle = 'text-emerald-600 font-black';
+            } else if (index === completedSyllableCount) {
+              charStyle = 'text-rose-500 font-black animate-pulse';
             }
 
             return (
