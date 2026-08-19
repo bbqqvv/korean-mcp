@@ -7,7 +7,7 @@ import { Deck } from '@/lib/types';
 interface CreateDeckModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onDeckCreated: (newDeck: Deck) => void;
+  onDeckCreated?: (newDeck: Deck) => void;
 }
 
 export default function CreateDeckModal({ isOpen, onClose, onDeckCreated }: CreateDeckModalProps) {
@@ -39,7 +39,7 @@ export default function CreateDeckModal({ isOpen, onClose, onDeckCreated }: Crea
 
       const data = await res.json();
       if (data.success && data.deck) {
-        onDeckCreated(data.deck);
+        if (onDeckCreated) onDeckCreated(data.deck);
         setTopicOrUrl('');
         onClose();
       } else {
