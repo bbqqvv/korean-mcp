@@ -76,7 +76,7 @@ export default function TypingStage({
 
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2 font-sans select-none">
-      {/* GIANT TARGET KOREAN CHARACTER - COMPACT FIXED-WIDTH FOCUS BOX CONTAINER ENGINE */}
+      {/* GIANT TARGET KOREAN CHARACTER - TYPE.TODAY EXACT GHOST OVERLAY SVG EQUIVALENT ENGINE */}
       <div className={`${fontSizeClass} font-black tracking-widest flex flex-wrap items-center justify-center gap-2 sm:gap-4 max-w-full px-4 transition-all`}>
         {targetText.split('').map((originalChar, index) => {
           const isCompleted = index < completedSyllableCount;
@@ -100,21 +100,26 @@ export default function TypingStage({
                     : 'bg-blue-50/70 border-blue-200/90 text-blue-600'
                 }`}
               >
-                {/* RENDER LIVE TYPED COMPOSED HANGUL (ㄴ -> 녀 -> 녕) IN THEME BLUE WHEN TYPED OR SOFT NEUTRAL GRAY ORIGINAL CHAR WHEN UNTYPED */}
-                <span
-                  className={`${
-                    hasError
-                      ? 'text-rose-600'
-                      : activeTypedJamoSlice.length > 0
-                      ? themeConfig.primaryText
-                      : 'text-slate-300'
-                  } font-black`}
-                >
-                  {activeTypedJamoSlice.length > 0
-                    ? livePartialHangul
-                    : originalChar === ' '
-                    ? '␣'
-                    : originalChar}
+                <span className="relative inline-flex items-center justify-center">
+                  {/* BASE GHOST LAYER: FULL TARGET CHARACTER IN SOFT NEUTRAL GRAY */}
+                  <span
+                    className={`${
+                      hasError ? 'text-rose-400' : 'text-slate-300'
+                    } font-black`}
+                  >
+                    {originalChar === ' ' ? '␣' : originalChar}
+                  </span>
+
+                  {/* OVERLAID TYPED LAYER: LIVE COMPOSED HANGUL IN VIVID THEME BLUE */}
+                  {activeTypedJamoSlice.length > 0 && (
+                    <span
+                      className={`absolute left-0 top-0 bottom-0 right-0 flex items-center justify-center ${
+                        hasError ? 'text-rose-600' : themeConfig.primaryText
+                      } font-black pointer-events-none`}
+                    >
+                      {livePartialHangul}
+                    </span>
+                  )}
                 </span>
 
                 {/* THIN GRAY BLINKING CURSOR (|) INSIDE THE ACTIVE FOCUS BOX */}
@@ -122,7 +127,7 @@ export default function TypingStage({
                   <span
                     className={`w-[2.5px] ${cursorHeightClass} ${
                       hasError ? 'bg-rose-500' : 'bg-slate-400'
-                    } animate-pulse rounded-full inline-block ml-1 shrink-0 align-middle`}
+                    } animate-pulse rounded-full inline-block ml-1 shrink-0 align-middle z-10`}
                   />
                 )}
               </span>
