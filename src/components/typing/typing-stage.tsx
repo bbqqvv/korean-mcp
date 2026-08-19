@@ -91,30 +91,51 @@ export default function TypingStage({
           }
 
           if (isActive) {
+            const typedCount = activeTypedJamoSlice.length;
+            
+            // Determine dynamic clip-path mask for Layer 2 (Blue overlay)
+            // This replicates SVG path fill effect perfectly
+            let clipMaskStyle: React.CSSProperties = {};
+            if (typedCount === 0) {
+              clipMaskStyle = { opacity: 0 }; // Hide overlay entirely
+            } else if (typedCount === 1) {
+              // Only initial consonant (Left side or top)
+              clipMaskStyle = { clipPath: 'polygon(0 0, 50% 0, 50% 60%, 0 60%)' };
+            } else if (typedCount === 2) {
+              // Initial consonant + Vowel (Left + Right, leaving bottom for batchim)
+              clipMaskStyle = { clipPath: 'polygon(0 0, 100% 0, 100% 60%, 0 60%)' };
+            } else if (typedCount >= 3) {
+              // Full syllable completed
+              clipMaskStyle = { clipPath: 'inset(0)' };
+            }
+
             return (
               <span
                 key={index}
                 className={`inline-flex items-center justify-center min-w-[1.2em] sm:min-w-[1.4em] ${focusBoxPaddingClass} rounded-2xl transition-all border shadow-xs animate-pulse ${
                   hasError
                     ? 'bg-rose-100/90 border-rose-300 text-rose-600'
-                    : 'bg-blue-50/70 border-blue-200/90 text-blue-600'
+                    : 'bg-blue-50/70 border-blue-200/90'
                 }`}
               >
-                {/* RENDER LIVE TYPED COMPOSED HANGUL (ㄴ -> 녀 -> 녕) IN THEME BLUE WHEN TYPED OR SOFT NEUTRAL GRAY ORIGINAL CHAR WHEN UNTYPED */}
-                <span
-                  className={`${
-                    hasError
-                      ? 'text-rose-600'
-                      : activeTypedJamoSlice.length > 0
-                      ? themeConfig.primaryText
-                      : 'text-slate-300'
-                  } font-black`}
-                >
-                  {activeTypedJamoSlice.length > 0
-                    ? livePartialHangul
-                    : originalChar === ' '
-                    ? '␣'
-                    : originalChar}
+                {/* SVG-EQUIVALENT CLIP-MASK ENGINE OVERLAY */}
+                <span className="relative flex items-center justify-center font-black">
+                  {/* Layer 1 (Background): Original Char in Soft Neutral Gray */}
+                  <span className={`${hasError ? 'text-rose-200' : 'text-slate-300'}`}>
+                    {originalChar === ' ' ? '␣' : originalChar}
+                  </span>
+                  
+                  {/* Layer 2 (Foreground Overlay): Identical Original Char in Theme Blue (clipped) */}
+                  <span
+                    className={`absolute inset-0 flex items-center justify-center transition-all duration-100 ${
+                       hasError 
+                        ? 'text-rose-600' 
+                        : (typedCount >= 3 ? 'text-emerald-600' : themeConfig.primaryText)
+                    }`}
+                    style={clipMaskStyle}
+                  >
+                    {originalChar === ' ' ? '␣' : originalChar}
+                  </span>
                 </span>
 
                 {/* THIN GRAY BLINKING CURSOR (|) INSIDE THE ACTIVE FOCUS BOX */}
