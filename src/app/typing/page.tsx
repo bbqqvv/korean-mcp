@@ -34,17 +34,17 @@ function TypingContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#09090b] text-white flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[#faf8f5] text-slate-900 flex items-center justify-center font-sans">
         <div className="text-center space-y-2">
-          <div className="w-8 h-8 border-4 border-rose-500 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-slate-400 font-bold">Đang khởi tạo sân khấu 3D...</p>
+          <div className="w-8 h-8 border-4 border-rose-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-slate-500 font-bold">Đang tải bàn phím gõ tiếng Hàn...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-[#09090b] text-white overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans">
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -72,7 +72,7 @@ function TypingContent() {
 
 export default function TypingPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#09090b] text-white p-8">Đang tải...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#faf8f5] text-slate-900 p-8">Đang tải...</div>}>
       <TypingContent />
     </Suspense>
   );
