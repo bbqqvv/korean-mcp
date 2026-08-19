@@ -95,18 +95,21 @@ function decomposeSyllableToJamo(char: string): string[] {
   return [char];
 }
 
-function decomposeTextToJamoSequence(text: string): { jamos: string[]; syllableBoundaries: number[] } {
+function decomposeTextToJamoSequence(text: string): { jamos: string[]; boundaries: { start: number; end: number }[] } {
   const jamos: string[] = [];
-  const syllableBoundaries: number[] = [];
+  const boundaries: { start: number; end: number }[] = [];
 
+  let currentPos = 0;
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
     const decomposed = decomposeSyllableToJamo(char);
+    const start = currentPos;
     jamos.push(...decomposed);
-    syllableBoundaries.push(jamos.length);
+    currentPos += decomposed.length;
+    boundaries.push({ start, end: currentPos });
   }
 
-  return { jamos, syllableBoundaries };
+  return { jamos, boundaries };
 }
 
 interface KeyDef {
@@ -224,7 +227,8 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const [targetText, setTargetText] = useState('ㄱ');
   const [targetMeaning, setTargetMeaning] = useState('');
 
-  const [typedJamoCount, setTypedJamoCount] = useState(0);
+  const [typedJamos, setTypedJamos] = useState<string[]>([]);
+  const [hasError, setHasError] = useState(false);
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [keyFeedback, setKeyFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [isSoundOn, setIsSoundOn] = useState(true);
@@ -277,6 +281,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
       return allCards.map((c) => ({ target: c.korean, meaning: c.vietnamese }));
     }
     return [
+      { target: '식당', meaning: 'Nhà ăn / Nhà hàng' },
       { target: '화장실', meaning: 'Nhà vệ sinh / Phòng tắm' },
       { target: '몇 시', meaning: 'mấy giờ' },
       { target: '학교', meaning: 'trường học' },
@@ -294,14 +299,15 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     return vocabList;
   }, [practiceMode, vocabList]);
 
-  // Decomposed Jamo sequence of targetText
-  const { jamos: targetJamoSeq, syllableBoundaries } = useMemo(() => {
+  // Decomposed Jamo sequence & boundaries of targetText
+  const { jamos: targetJamoSeq, boundaries: syllableBoundaries } = useMemo(() => {
     return decomposeTextToJamoSequence(targetText);
   }, [targetText]);
 
   // Update target text when mode or lesson index changes
   useEffect(() => {
-    setTypedJamoCount(0);
+    setTypedJamos([]);
+    setHasError(false);
     setIsLessonComplete(false);
     setStartTime(null);
     const item = currentLessonsList[currentLessonIndex % currentLessonsList.length];
@@ -310,21 +316,8 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   }, [practiceMode, currentLessonIndex, currentLessonsList]);
 
   // Next expected Jamo character & QWERTY key
-  const nextJamoChar = targetJamoSeq[typedJamoCount] || '';
+  const nextJamoChar = targetJamoSeq[typedJamos.length] || '';
   const nextQwertyKey = HANGUL_TO_QWERTY[nextJamoChar] || (nextJamoChar === ' ' ? 'space' : null);
-
-  // Calculate completed syllables count for rendering on screen
-  const completedSyllableCount = useMemo(() => {
-    let completed = 0;
-    for (let i = 0; i < syllableBoundaries.length; i++) {
-      if (typedJamoCount >= syllableBoundaries[i]) {
-        completed++;
-      } else {
-        break;
-      }
-    }
-    return completed;
-  }, [typedJamoCount, syllableBoundaries]);
 
   const speakKorean = useCallback((text: string) => {
     if (isSoundOn && 'speechSynthesis' in window) {
@@ -341,12 +334,13 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   }, []);
 
   const handleResetLesson = useCallback(() => {
-    setTypedJamoCount(0);
+    setTypedJamos([]);
+    setHasError(false);
     setIsLessonComplete(false);
     setStartTime(null);
   }, []);
 
-  // GLOBAL KEYBOARD LISTENER (Catches physical QWERTY keys & maps to Korean 2-Bolsik Jamo)
+  // GLOBAL KEYBOARD LISTENER (Realtime Syllable Engine + Red Mistake Highlights + Backspace Correction)
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.altKey || e.metaKey) return;
@@ -359,12 +353,18 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         return;
       }
 
+      // Handle Backspace Erase
       if (e.key === 'Backspace') {
         e.preventDefault();
-        setTypedJamoCount((prev) => Math.max(0, prev - 1));
+        if (hasError) {
+          setHasError(false);
+        } else {
+          setTypedJamos((prev) => prev.slice(0, -1));
+        }
         return;
       }
 
+      // Translate physical key to Korean Hangul
       let inputHangulChar = '';
       if (e.key === ' ') {
         inputHangulChar = ' ';
@@ -384,18 +384,26 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         setStartTime(Date.now());
       }
 
-      const expectedJamo = targetJamoSeq[typedJamoCount];
+      const expectedJamo = targetJamoSeq[typedJamos.length];
+
+      // If user currently has an uncorrected error, block further typing until Backspace or correct key
+      if (hasError) {
+        setKeyFeedback('wrong');
+        return;
+      }
 
       if (inputHangulChar === expectedJamo) {
         setKeyFeedback('correct');
-        const nextCount = typedJamoCount + 1;
-        setTypedJamoCount(nextCount);
+        setHasError(false);
+
+        const newTyped = [...typedJamos, inputHangulChar];
+        setTypedJamos(newTyped);
 
         if (practiceMode === 'jamo' && inputHangulChar) {
           speakKorean(inputHangulChar);
         }
 
-        if (nextCount === targetJamoSeq.length) {
+        if (newTyped.length === targetJamoSeq.length) {
           setIsLessonComplete(true);
           if (practiceMode !== 'jamo') {
             speakKorean(targetText);
@@ -403,13 +411,15 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           confetti({ particleCount: 140, spread: 80, origin: { y: 0.6 } });
         }
       } else {
+        // MISTAKE TRIGGER: Turn current syllable RED!
         setKeyFeedback('wrong');
+        setHasError(true);
       }
     };
 
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [typedJamoCount, targetJamoSeq, targetText, isLessonComplete, startTime, practiceMode, speakKorean, handleNextLesson]);
+  }, [typedJamos, targetJamoSeq, targetText, isLessonComplete, startTime, practiceMode, hasError, speakKorean, handleNextLesson]);
 
   const totalLessonsCount = currentLessonsList.length;
   const currentLessonNum = (currentLessonIndex % totalLessonsCount) + 1;
@@ -498,31 +508,50 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       </div>
 
-      {/* CENTER STAGE: Floating Target Korean Character with Clean Completion Feedback */}
+      {/* CENTER STAGE: Floating Target Korean Character with Instant Syllable Green/Red Transitions */}
       <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER - FLOATING CLEANLY WITH SYLLABLE COMPOUND RECOMPOSITION */}
-        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest text-rose-600 drop-shadow-2xs flex items-center justify-center gap-2 transition-all">
+        {/* GIANT TARGET KOREAN CHARACTER - REALTIME SYLLABLE COLOR FEEDBACK */}
+        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest flex items-center justify-center gap-3 transition-all">
           {targetText.split('').map((char, index) => {
-            let charStyle = 'text-rose-600';
-            if (index < completedSyllableCount) {
+            const boundary = syllableBoundaries[index];
+            const startIdx = boundary ? boundary.start : 0;
+            const endIdx = boundary ? boundary.end : 0;
+
+            let charStyle = 'text-slate-300'; // Default un-typed
+
+            if (typedJamos.length >= endIdx) {
+              // COMPLETED SYLLABLE: VIVID GREEN!
               charStyle = 'text-emerald-600 font-black';
-            } else if (index === completedSyllableCount) {
-              charStyle = 'text-rose-500 font-black animate-pulse';
+            } else if (typedJamos.length >= startIdx && typedJamos.length < endIdx) {
+              if (hasError) {
+                // MISTAKE SYLLABLE: VIVID RED HIGHLIGHT!
+                charStyle = 'text-rose-600 bg-rose-100/90 rounded-2xl px-3 py-1 animate-pulse shadow-sm';
+              } else {
+                // CURRENTLY TYPING SYLLABLE: VIVID ROSE/PURPLE
+                charStyle = 'text-rose-600 font-black';
+              }
+            } else {
+              // UPCOMING SYLLABLE: SLEEK ROSE DEEP
+              charStyle = 'text-rose-600/90 font-bold';
             }
 
             return (
-              <span key={index} className={`transition-all ${charStyle}`}>
+              <span key={index} className={`transition-all duration-150 ${charStyle}`}>
                 {char === ' ' ? '␣' : char}
               </span>
             );
           })}
         </div>
 
-        {/* Clean Subtext (Meaning or Guidance) */}
+        {/* Clean Subtext */}
         <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
           {isLessonComplete ? (
             <span className="text-emerald-600 font-bold flex items-center gap-1.5 justify-center">
               <CheckCircle2 className="w-4 h-4" /> Hoàn thành bài tập! Bấm phím tiếp theo (Enter ↵)
+            </span>
+          ) : hasError ? (
+            <span className="text-rose-600 font-bold flex items-center gap-1.5 justify-center">
+              ⚠️ Gõ sai phím! Bấm phím Backspace ⌫ để xóa gõ lại
             </span>
           ) : targetMeaning ? (
             <span className="text-slate-600 font-bold text-sm sm:text-base">{targetMeaning}</span>
@@ -560,7 +589,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
       {/* BOTTOM STAGE: Giant 3D Perspective Keyboard Floating Cleanly */}
       <div className="relative shrink-0 pb-2 [perspective:800px]">
-        {/* Exact Type.Today Hover Stat Popover Tooltip Box with Mistakes Badges */}
+        {/* Hover Stat Popover Tooltip Box */}
         <AnimatePresence>
           {hoveredStatData && (
             <motion.div
@@ -589,7 +618,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                   <span className="font-bold text-white font-mono">{hoveredStatData.speedSec}s</span>
                 </div>
 
-                {/* Mistakes Row matching Type.Today */}
                 {hoveredStatData.mistakes.length > 0 && (
                   <div className="flex items-center justify-between pt-1.5 border-t border-slate-800/80">
                     <span className="text-slate-400 font-medium">Mistakes</span>
@@ -611,7 +639,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           )}
         </AnimatePresence>
 
-        {/* 3D Angled Container Floating Cleanly (30% Larger Keycaps, Crisp 3D Bevel Depth) */}
+        {/* 3D Angled Container Floating Cleanly */}
         <div className="space-y-1.5 sm:space-y-2 [transform:rotateX(28deg)] transition-transform duration-300 origin-bottom">
           {EXACT_TYPE_TODAY_ROWS.map((row, rIdx) => (
             <div key={rIdx} className="flex justify-center gap-1.5 sm:gap-2">
