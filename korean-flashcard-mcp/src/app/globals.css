@@ -2,9 +2,9 @@
 
 @theme {
   --font-sans: var(--font-noto-kr), var(--font-inter), -apple-system, BlinkMacSystemFont, 'SF Pro Display', ui-sans-serif, sans-serif;
-  --color-ios-canvas: #faf9f6;
+  --color-ios-canvas: #f8fafc;
   --color-ios-card: #ffffff;
-  --color-ios-card-back: #f8fafc;
+  --color-ios-card-back: #ffffff;
   --color-ios-muted: #64748b;
   --color-ios-fg: #0f172a;
   --color-ios-switch-off: #cbd5e1;
@@ -15,9 +15,9 @@
 }
 
 :root {
-  --color-ios-canvas: #faf9f6;
+  --color-ios-canvas: #f8fafc;
   --color-ios-card: #ffffff;
-  --color-ios-card-back: #f8fafc;
+  --color-ios-card-back: #ffffff;
   --color-ios-muted: #64748b;
   --color-ios-fg: #0f172a;
   --color-ios-switch-off: #cbd5e1;
@@ -28,9 +28,28 @@
   color-scheme: light;
 }
 
+/* HIDE ALL BROWSER SCROLLBARS GLOBALLY */
+* {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}
+
+*::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+}
+
 html {
   font-family: var(--font-sans);
   font-weight: 400;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
@@ -44,6 +63,12 @@ body {
   font-weight: 400;
   overflow-x: clip;
   -webkit-tap-highlight-color: transparent;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 /* Safe areas + responsive padding */
@@ -209,21 +234,21 @@ body {
 
 /* Elevated flashcard sheet */
 .ios-flashcard-face {
-  background-color: var(--color-ios-card);
-  border: 1.5px solid #e2e8f0;
-  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
-  border-radius: 28px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05), 0 2px 6px rgba(15, 23, 42, 0.02);
+  border-radius: 24px;
 }
 
 .ios-flashcard-face--back {
-  background-color: var(--color-ios-card-back);
-  border: 1.5px solid #cbd5e1;
-  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
-  border-radius: 28px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05), 0 2px 6px rgba(15, 23, 42, 0.02);
+  border-radius: 24px;
 }
 
 .ios-card-pressable {
-  border-radius: 28px;
+  border-radius: 24px;
   transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 

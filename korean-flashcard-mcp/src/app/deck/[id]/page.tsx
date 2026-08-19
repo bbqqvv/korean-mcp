@@ -43,9 +43,9 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#faf9f6] text-slate-900 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex items-center justify-center font-sans">
         <div className="text-center space-y-2">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-8 h-8 border-4 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-xs text-slate-500 font-bold">Đang tải bộ thẻ từ vựng tiếng Hàn...</p>
         </div>
       </div>
@@ -54,7 +54,7 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
 
   if (!deck) {
     return (
-      <div className="flex h-screen bg-[#faf9f6] text-slate-900 overflow-hidden font-sans">
+      <div className="flex h-screen bg-[#f8fafc] text-slate-900 overflow-hidden font-sans">
         <Sidebar
           isOpenMobile={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -68,7 +68,7 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
               <p className="text-slate-500 text-sm">Bộ từ vựng này không tồn tại hoặc đã bị xóa.</p>
               <Link
                 href="/"
-                className="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full inline-flex items-center gap-1.5"
+                className="px-4 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-full inline-flex items-center gap-1.5"
               >
                 <ArrowLeft className="w-4 h-4" /> Quay Về Trang Chủ
               </Link>
@@ -80,7 +80,7 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
   }
 
   return (
-    <div className="flex h-screen bg-[#faf9f6] text-slate-900 overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#f8fafc] text-slate-900 overflow-hidden font-sans">
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -93,39 +93,39 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
           onOpenCreateModal={() => setIsCreateModalOpen(true)}
         />
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-5 pb-24 md:pb-8 max-w-5xl w-full mx-auto">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-5 pb-24 md:pb-8 max-w-5xl w-full mx-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* Top Header */}
           <div className="flex items-center justify-between">
             <Link
               href="/"
-              className="px-3.5 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-200 rounded-full hover:bg-slate-50 flex items-center gap-1.5 shadow-sm"
+              className="px-3.5 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-200/80 rounded-full hover:bg-slate-50 flex items-center gap-1.5 shadow-2xs"
             >
               <ArrowLeft className="w-4 h-4" /> Tất Cả Bộ Thẻ
             </Link>
 
             <Link
               href={`/quiz?deck=${deck.id}`}
-              className="px-4 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full flex items-center gap-1.5 shadow-sm"
+              className="px-4 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-full flex items-center gap-1.5 shadow-2xs"
             >
-              <Play className="w-4 h-4 fill-current" /> Ôn Quiz Ngay
+              <Play className="w-4 h-4 fill-current text-indigo-400" /> Ôn Quiz Ngay
             </Link>
           </div>
 
           {/* Deck Title Header */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-5 space-y-2 shadow-sm">
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 space-y-2 shadow-xs">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[11px] font-bold rounded-full border border-rose-200">
+              <span className="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-bold rounded-full border border-slate-200/60">
                 {deck.category}
               </span>
               {deck.youtubeUrl && (
-                <span className="flex items-center gap-1 text-[11px] text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-full font-bold">
+                <span className="flex items-center gap-1 text-[11px] text-rose-700 bg-rose-50 border border-rose-200/60 px-2.5 py-0.5 rounded-full font-bold">
                   <YoutubeIcon className="w-3 h-3 text-rose-600" /> YouTube Video
                 </span>
               )}
             </div>
 
             <h1 className="text-lg sm:text-2xl font-black text-slate-900">{deck.title}</h1>
-            <p className="text-[12px] sm:text-[13px] text-slate-600">{deck.description}</p>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{deck.description}</p>
           </div>
 
           {/* Flashcard Component */}
