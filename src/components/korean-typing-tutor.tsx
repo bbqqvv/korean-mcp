@@ -96,55 +96,6 @@ function decomposeSyllableToJamo(char: string): string[] {
   return [char];
 }
 
-function composeJamosToHangul(jamoList: string[]): string {
-  if (jamoList.length === 0) return '';
-  if (jamoList.length === 1) return jamoList[0];
-
-  const initJamo = jamoList[0];
-  const initIdx = INITIAL_CONSONANTS.indexOf(initJamo);
-  if (initIdx === -1) return jamoList.join('');
-
-  let medJamo = jamoList[1];
-  let medIdx = MEDIAL_VOWELS.indexOf(medJamo);
-  let nextIdx = 2;
-
-  if (jamoList.length >= 3) {
-    for (const [compVowel, parts] of Object.entries(COMPOUND_VOWEL_SPLIT)) {
-      if (parts[0] === jamoList[1] && parts[1] === jamoList[2]) {
-        medJamo = compVowel;
-        medIdx = MEDIAL_VOWELS.indexOf(compVowel);
-        nextIdx = 3;
-        break;
-      }
-    }
-  }
-
-  if (medIdx === -1) return jamoList.join('');
-
-  let finalIdx = 0;
-  if (jamoList.length > nextIdx) {
-    const remaining = jamoList.slice(nextIdx);
-    if (remaining.length === 1) {
-      finalIdx = FINAL_CONSONANTS.indexOf(remaining[0]);
-    } else if (remaining.length === 2) {
-      for (const [compBatchim, parts] of Object.entries(COMPOUND_BATCHIM_SPLIT)) {
-        if (parts[0] === remaining[0] && parts[1] === remaining[1]) {
-          finalIdx = FINAL_CONSONANTS.indexOf(compBatchim);
-          break;
-        }
-      }
-      if (finalIdx <= 0) {
-        finalIdx = FINAL_CONSONANTS.indexOf(remaining[0]);
-      }
-    }
-  }
-
-  if (finalIdx === -1) finalIdx = 0;
-
-  const code = 0xAC00 + (initIdx * 588) + (medIdx * 28) + finalIdx;
-  return String.fromCharCode(code);
-}
-
 function decomposeTextToJamoSequence(text: string): { jamos: string[]; boundaries: { start: number; end: number }[] } {
   const jamos: string[] = [];
   const boundaries: { start: number; end: number }[] = [];
@@ -435,10 +386,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     return typedJamos.slice(startPos);
   }, [typedJamos, activeSyllableBound]);
 
-  const livePartialHangul = useMemo(() => {
-    return composeJamosToHangul(activeTypedJamoSlice);
-  }, [activeTypedJamoSlice]);
-
   const speakKorean = useCallback((text: string) => {
     if (isSoundOn && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel();
@@ -647,9 +594,9 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       </div>
 
-      {/* CENTER STAGE: Floating Target Korean Character with Type.Today Active Focus Box & Dynamic Scaling */}
+      {/* CENTER STAGE: Floating Target Korean Character with Type.Today Active Focus Box & 100% Character Preservation */}
       <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER - DYNAMIC RESPONSIVE FONT SIZE & FLEX-WRAP PROTECTION */}
+        {/* GIANT TARGET KOREAN CHARACTER - 100% TARGET CHARACTER VISIBILITY PRESERVED */}
         <div className={`${fontSizeClass} font-black tracking-widest flex flex-wrap items-center justify-center gap-2 sm:gap-4 max-w-full px-4 transition-all`}>
           {targetText.split('').map((originalChar, index) => {
             const isCompleted = index < completedSyllableCount;
@@ -673,7 +620,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                       : 'bg-blue-50/70 border-blue-200/90 text-blue-600'
                   }`}
                 >
-                  {/* RENDER LIVE PARTIAL COMPOSED HANGUL (IF TYPED) OR SOFT NEUTRAL GRAY ORIGINAL CHAR (IF UNTYPED) */}
+                  {/* ALWAYS RENDER THE COMPLETE TARGET CHARACTER originalChar SO THE USER CAN SEE ALL STROKES */}
                   <span
                     className={`${
                       hasError
@@ -683,11 +630,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                         : 'text-slate-300'
                     } font-black`}
                   >
-                    {activeTypedJamoSlice.length > 0
-                      ? livePartialHangul
-                      : originalChar === ' '
-                      ? '␣'
-                      : originalChar}
+                    {originalChar === ' ' ? '␣' : originalChar}
                   </span>
 
                   {/* THIN GRAY BLINKING CURSOR (|) INSIDE THE ACTIVE FOCUS BOX */}
