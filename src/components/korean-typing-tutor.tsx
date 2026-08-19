@@ -334,6 +334,8 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
       return allCards.map((c) => ({ target: c.korean, meaning: c.vietnamese }));
     }
     return [
+      { target: '마트', meaning: 'Siêu thị (Mart)' },
+      { target: '거실', meaning: 'Phòng khách' },
       { target: '집', meaning: 'Nhà / Căn nhà' },
       { target: '시장', meaning: 'Chợ / Thị trường' },
       { target: '식당', meaning: 'Nhà ăn / Nhà hàng' },
@@ -394,6 +396,10 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     const startPos = activeSyllableBound.start;
     return typedJamos.slice(startPos);
   }, [typedJamos, activeSyllableBound]);
+
+  const livePartialHangul = useMemo(() => {
+    return composeJamosToHangul(activeTypedJamoSlice);
+  }, [activeTypedJamoSlice]);
 
   const speakKorean = useCallback((text: string) => {
     if (isSoundOn && 'speechSynthesis' in window) {
@@ -603,39 +609,65 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       </div>
 
-      {/* CENTER STAGE: Floating Target Korean Character (FULL WORD ALWAYS 100% VISIBLE MATCHING TYPE.TODAY) */}
+      {/* CENTER STAGE: Floating Target Korean Character with Type.Today Active Focus Box */}
       <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER - FULL WORD ALWAYS VISIBLE IN BOLD DARK SLATE */}
-        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest flex items-center justify-center gap-3 transition-all">
+        {/* GIANT TARGET KOREAN CHARACTER - LIVE PARTIAL JAMO ASSEMBLY & SOFT NEUTRAL GRAY UNTYPED TEXT */}
+        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest flex items-center justify-center gap-3 sm:gap-4 transition-all">
           {targetText.split('').map((originalChar, index) => {
             const isCompleted = index < completedSyllableCount;
             const isActive = index === completedSyllableCount;
 
-            return (
-              <span key={index} className="inline-flex items-center relative">
-                {/* SYLLABLE CHARACTER RENDERING: ORIGINAL TARGET CHARACTER IS ALWAYS PRESERVED */}
-                {isCompleted ? (
-                  <span className="text-emerald-600 font-black">{originalChar === ' ' ? '␣' : originalChar}</span>
-                ) : isActive ? (
-                  hasError ? (
-                    <span className="text-rose-500 bg-rose-50 rounded-2xl px-3 py-0.5 animate-pulse shadow-2xs">
-                      {originalChar === ' ' ? '␣' : originalChar}
-                    </span>
-                  ) : activeTypedJamoSlice.length > 0 ? (
-                    <span className={`${themeConfig.primaryText} font-black`}>
-                      {originalChar === ' ' ? '␣' : originalChar}
-                    </span>
-                  ) : (
-                    <span className="text-slate-900 font-black">{originalChar === ' ' ? '␣' : originalChar}</span>
-                  )
-                ) : (
-                  <span className="text-slate-900 font-black">{originalChar === ' ' ? '␣' : originalChar}</span>
-                )}
+            if (isCompleted) {
+              return (
+                <span key={index} className="text-emerald-600 font-black px-1 sm:px-2">
+                  {originalChar === ' ' ? '␣' : originalChar}
+                </span>
+              );
+            }
 
-                {/* THIN GRAY BLINKING CURSOR (|) ALWAYS POSITIONED AFTER THE ACTIVE CHARACTER */}
-                {isActive && !isLessonComplete && (
-                  <span className={`w-[2.5px] h-16 sm:h-20 ${hasError ? 'bg-rose-500' : 'bg-slate-400'} animate-pulse rounded-full inline-block ml-1.5 shrink-0 align-middle`} />
-                )}
+            if (isActive) {
+              return (
+                <span
+                  key={index}
+                  className={`inline-flex items-center justify-center px-3.5 py-1 sm:px-5 sm:py-2 rounded-2xl transition-all border shadow-xs animate-pulse ${
+                    hasError
+                      ? 'bg-rose-100/90 border-rose-300 text-rose-600'
+                      : 'bg-blue-50/70 border-blue-200/90 text-blue-600'
+                  }`}
+                >
+                  {/* RENDER LIVE PARTIAL COMPOSED HANGUL (IF TYPED) OR SOFT NEUTRAL GRAY ORIGINAL CHAR (IF UNTYPED) */}
+                  <span
+                    className={`${
+                      hasError
+                        ? 'text-rose-600'
+                        : activeTypedJamoSlice.length > 0
+                        ? themeConfig.primaryText
+                        : 'text-slate-300'
+                    } font-black`}
+                  >
+                    {activeTypedJamoSlice.length > 0
+                      ? livePartialHangul
+                      : originalChar === ' '
+                      ? '␣'
+                      : originalChar}
+                  </span>
+
+                  {/* THIN GRAY BLINKING CURSOR (|) INSIDE THE ACTIVE FOCUS BOX */}
+                  {!isLessonComplete && (
+                    <span
+                      className={`w-[2.5px] h-16 sm:h-20 ${
+                        hasError ? 'bg-rose-500' : 'bg-slate-400'
+                      } animate-pulse rounded-full inline-block ml-2 shrink-0 align-middle`}
+                    />
+                  )}
+                </span>
+              );
+            }
+
+            // Upcoming characters: Soft Neutral Gray text-slate-300 font-medium
+            return (
+              <span key={index} className="text-slate-300 font-medium px-1 sm:px-2">
+                {originalChar === ' ' ? '␣' : originalChar}
               </span>
             );
           })}
