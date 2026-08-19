@@ -7,10 +7,8 @@ import {
   VolumeX,
   RotateCw,
   CheckCircle2,
-  Sparkles,
   ArrowRight,
-  ArrowBigUp,
-  Keyboard
+  ArrowBigUp
 } from 'lucide-react';
 import { Flashcard, Deck } from '@/lib/types';
 import confetti from 'canvas-confetti';
@@ -33,14 +31,12 @@ Object.entries(QWERTY_TO_HANGUL).forEach(([qwerty, hangul]) => {
   HANGUL_TO_QWERTY[hangul] = qwerty.toLowerCase();
 });
 
-// Exact Type.Today 5-Row Keyboard Definition
 interface KeyDef {
   key: string;
   hangul: string;
   native: string;
   isHomeFinger?: boolean;
   isShiftKey?: boolean;
-  isSpaceBar?: boolean;
 }
 
 const EXACT_TYPE_TODAY_ROWS: KeyDef[][] = [
@@ -244,19 +240,18 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const totalLessonsCount = currentLessonsList.length;
   const currentLessonNum = (currentLessonIndex % totalLessonsCount) + 1;
   const progressPercent = Math.round((currentLessonNum / totalLessonsCount) * 100);
-  const accuracyPercentage = totalTypedKeys > 0 ? Math.round((correctTypedKeys / totalTypedKeys) * 100) : 100;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4 font-sans select-none pb-8">
+    <div className="h-full flex flex-col justify-between select-none font-sans overflow-hidden">
       {/* Type.Today Top Header Bar */}
-      <div className="bg-slate-900 text-white border border-slate-800 rounded-2xl px-5 py-3 shadow-md flex items-center justify-between gap-4">
+      <div className="bg-[#121215] text-white border border-slate-800 rounded-2xl px-4 py-2.5 shadow-md flex items-center justify-between gap-4 shrink-0">
         {/* Left: Exercise Counter & Progress Bar */}
-        <div className="flex items-center gap-4 flex-1">
-          <div className="space-y-1">
+        <div className="flex items-center gap-3 flex-1">
+          <div className="space-y-0.5">
             <span className="text-xs font-bold text-slate-300 block">
               Exercise {currentLessonNum} of {totalLessonsCount}
             </span>
-            <div className="w-36 sm:w-48 bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700">
+            <div className="w-32 sm:w-44 bg-slate-800 h-1.5 rounded-full overflow-hidden border border-slate-700">
               <div
                 className="bg-blue-500 h-full transition-all duration-300"
                 style={{ width: `${progressPercent}%` }}
@@ -264,34 +259,34 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             </div>
           </div>
 
-          <span className="text-xs text-slate-400 font-medium hidden sm:inline border-l border-slate-800 pl-4">
-            {practiceMode === 'jamo' ? 'Luyện Phím Phụ/Nguyên Âm' : practiceMode === 'vocab' ? 'Luyện Từ Vựng' : 'Luyện Mẫu Câu'}
+          <span className="text-xs text-slate-400 font-medium hidden sm:inline border-l border-slate-800 pl-3">
+            {practiceMode === 'jamo' ? 'Learn the stroke' : practiceMode === 'vocab' ? 'Vocabulary' : 'Phrases'}
           </span>
         </div>
 
         {/* Mode Tabs & Sound Toggle */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center bg-slate-800 p-1 rounded-full border border-slate-700 text-xs font-bold">
+          <div className="flex items-center bg-slate-800 p-0.5 rounded-full border border-slate-700 text-xs font-bold">
             <button
               onClick={() => setPracticeMode('jamo')}
-              className={`px-3 py-1 rounded-full transition-all ${
-                practiceMode === 'jamo' ? 'bg-blue-600 text-white shadow-2xs' : 'text-slate-400 hover:text-white'
+              className={`px-2.5 py-0.5 rounded-full transition-all ${
+                practiceMode === 'jamo' ? 'bg-rose-600 text-white shadow-2xs' : 'text-slate-400 hover:text-white'
               }`}
             >
               Phím
             </button>
             <button
               onClick={() => setPracticeMode('vocab')}
-              className={`px-3 py-1 rounded-full transition-all ${
-                practiceMode === 'vocab' ? 'bg-blue-600 text-white shadow-2xs' : 'text-slate-400 hover:text-white'
+              className={`px-2.5 py-0.5 rounded-full transition-all ${
+                practiceMode === 'vocab' ? 'bg-rose-600 text-white shadow-2xs' : 'text-slate-400 hover:text-white'
               }`}
             >
               Từ Vựng
             </button>
             <button
               onClick={() => setPracticeMode('sentence')}
-              className={`px-3 py-1 rounded-full transition-all ${
-                practiceMode === 'sentence' ? 'bg-blue-600 text-white shadow-2xs' : 'text-slate-400 hover:text-white'
+              className={`px-2.5 py-0.5 rounded-full transition-all ${
+                practiceMode === 'sentence' ? 'bg-rose-600 text-white shadow-2xs' : 'text-slate-400 hover:text-white'
               }`}
             >
               Câu
@@ -300,10 +295,10 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
           <button
             onClick={() => setIsSoundOn(!isSoundOn)}
-            className="p-2 text-slate-400 hover:text-white bg-slate-800 border border-slate-700 rounded-full transition-colors"
+            className="p-1.5 text-slate-400 hover:text-white bg-slate-800 border border-slate-700 rounded-full transition-colors"
             title="Bật/Tắt Âm Thanh"
           >
-            {isSoundOn ? <Volume2 className="w-4 h-4 text-blue-400" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
+            {isSoundOn ? <Volume2 className="w-3.5 h-3.5 text-blue-400" /> : <VolumeX className="w-3.5 h-3.5 text-slate-500" />}
           </button>
         </div>
       </div>
@@ -311,30 +306,20 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
       {/* CENTER STAGE: Giant Floating Korean Character (Type.Today Style) */}
       <div
         onClick={() => inputRef.current?.focus()}
-        className="bg-white border border-slate-200/80 rounded-2xl p-8 sm:p-10 text-center flex flex-col items-center justify-center min-h-[16rem] sm:min-h-[18rem] space-y-4 shadow-xs relative cursor-text overflow-hidden"
+        className="flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4"
       >
-        {/* Stats Pills Top Right */}
-        <div className="absolute top-4 right-4 flex items-center gap-2 text-xs font-bold">
-          <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full border border-slate-200">
-            WPM: {wpm}
-          </span>
-          <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200">
-            Chính xác: {accuracyPercentage}%
-          </span>
-        </div>
-
         {/* GIANT TARGET KOREAN CHARACTER */}
-        <div className="text-6xl sm:text-7xl md:text-8xl font-black tracking-widest text-slate-900 drop-shadow-xs flex items-center justify-center gap-2 transition-all">
+        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest text-rose-500 drop-shadow-[0_10px_30px_rgba(244,63,94,0.25)] flex items-center justify-center gap-2 transition-all">
           {targetText.split('').map((char, index) => {
-            let charStyle = 'text-slate-900';
+            let charStyle = 'text-rose-500';
             if (index < userInput.length) {
               if (userInput[index] === char) {
-                charStyle = 'text-emerald-600 font-black';
+                charStyle = 'text-emerald-400 font-black';
               } else {
-                charStyle = 'text-rose-600 underline';
+                charStyle = 'text-rose-700 underline';
               }
             } else if (index === userInput.length) {
-              charStyle = 'text-blue-600 underline decoration-blue-600 underline-offset-8 animate-pulse';
+              charStyle = 'text-rose-400 underline decoration-rose-500 underline-offset-8 animate-pulse';
             }
 
             return (
@@ -348,13 +333,11 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         {/* Typing Guidance Text (Type.Today Style: "Press key to continue") */}
         <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
           {isLessonComplete ? (
-            <span className="text-emerald-600 flex items-center gap-1.5 justify-center">
-              <CheckCircle2 className="w-4 h-4" /> Hoàn thành bài tập! Bấm phím tiếp theo hoặc nút bên dưới
+            <span className="text-emerald-400 flex items-center gap-1.5 justify-center">
+              <CheckCircle2 className="w-4 h-4" /> Press key to continue
             </span>
           ) : (
-            <span>
-              Gõ phím <strong className="text-blue-600 uppercase text-sm font-mono font-black">&apos;{nextQwertyKey || ''}&apos;</strong> trên bàn phím để tiếp tục
-            </span>
+            <span>Press key to continue</span>
           )}
         </div>
 
@@ -369,24 +352,24 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           autoFocus
         />
 
-        {/* Completion Control Bar */}
+        {/* Completion Action */}
         <AnimatePresence>
           {isLessonComplete && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="pt-2 flex items-center justify-center gap-3"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="pt-1 flex items-center justify-center gap-3"
             >
               <button
                 onClick={handleResetLesson}
-                className="px-4 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center gap-1.5 transition-colors"
+                className="px-4 py-1.5 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center gap-1.5 transition-colors border border-slate-700"
               >
                 <RotateCw className="w-3.5 h-3.5" /> Gõ Lại
               </button>
 
               <button
                 onClick={handleNextLesson}
-                className="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-1.5 transition-all"
+                className="px-5 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-1.5 transition-all"
               >
                 <span>Bài Tiếp Theo</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -396,10 +379,10 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </AnimatePresence>
       </div>
 
-      {/* BOTTOM STAGE: Exact Type.Today 5-Row 3D Angled Virtual Keyboard */}
-      <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-2xl overflow-hidden [perspective:1000px]">
+      {/* BOTTOM STAGE: Exact Type.Today 3D Angled Virtual Keyboard (No Scroll Fit) */}
+      <div className="bg-[#09090b] border border-slate-800/80 rounded-2xl p-3 sm:p-4 shadow-2xl overflow-hidden shrink-0 [perspective:600px]">
         {/* 3D Angled Container matching Type.Today */}
-        <div className="space-y-1.5 sm:space-y-2 [transform:rotateX(20deg)_scale(0.96)] transition-transform duration-300 origin-bottom">
+        <div className="space-y-1 sm:space-y-1.5 [transform:rotateX(34deg)_scale(0.92)] transition-transform duration-300 origin-bottom">
           {EXACT_TYPE_TODAY_ROWS.map((row, rIdx) => (
             <div key={rIdx} className="flex justify-center gap-1 sm:gap-1.5">
               {row.map((item) => {
@@ -407,9 +390,9 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                   return (
                     <div
                       key={item.key}
-                      className="w-12 sm:w-16 h-10 sm:h-12 rounded-lg bg-slate-900 border border-slate-800 text-slate-500 flex items-center justify-center font-bold text-xs shadow-md"
+                      className="w-10 sm:w-14 h-9 sm:h-11 rounded-lg bg-slate-100 text-slate-900 border border-slate-300 flex items-center justify-center font-bold text-xs shadow-lg"
                     >
-                      <ArrowBigUp className="w-5 h-5 text-slate-400" />
+                      <ArrowBigUp className="w-4 h-4 sm:w-5 sm:h-5 text-slate-900 fill-current" />
                     </div>
                   );
                 }
@@ -417,7 +400,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                 const isTarget = nextQwertyKey === item.key;
                 const isActive = activeKey === item.key;
 
-                let keyCapStyle = 'bg-slate-900/90 border-slate-800 text-slate-400 opacity-60';
+                let keyCapStyle = 'bg-[#18181b] border-slate-800 text-slate-400 opacity-60';
 
                 if (isTarget) {
                   keyCapStyle = 'bg-blue-600 border-blue-400 text-white font-black ring-4 ring-blue-400/50 shadow-xl scale-105 animate-pulse opacity-100';
@@ -430,19 +413,19 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                 return (
                   <div
                     key={item.key}
-                    className={`w-9 h-11 sm:w-12 sm:h-13 rounded-lg border flex flex-col justify-between p-1 transition-all relative ${keyCapStyle}`}
+                    className={`w-8 h-10 sm:w-11 sm:h-12 rounded-lg border flex flex-col justify-between p-1 transition-all relative ${keyCapStyle}`}
                   >
-                    {/* Top Hanguel Character (_keyHanguel) */}
+                    {/* Top Hanguel Character */}
                     <span className="text-xs sm:text-sm font-black leading-none text-left">
                       {item.hangul}
                     </span>
 
-                    {/* Bottom Native QWERTY Character (_keyNative) */}
+                    {/* Bottom Native QWERTY Character */}
                     <span className="text-[9px] font-mono text-slate-400 uppercase text-right leading-none">
                       {item.native}
                     </span>
 
-                    {/* Home Finger Dot Indicator (_isHomeFinger) */}
+                    {/* Home Finger Dot Indicator */}
                     {item.isHomeFinger && (
                       <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-slate-400/80 rounded-full" />
                     )}
@@ -452,19 +435,19 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             </div>
           ))}
 
-          {/* Row 4: Spacebar Row matching Type.Today */}
-          <div className="flex justify-center gap-1.5 pt-1">
-            <div className="w-12 sm:w-16 h-10 sm:h-12" />
+          {/* Row 4: Spacebar Row */}
+          <div className="flex justify-center gap-1.5 pt-0.5">
+            <div className="w-10 sm:w-14 h-9 sm:h-11" />
             <div
-              className={`w-72 sm:w-96 h-10 sm:h-12 rounded-lg border flex items-center justify-center text-xs font-bold transition-all shadow-md ${
+              className={`w-64 sm:w-80 h-9 sm:h-11 rounded-lg border flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                 nextQwertyKey === 'space'
                   ? 'bg-blue-600 border-blue-400 text-white ring-4 ring-blue-400/50 animate-pulse'
-                  : 'bg-slate-900/90 border-slate-800 text-slate-500 opacity-60'
+                  : 'bg-[#18181b] border-slate-800 text-slate-500 opacity-60'
               }`}
             >
-              <span className="text-xs font-mono">SPACEBAR</span>
+              <span className="text-[11px] font-mono">SPACEBAR</span>
             </div>
-            <div className="w-12 sm:w-16 h-10 sm:h-12" />
+            <div className="w-10 sm:w-14 h-9 sm:h-11" />
           </div>
         </div>
       </div>

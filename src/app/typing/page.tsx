@@ -34,17 +34,17 @@ function TypingContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#faf8f5] text-slate-900 flex items-center justify-center font-sans">
+      <div className="min-h-screen bg-[#09090b] text-white flex items-center justify-center font-sans">
         <div className="text-center space-y-2">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-slate-500 font-bold">Đang tải bàn phím gõ tiếng Hàn...</p>
+          <div className="w-8 h-8 border-4 border-rose-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-slate-400 font-bold">Đang khởi tạo sân khấu 3D...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#09090b] text-white overflow-hidden font-sans">
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -57,7 +57,7 @@ function TypingContent() {
           onOpenCreateModal={() => setIsCreateModalOpen(true)}
         />
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 pb-20 md:pb-6 max-w-5xl w-full mx-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <main className="flex-1 overflow-hidden p-2 sm:p-4 max-w-5xl w-full mx-auto flex flex-col justify-between">
           <KoreanTypingTutor decks={decks} />
         </main>
       </div>
@@ -72,7 +72,7 @@ function TypingContent() {
 
 export default function TypingPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#faf8f5] text-slate-900 p-8">Đang tải...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#09090b] text-white p-8">Đang tải...</div>}>
       <TypingContent />
     </Suspense>
   );
