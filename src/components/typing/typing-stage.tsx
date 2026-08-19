@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RotateCw, CheckCircle2, ArrowRight } from 'lucide-react';
+import { composeJamosToHangul } from '@/lib/hangul-engine';
 import { useTheme } from '@/lib/theme-context';
 
 interface TypingStageProps {
@@ -29,6 +30,11 @@ export default function TypingStage({
   handleNextLesson
 }: TypingStageProps) {
   const { themeConfig } = useTheme();
+
+  // Live composed Hangul from currently typed Jamos for active syllable
+  const livePartialHangul = useMemo(() => {
+    return composeJamosToHangul(activeTypedJamoSlice);
+  }, [activeTypedJamoSlice]);
 
   // Dynamic Font Size & Responsive Cursor Metrics Matrix
   const { fontSizeClass, focusBoxPaddingClass, cursorHeightClass } = useMemo(() => {
@@ -70,7 +76,7 @@ export default function TypingStage({
 
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2 font-sans select-none">
-      {/* GIANT TARGET KOREAN CHARACTER - 100% TARGET CHARACTER VISIBILITY PRESERVED */}
+      {/* GIANT TARGET KOREAN CHARACTER - REALTIME PARTIAL SYLLABLE LIVE ASSEMBLY */}
       <div className={`${fontSizeClass} font-black tracking-widest flex flex-wrap items-center justify-center gap-2 sm:gap-4 max-w-full px-4 transition-all`}>
         {targetText.split('').map((originalChar, index) => {
           const isCompleted = index < completedSyllableCount;
@@ -94,7 +100,7 @@ export default function TypingStage({
                     : 'bg-blue-50/70 border-blue-200/90 text-blue-600'
                 }`}
               >
-                {/* ALWAYS RENDER THE COMPLETE TARGET CHARACTER originalChar SO THE USER CAN SEE ALL STROKES */}
+                {/* RENDER LIVE COMPOSED JAMO (ㅇ -> 아 -> 안) IN THEME BLUE WHEN TYPED */}
                 <span
                   className={`${
                     hasError
@@ -104,7 +110,11 @@ export default function TypingStage({
                       : 'text-slate-300'
                   } font-black`}
                 >
-                  {originalChar === ' ' ? '␣' : originalChar}
+                  {activeTypedJamoSlice.length > 0
+                    ? livePartialHangul
+                    : originalChar === ' '
+                    ? '␣'
+                    : originalChar}
                 </span>
 
                 {/* THIN GRAY BLINKING CURSOR (|) INSIDE THE ACTIVE FOCUS BOX */}
