@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RotateCw, CheckCircle2, ArrowRight } from 'lucide-react';
-import { composeJamosToHangul } from '@/lib/hangul-engine';
+import { composeJamosToHangul, decomposeSyllableToJamo } from '@/lib/hangul-engine';
 import { useTheme } from '@/lib/theme-context';
 
 interface TypingStageProps {
@@ -76,7 +76,7 @@ export default function TypingStage({
 
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2 font-sans select-none">
-      {/* GIANT TARGET KOREAN CHARACTER - REALTIME PARTIAL SYLLABLE LIVE ASSEMBLY */}
+      {/* GIANT TARGET KOREAN CHARACTER - JAMO-LEVEL LIVE BLUE & GRAY COLOR ENGINE (MATCHING TYPE.TODAY SCREENSHOT 100%) */}
       <div className={`${fontSizeClass} font-black tracking-widest flex flex-wrap items-center justify-center gap-2 sm:gap-4 max-w-full px-4 transition-all`}>
         {targetText.split('').map((originalChar, index) => {
           const isCompleted = index < completedSyllableCount;
@@ -91,6 +91,12 @@ export default function TypingStage({
           }
 
           if (isActive) {
+            // Decompose target character to find remaining untyped Jamos
+            const decomposedTargetJamos = decomposeSyllableToJamo(originalChar);
+            const typedCount = activeTypedJamoSlice.length;
+            const remainingJamos = decomposedTargetJamos.slice(typedCount);
+            const remainingText = composeJamosToHangul(remainingJamos);
+
             return (
               <span
                 key={index}
@@ -100,31 +106,30 @@ export default function TypingStage({
                     : 'bg-blue-50/70 border-blue-200/90 text-blue-600'
                 }`}
               >
-                {/* RENDER LIVE COMPOSED JAMO (ㅇ -> 아 -> 안) IN THEME BLUE WHEN TYPED */}
-                <span
-                  className={`${
-                    hasError
-                      ? 'text-rose-600'
-                      : activeTypedJamoSlice.length > 0
-                      ? themeConfig.primaryText
-                      : 'text-slate-300'
-                  } font-black`}
-                >
-                  {activeTypedJamoSlice.length > 0
-                    ? livePartialHangul
-                    : originalChar === ' '
-                    ? '␣'
-                    : originalChar}
-                </span>
+                {/* RENDER LIVE TYPED JAMO (ㅇ -> 아 -> 안) IN THEME BLUE */}
+                {typedCount > 0 && (
+                  <span className={`${hasError ? 'text-rose-600' : themeConfig.primaryText} font-black`}>
+                    {livePartialHangul}
+                  </span>
+                )}
 
                 {/* THIN GRAY BLINKING CURSOR (|) INSIDE THE ACTIVE FOCUS BOX */}
                 {!isLessonComplete && (
                   <span
                     className={`w-[2.5px] ${cursorHeightClass} ${
                       hasError ? 'bg-rose-500' : 'bg-slate-400'
-                    } animate-pulse rounded-full inline-block ml-1.5 shrink-0 align-middle`}
+                    } animate-pulse rounded-full inline-block ${typedCount > 0 ? 'ml-1 mr-1' : 'mr-1'} shrink-0 align-middle`}
                   />
                 )}
+
+                {/* RENDER REMAINING UNTYPED JAMOS OF THE SYLLABLE IN SOFT NEUTRAL GRAY */}
+                <span className="text-slate-300 font-medium">
+                  {typedCount > 0
+                    ? remainingText
+                    : originalChar === ' '
+                    ? '␣'
+                    : originalChar}
+                </span>
               </span>
             );
           }
