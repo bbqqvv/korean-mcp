@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Noto_Sans_KR } from 'next/font/google';
 import './globals.css';
+import { ThemeProvider } from '@/lib/theme-context';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -27,8 +28,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className={`${inter.variable} ${notoSansKR.variable}`}>
-      <body className="bg-[#faf9f6] text-slate-900 antialiased font-sans selection:bg-rose-500 selection:text-white min-h-screen flex flex-col">
-        {children}
+      <body className="bg-[#faf8f5] text-slate-900 antialiased font-sans selection:bg-blue-500 selection:text-white min-h-screen flex flex-col">
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

@@ -11,6 +11,7 @@ import {
   ArrowBigUp
 } from 'lucide-react';
 import { Flashcard, Deck } from '@/lib/types';
+import { useTheme } from '@/lib/theme-context';
 import confetti from 'canvas-confetti';
 
 interface KoreanTypingTutorProps {
@@ -222,6 +223,7 @@ const SENTENCE_LESSONS = [
 ];
 
 export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps) {
+  const { themeConfig } = useTheme();
   const [practiceMode, setPracticeMode] = useState<'jamo' | 'vocab' | 'sentence'>('jamo');
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [targetText, setTargetText] = useState('ㄱ');
@@ -448,7 +450,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
   return (
     <div className="h-full flex flex-col justify-between select-none font-sans overflow-hidden relative">
-      {/* Type.Today Top Header Bar (Soothing Porcelain & Ocean Blue Style) */}
+      {/* Type.Today Top Header Bar (Soothing Porcelain & Ocean Blue / Lime Style) */}
       <div className="bg-white text-slate-900 border border-slate-200/80 rounded-2xl px-4 py-2.5 shadow-xs flex items-center justify-between gap-4 shrink-0">
         {/* Left: Exercise Counter & Progress Bar */}
         <div className="flex items-center gap-3 flex-1">
@@ -458,7 +460,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             </span>
             <div className="w-32 sm:w-44 bg-slate-100 h-1.5 rounded-full overflow-hidden border border-slate-200/80">
               <div
-                className="bg-blue-600 h-full transition-all duration-300"
+                className={`${themeConfig.primaryBg} h-full transition-all duration-300`}
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -475,7 +477,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             <button
               onClick={() => setPracticeMode('jamo')}
               className={`px-2.5 py-0.5 rounded-full transition-all ${
-                practiceMode === 'jamo' ? 'bg-blue-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                practiceMode === 'jamo' ? `${themeConfig.primaryBg} text-white shadow-2xs` : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Phím
@@ -483,7 +485,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             <button
               onClick={() => setPracticeMode('vocab')}
               className={`px-2.5 py-0.5 rounded-full transition-all ${
-                practiceMode === 'vocab' ? 'bg-blue-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                practiceMode === 'vocab' ? `${themeConfig.primaryBg} text-white shadow-2xs` : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Từ Vựng
@@ -491,7 +493,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             <button
               onClick={() => setPracticeMode('sentence')}
               className={`px-2.5 py-0.5 rounded-full transition-all ${
-                practiceMode === 'sentence' ? 'bg-blue-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                practiceMode === 'sentence' ? `${themeConfig.primaryBg} text-white shadow-2xs` : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Câu
@@ -503,7 +505,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             className="p-1.5 text-slate-600 hover:text-slate-900 bg-white border border-slate-200/80 rounded-full shadow-2xs transition-colors"
             title="Bật/Tắt Âm Thanh"
           >
-            {isSoundOn ? <Volume2 className="w-3.5 h-3.5 text-blue-600" /> : <VolumeX className="w-3.5 h-3.5 text-slate-400" />}
+            {isSoundOn ? <Volume2 className={`w-3.5 h-3.5 ${themeConfig.primaryText}`} /> : <VolumeX className="w-3.5 h-3.5 text-slate-400" />}
           </button>
         </div>
       </div>
@@ -527,8 +529,8 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                 // MISTAKE SYLLABLE: SOFT ROSE RED CLEAN HIGHLIGHT (NO TEXT WARNING BELOW!)
                 charStyle = 'text-rose-500 bg-rose-50 rounded-2xl px-3 py-1 animate-pulse';
               } else {
-                // CURRENTLY TYPING SYLLABLE: ROYAL OCEAN BLUE
-                charStyle = 'text-blue-600 font-black';
+                // CURRENTLY TYPING SYLLABLE: DYNAMIC THEME ACCENT
+                charStyle = `${themeConfig.primaryText} font-black`;
               }
             } else {
               // UPCOMING SYLLABLE: SOOTHING DEEP SLATE
@@ -573,7 +575,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
               <button
                 onClick={handleNextLesson}
-                className="px-5 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-1.5 transition-all"
+                className={`px-5 py-1.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full shadow-xs flex items-center gap-1.5 transition-all`}
               >
                 <span>Bài Tiếp Theo (Enter ↵)</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -661,7 +663,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
                 if (isTarget) {
                   keyCapStyle =
-                    'bg-blue-600 border-blue-600 border-b-4 border-b-blue-800 text-white font-black ring-4 ring-blue-400/40 shadow-xl scale-105 animate-pulse';
+                    `${themeConfig.primaryBg} border-blue-600 border-b-4 border-b-blue-800 text-white font-black ring-4 ${themeConfig.accentRing} shadow-xl scale-105 animate-pulse`;
                 }
 
                 if (isActive) {
@@ -681,7 +683,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                     onMouseLeave={() => setHoveredKeyChar(null)}
                     className={`w-10 h-12 sm:w-14 sm:h-14 rounded-xl flex flex-col justify-between p-1.5 transition-all duration-100 relative cursor-pointer overflow-hidden ${keyCapStyle}`}
                   >
-                    {/* BLUE BATTERY GAUGE MASTERY FILL */}
+                    {/* BATTERY GAUGE MASTERY FILL */}
                     {batteryLevel > 0 && !isTarget && !isActive && (
                       <div
                         className="absolute bottom-0 left-0 right-0 bg-blue-500/25 border-t border-blue-400/40 rounded-b-lg transition-all duration-500 pointer-events-none"
@@ -727,7 +729,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
             <div
               className={`w-72 sm:w-[26rem] h-11 sm:h-13 rounded-xl border border-slate-200/90 border-b-4 border-b-slate-300 flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                 nextQwertyKey === 'space'
-                  ? 'bg-blue-600 border-blue-600 border-b-blue-800 text-white ring-4 ring-blue-400/40 animate-pulse'
+                  ? `${themeConfig.primaryBg} border-blue-600 border-b-blue-800 text-white ring-4 ${themeConfig.accentRing} animate-pulse`
                   : 'bg-white text-slate-500'
               } ${activeKey === 'space' ? 'translate-y-1 border-b-2 shadow-sm' : ''}`}
             >

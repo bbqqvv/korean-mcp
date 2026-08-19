@@ -7,6 +7,7 @@ import Header from '@/components/header';
 import CreateDeckModal from '@/components/create-deck-modal';
 import EmailPreviewModal from '@/components/email-preview-modal';
 import { EmailLog } from '@/lib/types';
+import { useTheme, THEME_CONFIGS, ThemeId } from '@/lib/theme-context';
 import {
   Settings,
   Bot,
@@ -21,15 +22,18 @@ import {
   Bell,
   ExternalLink,
   Volume2,
-  Sliders
+  Sliders,
+  Palette,
+  CheckCircle2
 } from 'lucide-react';
 
 function SettingsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const initialTab = (searchParams.get('tab') as 'mcp' | 'email' | 'ai') || 'mcp';
+  const initialTab = (searchParams.get('tab') as 'mcp' | 'email' | 'theme' | 'ai') || 'mcp';
 
-  const [activeTab, setActiveTab] = useState<'mcp' | 'email' | 'ai'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'mcp' | 'email' | 'theme' | 'ai'>(initialTab);
+  const { theme, setTheme, themeConfig } = useTheme();
 
   // MCP Tab state
   const [copied, setCopied] = useState(false);
@@ -108,13 +112,13 @@ function SettingsContent() {
   }, []);
 
   useEffect(() => {
-    const tabParam = searchParams.get('tab') as 'mcp' | 'email' | 'ai';
-    if (tabParam && ['mcp', 'email', 'ai'].includes(tabParam)) {
+    const tabParam = searchParams.get('tab') as 'mcp' | 'email' | 'theme' | 'ai';
+    if (tabParam && ['mcp', 'email', 'theme', 'ai'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
 
-  const handleTabChange = (tab: 'mcp' | 'email' | 'ai') => {
+  const handleTabChange = (tab: 'mcp' | 'email' | 'theme' | 'ai') => {
     setActiveTab(tab);
     router.push(`/settings?tab=${tab}`);
   };
@@ -202,7 +206,7 @@ function SettingsContent() {
   };
 
   return (
-    <div className="flex h-screen bg-[#faf9f6] text-slate-900 overflow-hidden font-sans">
+    <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -217,60 +221,143 @@ function SettingsContent() {
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 pb-24 md:pb-8 max-w-5xl w-full mx-auto">
           {/* Header Title */}
-          <div className="border-b border-slate-200 pb-4">
+          <div className="border-b border-slate-200/80 pb-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-xs">
+              <div className={`w-8 h-8 rounded-2xl ${themeConfig.primaryBg} text-white flex items-center justify-center shadow-xs`}>
                 <Settings className="w-4.5 h-4.5" />
               </div>
               <div>
                 <h1 className="text-xl sm:text-2xl font-black text-slate-900">
-                  Cài Đặt Hệ Thống & Cấu Hình AI 🇰🇷
+                  Cài Đặt Hệ Thống & Bộ Màu Thiết Kế 🇰🇷
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500">
-                  Quản lý kết nối MCP Server, lịch gửi email nhắc học và tham số gia sư AI
+                  Tùy chọn tông màu giao diện (Xanh Chuối, Xanh Biển, Taegeuk, Obsidian), MCP Server và lịch gửi mail
                 </p>
               </div>
             </div>
           </div>
 
           {/* DISCRETE TABS */}
-          <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200/80">
+            <button
+              onClick={() => handleTabChange('theme')}
+              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
+                activeTab === 'theme'
+                  ? `${themeConfig.primaryBg} text-white shadow-sm`
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
+              }`}
+            >
+              <Palette className="w-4 h-4" />
+              <span>Bộ Màu Website</span>
+            </button>
+
             <button
               onClick={() => handleTabChange('mcp')}
-              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
                 activeTab === 'mcp'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                  ? `${themeConfig.primaryBg} text-white shadow-sm`
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
               }`}
             >
               <Bot className="w-4 h-4" />
-              <span>Cấu Hình MCP Server</span>
+              <span>MCP Server</span>
             </button>
 
             <button
               onClick={() => handleTabChange('email')}
-              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
                 activeTab === 'email'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                  ? `${themeConfig.primaryBg} text-white shadow-sm`
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
               }`}
             >
               <Mail className="w-4 h-4" />
-              <span>Lịch Nhắc Mail</span>
+              <span>Lịch Mail</span>
             </button>
 
             <button
               onClick={() => handleTabChange('ai')}
-              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
                 activeTab === 'ai'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                  ? `${themeConfig.primaryBg} text-white shadow-sm`
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
               }`}
             >
               <Sliders className="w-4 h-4" />
-              <span>AI & Phát Âm</span>
+              <span>AI & TTS</span>
             </button>
           </div>
+
+          {/* TAB: THEME COLOR CUSTOMIZER */}
+          {activeTab === 'theme' && (
+            <div className="space-y-6 animate-in fade-in duration-200">
+              <div className="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-6 shadow-xs">
+                <div className="border-b border-slate-200/80 pb-3">
+                  <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
+                    <Palette className={`w-5 h-5 ${themeConfig.primaryText}`} /> Bộ Thiết Kế Màu Sắc Toàn Website (Design Patterns)
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Chọn màu sắc bạn yêu thích. Cấu hình màu sẽ tự động lưu và áp dụng đồng bộ lên tất cả 14 trang học!
+                  </p>
+                </div>
+
+                {/* THEME GRID */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {(Object.keys(THEME_CONFIGS) as ThemeId[]).map((id) => {
+                    const cfg = THEME_CONFIGS[id];
+                    const isActive = theme === id;
+
+                    return (
+                      <div
+                        key={id}
+                        onClick={() => setTheme(id)}
+                        className={`border rounded-2xl p-5 cursor-pointer transition-all duration-200 relative overflow-hidden flex flex-col justify-between space-y-4 ${
+                          isActive
+                            ? `bg-white border-2 ${cfg.accentRing} shadow-md ring-4`
+                            : 'bg-slate-50/70 border-slate-200/80 hover:bg-slate-100/80 hover:border-slate-300'
+                        }`}
+                      >
+                        {/* Header Swatch */}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cfg.swatchGradient} shadow-xs shrink-0`} />
+                            <div>
+                              <h3 className="text-sm font-black text-slate-900 flex items-center gap-1.5">
+                                {cfg.name}
+                              </h3>
+                              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+                                {id === 'lime' ? '⚡ MÀU XANH CHUỐI TƯƠI' : id === 'ocean' ? '🌊 XANH BIỂN HOÀNG GIA' : id === 'crimson' ? '🌺 ĐỎ TAEGEUK HÀN QUỐC' : '🌙 OBSIDIAN DARK MODE'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {isActive && (
+                            <span className={`px-2.5 py-1 text-xs font-bold text-white rounded-full ${cfg.primaryBg} shadow-2xs flex items-center gap-1 shrink-0`}>
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Đang Dùng
+                            </span>
+                          )}
+                        </div>
+
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          {cfg.description}
+                        </p>
+
+                        {/* Swatches preview pills */}
+                        <div className="flex items-center gap-2 pt-1 border-t border-slate-200/60">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">Mẫu xem trước:</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className={`w-4 h-4 rounded-full ${cfg.primaryBg}`} />
+                            <span className="w-4 h-4 rounded-full bg-emerald-500" />
+                            <span className="w-4 h-4 rounded-full bg-slate-900" />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* TAB 1: MCP SERVER & SANDBOX */}
           {activeTab === 'mcp' && (
@@ -288,7 +375,7 @@ function SettingsContent() {
                   </div>
                   <button
                     onClick={copyEndpoint}
-                    className="px-4 py-1.5 text-[12px] sm:text-[13px] font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-sm w-full sm:w-auto flex items-center justify-center gap-1.5 transition-colors"
+                    className={`px-4 py-1.5 text-[12px] sm:text-[13px] font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full shadow-sm w-full sm:w-auto flex items-center justify-center gap-1.5 transition-colors`}
                   >
                     {copied ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
                     <span>{copied ? 'Đã Sao Chép!' : 'Sao Chép URL'}</span>
@@ -306,7 +393,7 @@ function SettingsContent() {
               {/* Guide steps */}
               <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white border border-slate-200 rounded-3xl p-4 space-y-2 shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs">
+                  <div className={`w-8 h-8 rounded-full ${themeConfig.primaryBg} text-white font-bold flex items-center justify-center text-xs`}>
                     1
                   </div>
                   <h3 className="font-bold text-slate-900 text-sm">Cấu hình Extension</h3>
@@ -341,7 +428,7 @@ function SettingsContent() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <Terminal className="w-4 h-4 text-blue-600" />
+                      <Terminal className={`w-4 h-4 ${themeConfig.primaryText}`} />
                       <h2 className="text-base font-black text-slate-900">Trình Chạy Thử Tool MCP (Live Sandbox)</h2>
                     </div>
                     <p className="text-xs text-slate-500 mt-0.5">Giả lập việc AI Agent gọi trực tiếp vào các Tool của MCP Server</p>
@@ -354,7 +441,7 @@ function SettingsContent() {
                         onClick={() => setActiveTool(tool)}
                         className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${
                           activeTool === tool
-                            ? 'bg-blue-600 text-white shadow-xs'
+                            ? `${themeConfig.primaryBg} text-white shadow-xs`
                             : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
@@ -411,7 +498,7 @@ function SettingsContent() {
                     <button
                       onClick={handleTestTool}
                       disabled={isTestingTool}
-                      className="w-full py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                      className={`w-full py-2.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-50`}
                     >
                       <Play className="w-3.5 h-3.5 fill-current" />
                       <span>{isTestingTool ? 'Đang gọi MCP Server...' : 'Chạy Thử Tool MCP'}</span>
@@ -443,7 +530,7 @@ function SettingsContent() {
                 {/* Form Settings */}
                 <form onSubmit={handleSaveEmailConfig} className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
                   <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-blue-600" /> Cấu Hình Lịch Nhắc Học Qua Email
+                    <Mail className={`w-4 h-4 ${themeConfig.primaryText}`} /> Cấu Hình Lịch Nhắc Học Qua Email
                   </h2>
 
                   <div>
@@ -479,7 +566,7 @@ function SettingsContent() {
                   <div className="flex gap-2 pt-1">
                     <button
                       type="submit"
-                      className="flex-1 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs"
+                      className={`flex-1 py-2.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full shadow-xs`}
                     >
                       {isSavedEmail ? '✓ Đã Lưu Cấu Hình!' : 'Lưu Thay Đổi'}
                     </button>
@@ -490,7 +577,7 @@ function SettingsContent() {
                       disabled={isSendingEmail}
                       className="px-4 py-2.5 text-xs font-bold text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 rounded-full flex items-center gap-1.5 shadow-xs"
                     >
-                      <Send className="w-3.5 h-3.5 text-blue-600" />
+                      <Send className={`w-3.5 h-3.5 ${themeConfig.primaryText}`} />
                       <span>Gửi Thử</span>
                     </button>
                   </div>
@@ -524,7 +611,7 @@ function SettingsContent() {
               {/* Logs History Table */}
               <div className="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-sm">
                 <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-blue-600" /> Lịch Sử Email Đã Gửi ({logs.length})
+                  <Mail className={`w-4 h-4 ${themeConfig.primaryText}`} /> Lịch Sử Email Đã Gửi ({logs.length})
                 </h3>
 
                 <div className="overflow-x-auto">
@@ -554,7 +641,7 @@ function SettingsContent() {
                           <td className="p-3 text-right whitespace-nowrap">
                             <button
                               onClick={() => router.push(log.previewUrl || '/')}
-                              className="px-3 py-1 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full"
+                              className={`px-3 py-1 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full`}
                             >
                               Mở Thẻ Học
                             </button>
@@ -574,7 +661,7 @@ function SettingsContent() {
               <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-sm">
                 <div className="border-b border-slate-200 pb-3">
                   <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
-                    <Bot className="w-5 h-5 text-blue-600" /> Cấu Hình Gia Sư AI & Giọng Đọc Phát Âm
+                    <Bot className={`w-5 h-5 ${themeConfig.primaryText}`} /> Cấu Hình Gia Sư AI & Giọng Đọc Phát Âm
                   </h2>
                   <p className="text-xs text-slate-500 mt-0.5">Tùy chỉnh tốc độ đọc tiếng Hàn và mô hình trí tuệ nhân tạo</p>
                 </div>
@@ -598,7 +685,7 @@ function SettingsContent() {
                   {/* Speech Rate Card */}
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">TỐC ĐỘ PHÁT ÂM TIẾNG HÀN (TTS)</span>
+                      <span className={`text-xs font-bold ${themeConfig.primaryText} uppercase tracking-wider`}>TỐC ĐỘ PHÁT ÂM TIẾNG HÀN (TTS)</span>
                       <Volume2 className="w-4 h-4 text-slate-600" />
                     </div>
 
@@ -625,7 +712,7 @@ function SettingsContent() {
                       setIsSavedAI(true);
                       setTimeout(() => setIsSavedAI(false), 2000);
                     }}
-                    className="px-6 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs"
+                    className={`px-6 py-2.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full shadow-xs`}
                   >
                     {isSavedAI ? '✓ Đã Lưu Cấu Hình AI!' : 'Lưu Cấu Hình AI'}
                   </button>
@@ -652,7 +739,7 @@ function SettingsContent() {
 
 export default function SettingsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#faf9f6] text-slate-900 p-8">Đang tải cài đặt...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#faf8f5] text-slate-900 p-8">Đang tải cài đặt...</div>}>
       <SettingsContent />
     </Suspense>
   );
