@@ -8,16 +8,10 @@ import {
   RotateCw,
   CheckCircle2,
   ArrowRight,
-  ArrowBigUp,
-  Trophy,
-  Activity,
-  Target,
-  Sparkles,
-  Home
+  ArrowBigUp
 } from 'lucide-react';
 import { Flashcard, Deck } from '@/lib/types';
 import confetti from 'canvas-confetti';
-import Link from 'next/link';
 
 interface KoreanTypingTutorProps {
   decks?: Deck[];
@@ -202,7 +196,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const [startTime, setStartTime] = useState<number | null>(null);
   const [totalTypedKeys, setTotalTypedKeys] = useState(0);
   const [correctTypedKeys, setCorrectTypedKeys] = useState(0);
-  const [wpm, setWpm] = useState(0);
   const [isLessonComplete, setIsLessonComplete] = useState(false);
 
   // Vocabulary list from decks
@@ -341,13 +334,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           speakKorean(inputHangulChar);
         }
 
-        if (startTime) {
-          const elapsedMinutes = (Date.now() - startTime) / 60000;
-          if (elapsedMinutes > 0) {
-            setWpm(Math.round((newInput.length / 5) / elapsedMinutes));
-          }
-        }
-
         if (newInput === targetText) {
           setIsLessonComplete(true);
           if (practiceMode !== 'jamo') {
@@ -367,7 +353,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const totalLessonsCount = currentLessonsList.length;
   const currentLessonNum = (currentLessonIndex % totalLessonsCount) + 1;
   const progressPercent = Math.round((currentLessonNum / totalLessonsCount) * 100);
-  const accuracyPercentage = totalTypedKeys > 0 ? Math.round((correctTypedKeys / totalTypedKeys) * 100) : 100;
 
   // Selected hovered key stats for popover tooltip
   const hoveredStatData = useMemo(() => {
@@ -452,111 +437,71 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       </div>
 
-      {/* CENTER STAGE */}
-      {isLessonComplete ? (
-        /* COMPREHENSIVE CELEBRATION SUMMARY SCREEN */
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center p-6 text-center space-y-4 shadow-xs my-2 max-w-2xl mx-auto w-full"
-        >
-          <div className="w-14 h-14 bg-rose-600 text-white rounded-full flex items-center justify-center shadow-xs">
-            <Trophy className="w-7 h-7 text-amber-300" />
-          </div>
-
-          <div className="space-y-1">
-            <h2 className="text-xl font-black text-slate-900">
-              Hoàn Thành Thử Thách Gõ Phím! 🎉
-            </h2>
-            <p className="text-xs text-slate-500">
-              Bài tập: {practiceMode === 'jamo' ? 'Phím Cơ Bản' : practiceMode === 'vocab' ? 'Từ Vựng' : 'Mẫu Câu'} #{currentLessonNum}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-3 gap-3 w-full pt-1">
-            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-center space-y-0.5">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-center gap-1">
-                <Target className="w-3.5 h-3.5 text-emerald-600" /> Chính Xác
-              </span>
-              <div className="text-xl font-black text-slate-900">{accuracyPercentage}%</div>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-center space-y-0.5">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-center gap-1">
-                <Activity className="w-3.5 h-3.5 text-blue-600" /> Tốc Độ WPM
-              </span>
-              <div className="text-xl font-black text-slate-900">{wpm || 38}</div>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-center space-y-0.5">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-rose-600" /> Phím Đã Thuộc
-              </span>
-              <div className="text-xl font-black text-slate-900">33 / 33</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 pt-2">
-            <button
-              onClick={handleResetLesson}
-              className="px-5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center gap-1.5 transition-colors border border-slate-200/80"
-            >
-              <RotateCw className="w-3.5 h-3.5 text-slate-600" /> Gõ Lại Bài Này
-            </button>
-
-            <button
-              onClick={handleNextLesson}
-              className="px-6 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-1.5 transition-all"
-            >
-              <span>Bài Tiếp Theo (Enter ↵)</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-
-            <Link
-              href="/"
-              className="px-4 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-200/80 hover:bg-slate-50 rounded-full flex items-center gap-1 transition-colors"
-            >
-              <Home className="w-3.5 h-3.5 text-slate-500" /> Trang Chủ
-            </Link>
-          </div>
-        </motion.div>
-      ) : (
-        /* MAIN TARGET STAGE */
-        <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-          {/* GIANT TARGET KOREAN CHARACTER - FLOATING CLEANLY */}
-          <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest text-rose-600 drop-shadow-2xs flex items-center justify-center gap-2 transition-all">
-            {targetText.split('').map((char, index) => {
-              let charStyle = 'text-rose-600';
-              if (index < userInput.length) {
-                if (userInput[index] === char) {
-                  charStyle = 'text-emerald-600 font-black';
-                } else {
-                  charStyle = 'text-rose-800';
-                }
-              } else if (index === userInput.length) {
-                charStyle = 'text-rose-500 font-black';
+      {/* CENTER STAGE: Floating Target Korean Character with Clean Completion Feedback */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
+        {/* GIANT TARGET KOREAN CHARACTER - FLOATING CLEANLY */}
+        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest text-rose-600 drop-shadow-2xs flex items-center justify-center gap-2 transition-all">
+          {targetText.split('').map((char, index) => {
+            let charStyle = 'text-rose-600';
+            if (index < userInput.length) {
+              if (userInput[index] === char) {
+                charStyle = 'text-emerald-600 font-black';
+              } else {
+                charStyle = 'text-rose-800';
               }
+            } else if (index === userInput.length) {
+              charStyle = 'text-rose-500 font-black';
+            }
 
-              return (
-                <span key={index} className={`transition-all ${charStyle}`}>
-                  {char === ' ' ? '␣' : char}
-                </span>
-              );
-            })}
-          </div>
-
-          {/* Clean Subtext */}
-          <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
-            {targetMeaning ? (
-              <span className="text-slate-600 font-bold text-sm sm:text-base">{targetMeaning}</span>
-            ) : (
-              <span>Press key to continue</span>
-            )}
-          </div>
+            return (
+              <span key={index} className={`transition-all ${charStyle}`}>
+                {char === ' ' ? '␣' : char}
+              </span>
+            );
+          })}
         </div>
-      )}
 
-      {/* BOTTOM STAGE: Giant 3D Perspective Keyboard floating cleanly without outer card box */}
+        {/* Clean Subtext (Meaning or Guidance) */}
+        <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
+          {isLessonComplete ? (
+            <span className="text-emerald-600 font-bold flex items-center gap-1.5 justify-center">
+              <CheckCircle2 className="w-4 h-4" /> Hoàn thành bài tập! Bấm phím tiếp theo (Enter ↵)
+            </span>
+          ) : targetMeaning ? (
+            <span className="text-slate-600 font-bold text-sm sm:text-base">{targetMeaning}</span>
+          ) : (
+            <span>Press key to continue</span>
+          )}
+        </div>
+
+        {/* Inline Completion Action Buttons */}
+        <AnimatePresence>
+          {isLessonComplete && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="pt-1 flex items-center justify-center gap-3"
+            >
+              <button
+                onClick={handleResetLesson}
+                className="px-4 py-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center gap-1.5 transition-colors border border-slate-200/80"
+              >
+                <RotateCw className="w-3.5 h-3.5" /> Gõ Lại
+              </button>
+
+              <button
+                onClick={handleNextLesson}
+                className="px-5 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-1.5 transition-all"
+              >
+                <span>Bài Tiếp Theo (Enter ↵)</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* BOTTOM STAGE: Giant 3D Perspective Keyboard Floating Cleanly */}
       <div className="relative shrink-0 pb-2 [perspective:800px]">
         {/* Exact Type.Today Hover Stat Popover Tooltip Box with Mistakes Badges */}
         <AnimatePresence>
