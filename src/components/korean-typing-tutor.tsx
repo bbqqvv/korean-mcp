@@ -9,7 +9,7 @@ import {
   CheckCircle2,
   Sparkles,
   ArrowRight,
-  ChevronRight,
+  ArrowBigUp,
   Keyboard
 } from 'lucide-react';
 import { Flashcard, Deck } from '@/lib/types';
@@ -33,39 +33,72 @@ Object.entries(QWERTY_TO_HANGUL).forEach(([qwerty, hangul]) => {
   HANGUL_TO_QWERTY[hangul] = qwerty.toLowerCase();
 });
 
-// Keyboard Layout Rows
-const KEYBOARD_ROWS = [
+// Exact Type.Today 5-Row Keyboard Definition
+interface KeyDef {
+  key: string;
+  hangul: string;
+  native: string;
+  isHomeFinger?: boolean;
+  isShiftKey?: boolean;
+  isSpaceBar?: boolean;
+}
+
+const EXACT_TYPE_TODAY_ROWS: KeyDef[][] = [
+  // Row 0: Number Row
   [
-    { key: 'q', hangul: 'ㅂ', shiftHangul: 'ㅃ' },
-    { key: 'w', hangul: 'ㅈ', shiftHangul: 'ㅉ' },
-    { key: 'e', hangul: 'ㄷ', shiftHangul: 'ㄸ' },
-    { key: 'r', hangul: 'ㄱ', shiftHangul: 'ㄲ' },
-    { key: 't', hangul: 'ㅅ', shiftHangul: 'ㅆ' },
-    { key: 'y', hangul: 'ㅛ', shiftHangul: '' },
-    { key: 'u', hangul: 'ㅕ', shiftHangul: '' },
-    { key: 'i', hangul: 'ㅑ', shiftHangul: '' },
-    { key: 'o', hangul: 'ㅐ', shiftHangul: 'ㅒ' },
-    { key: 'p', hangul: 'ㅔ', shiftHangul: 'ㅖ' }
+    { key: '1', hangul: '1', native: '' },
+    { key: '2', hangul: '2', native: '' },
+    { key: '3', hangul: '3', native: '' },
+    { key: '4', hangul: '4', native: '' },
+    { key: '5', hangul: '5', native: '' },
+    { key: '6', hangul: '6', native: '' },
+    { key: '7', hangul: '7', native: '' },
+    { key: '8', hangul: '8', native: '' },
+    { key: '9', hangul: '9', native: '' },
+    { key: '0', hangul: '0', native: '' },
+    { key: '-', hangul: '-', native: '' },
+    { key: '=', hangul: '=', native: '' }
   ],
+  // Row 1: Top QWERTY Row
   [
-    { key: 'a', hangul: 'ㅁ', shiftHangul: '' },
-    { key: 's', hangul: 'ㄴ', shiftHangul: '' },
-    { key: 'd', hangul: 'ㅇ', shiftHangul: '' },
-    { key: 'f', hangul: 'ㄹ', shiftHangul: '' },
-    { key: 'g', hangul: 'ㅎ', shiftHangul: '' },
-    { key: 'h', hangul: 'ㅗ', shiftHangul: '' },
-    { key: 'j', hangul: 'ㅓ', shiftHangul: '' },
-    { key: 'k', hangul: 'ㅏ', shiftHangul: '' },
-    { key: 'l', hangul: 'ㅣ', shiftHangul: '' }
+    { key: 'q', hangul: 'ㅂ', native: 'Q' },
+    { key: 'w', hangul: 'ㅈ', native: 'W' },
+    { key: 'e', hangul: 'ㄷ', native: 'E' },
+    { key: 'r', hangul: 'ㄱ', native: 'R' },
+    { key: 't', hangul: 'ㅅ', native: 'T' },
+    { key: 'y', hangul: 'ㅛ', native: 'Y' },
+    { key: 'u', hangul: 'ㅕ', native: 'U' },
+    { key: 'i', hangul: 'ㅑ', native: 'I' },
+    { key: 'o', hangul: 'ㅐ', native: 'O' },
+    { key: 'p', hangul: 'ㅔ', native: 'P' },
+    { key: '[', hangul: '[', native: '' }
   ],
+  // Row 2: Home Row (with Home Finger Guides on ㄹ/F and ㅓ/J)
   [
-    { key: 'z', hangul: 'ㅋ', shiftHangul: '' },
-    { key: 'x', hangul: 'ㅌ', shiftHangul: '' },
-    { key: 'c', hangul: 'ㅊ', shiftHangul: '' },
-    { key: 'v', hangul: 'ㅍ', shiftHangul: '' },
-    { key: 'b', hangul: 'ㅠ', shiftHangul: '' },
-    { key: 'n', hangul: 'ㅜ', shiftHangul: '' },
-    { key: 'm', hangul: 'ㅡ', shiftHangul: '' }
+    { key: 'a', hangul: 'ㅁ', native: 'A' },
+    { key: 's', hangul: 'ㄴ', native: 'S' },
+    { key: 'd', hangul: 'ㅇ', native: 'D' },
+    { key: 'f', hangul: 'ㄹ', native: 'F', isHomeFinger: true },
+    { key: 'g', hangul: 'ㅎ', native: 'G' },
+    { key: 'h', hangul: 'ㅗ', native: 'H' },
+    { key: 'j', hangul: 'ㅓ', native: 'J', isHomeFinger: true },
+    { key: 'k', hangul: 'ㅏ', native: 'K' },
+    { key: 'l', hangul: 'ㅣ', native: 'L' },
+    { key: ';', hangul: ';', native: '' }
+  ],
+  // Row 3: Bottom Row (with Left & Right Shift Keys)
+  [
+    { key: 'shift_left', hangul: '', native: '', isShiftKey: true },
+    { key: 'z', hangul: 'ㅋ', native: 'Z' },
+    { key: 'x', hangul: 'ㅌ', native: 'X' },
+    { key: 'c', hangul: 'ㅊ', native: 'C' },
+    { key: 'v', hangul: 'ㅍ', native: 'V' },
+    { key: 'b', hangul: 'ㅠ', native: 'B' },
+    { key: 'n', hangul: 'ㅜ', native: 'N' },
+    { key: 'm', hangul: 'ㅡ', native: 'M' },
+    { key: ',', hangul: ',', native: '' },
+    { key: '.', hangul: '.', native: '' },
+    { key: 'shift_right', hangul: '', native: '', isShiftKey: true }
   ]
 ];
 
@@ -363,77 +396,75 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </AnimatePresence>
       </div>
 
-      {/* BOTTOM STAGE: 3D Perspective Angled Korean Virtual Keyboard (Type.Today Style) */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-7 shadow-xl overflow-hidden [perspective:1000px]">
-        {/* 3D Angled Container */}
-        <div className="space-y-2 [transform:rotateX(20deg)_scale(0.96)] transition-transform duration-300 origin-bottom">
-          {KEYBOARD_ROWS.map((row, rIdx) => (
-            <div
-              key={rIdx}
-              className="flex justify-center gap-1.5 sm:gap-2"
-              style={{ paddingLeft: rIdx === 1 ? '1.5rem' : rIdx === 2 ? '3rem' : '0' }}
-            >
-              {/* Left Shift key on row 3 */}
-              {rIdx === 2 && (
-                <div className="w-12 sm:w-16 h-12 rounded-xl bg-slate-800 border border-slate-700 text-slate-400 flex items-center justify-center font-bold text-sm shadow-md">
-                  ⇧
-                </div>
-              )}
-
+      {/* BOTTOM STAGE: Exact Type.Today 5-Row 3D Angled Virtual Keyboard */}
+      <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-2xl overflow-hidden [perspective:1000px]">
+        {/* 3D Angled Container matching Type.Today */}
+        <div className="space-y-1.5 sm:space-y-2 [transform:rotateX(20deg)_scale(0.96)] transition-transform duration-300 origin-bottom">
+          {EXACT_TYPE_TODAY_ROWS.map((row, rIdx) => (
+            <div key={rIdx} className="flex justify-center gap-1 sm:gap-1.5">
               {row.map((item) => {
+                if (item.isShiftKey) {
+                  return (
+                    <div
+                      key={item.key}
+                      className="w-12 sm:w-16 h-10 sm:h-12 rounded-lg bg-slate-900 border border-slate-800 text-slate-500 flex items-center justify-center font-bold text-xs shadow-md"
+                    >
+                      <ArrowBigUp className="w-5 h-5 text-slate-400" />
+                    </div>
+                  );
+                }
+
                 const isTarget = nextQwertyKey === item.key;
                 const isActive = activeKey === item.key;
 
-                let keyCapStyle = 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700 shadow-md';
+                let keyCapStyle = 'bg-slate-900/90 border-slate-800 text-slate-400 opacity-60';
 
                 if (isTarget) {
-                  keyCapStyle = 'bg-blue-600 border-blue-500 text-white font-black ring-4 ring-blue-400/50 shadow-lg scale-105 animate-pulse';
-                }
-
-                if (isActive) {
+                  keyCapStyle = 'bg-blue-600 border-blue-400 text-white font-black ring-4 ring-blue-400/50 shadow-xl scale-105 animate-pulse opacity-100';
+                } else if (isActive) {
                   keyCapStyle = keyFeedback === 'wrong'
-                    ? 'bg-rose-600 text-white border-rose-500 scale-95'
-                    : 'bg-emerald-600 text-white border-emerald-500 scale-95';
+                    ? 'bg-rose-600 text-white border-rose-500 scale-95 opacity-100'
+                    : 'bg-emerald-600 text-white border-emerald-500 scale-95 opacity-100';
                 }
 
                 return (
                   <div
                     key={item.key}
-                    className={`w-10 h-12 sm:w-14 sm:h-14 rounded-xl border flex flex-col justify-between p-1.5 transition-all relative ${keyCapStyle}`}
+                    className={`w-9 h-11 sm:w-12 sm:h-13 rounded-lg border flex flex-col justify-between p-1 transition-all relative ${keyCapStyle}`}
                   >
-                    {/* Top-Left: Korean Hangul Character */}
-                    <span className="text-sm sm:text-base font-black leading-none text-left">
+                    {/* Top Hanguel Character (_keyHanguel) */}
+                    <span className="text-xs sm:text-sm font-black leading-none text-left">
                       {item.hangul}
                     </span>
 
-                    {/* Bottom-Right: QWERTY English Key */}
-                    <span className="text-[9px] sm:text-[10px] font-mono text-slate-400 uppercase text-right leading-none">
-                      {item.key}
+                    {/* Bottom Native QWERTY Character (_keyNative) */}
+                    <span className="text-[9px] font-mono text-slate-400 uppercase text-right leading-none">
+                      {item.native}
                     </span>
+
+                    {/* Home Finger Dot Indicator (_isHomeFinger) */}
+                    {item.isHomeFinger && (
+                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-slate-400/80 rounded-full" />
+                    )}
                   </div>
                 );
               })}
-
-              {/* Right Shift key on row 3 */}
-              {rIdx === 2 && (
-                <div className="w-12 sm:w-16 h-12 rounded-xl bg-slate-800 border border-slate-700 text-slate-400 flex items-center justify-center font-bold text-sm shadow-md">
-                  ⇧
-                </div>
-              )}
             </div>
           ))}
 
-          {/* Spacebar Row */}
-          <div className="flex justify-center pt-2">
+          {/* Row 4: Spacebar Row matching Type.Today */}
+          <div className="flex justify-center gap-1.5 pt-1">
+            <div className="w-12 sm:w-16 h-10 sm:h-12" />
             <div
-              className={`w-72 sm:w-96 h-10 sm:h-12 rounded-xl border flex items-center justify-center text-xs font-bold text-slate-400 shadow-md transition-all ${
+              className={`w-72 sm:w-96 h-10 sm:h-12 rounded-lg border flex items-center justify-center text-xs font-bold transition-all shadow-md ${
                 nextQwertyKey === 'space'
-                  ? 'bg-blue-600 border-blue-500 text-white ring-4 ring-blue-400/50 animate-pulse'
-                  : 'bg-slate-800 border-slate-700'
+                  ? 'bg-blue-600 border-blue-400 text-white ring-4 ring-blue-400/50 animate-pulse'
+                  : 'bg-slate-900/90 border-slate-800 text-slate-500 opacity-60'
               }`}
             >
-              SPACEBAR
+              <span className="text-xs font-mono">SPACEBAR</span>
             </div>
+            <div className="w-12 sm:w-16 h-10 sm:h-12" />
           </div>
         </div>
       </div>
