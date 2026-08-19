@@ -22,12 +22,10 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
   const total = cards.length;
   const currentCard = cards[currentIndex];
 
-  // Helper function to shuffle array
   function shuffleArray<T>(arr: T[]): T[] {
     return [...arr].sort(() => Math.random() - 0.5);
   }
 
-  // Generate 4 randomized options for the current question index
   const options = useMemo(() => {
     if (!currentCard) return [];
     const wrongChoices = cards
@@ -62,7 +60,6 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
     }
   }, [currentIndex, cards.length]);
 
-  // Keyboard Shortcuts Listener (1, 2, 3, 4 and Enter)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isCompleted) return;
@@ -102,26 +99,26 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
   if (isCompleted || !currentCard) {
     const percentage = Math.round((score / total) * 100);
     return (
-      <div className="flex flex-col items-center justify-center p-8 bg-white border border-slate-200/80 rounded-2xl max-w-xl mx-auto text-center space-y-5 shadow-xs">
-        <div className="w-16 h-16 bg-slate-900 text-white rounded-full flex items-center justify-center shadow-xs">
-          <Award className="w-8 h-8 text-indigo-400" />
+      <div className="flex flex-col items-center justify-center p-6 bg-white border border-slate-200/80 rounded-2xl max-w-lg mx-auto text-center space-y-4 shadow-xs">
+        <div className="w-14 h-14 bg-slate-900 text-white rounded-full flex items-center justify-center shadow-xs">
+          <Award className="w-7 h-7 text-indigo-400" />
         </div>
 
         <div className="space-y-1">
-          <h3 className="text-xl font-black text-slate-900">
+          <h3 className="text-lg font-black text-slate-900">
             Hoàn Thành Bài Trắc Nghiệm! 🇰🇷
           </h3>
           <p className="text-slate-500 text-xs font-medium">Bộ từ vựng: {deckTitle}</p>
         </div>
 
-        <div className="w-full bg-slate-50 border border-slate-200/80 rounded-2xl p-6 space-y-2">
-          <div className="text-4xl font-black text-slate-900">
+        <div className="w-full bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-1.5">
+          <div className="text-3xl font-black text-slate-900">
             {score} / {total}
           </div>
           <p className="text-xs font-bold text-slate-600">
-            Tỷ lệ chính xác: <span className="text-emerald-600 font-extrabold text-sm">{percentage}%</span>
+            Tỷ lệ chính xác: <span className="text-emerald-600 font-extrabold text-xs sm:text-sm">{percentage}%</span>
           </p>
-          <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-3">
+          <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mt-2">
             <div
               className="bg-emerald-500 h-full transition-all duration-500"
               style={{ width: `${percentage}%` }}
@@ -129,7 +126,7 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 pt-2">
+        <div className="flex items-center gap-2.5 pt-1">
           <button
             onClick={() => {
               setCurrentIndex(0);
@@ -138,17 +135,17 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
               setSelectedAnswer(null);
               setIsCompleted(false);
             }}
-            className="px-6 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-2 transition-all"
+            className="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-1.5 transition-all"
           >
-            <RotateCw className="w-4 h-4" /> Thử Lại Quiz
+            <RotateCw className="w-3.5 h-3.5" /> Thử Lại Quiz
           </button>
 
           <Link
             href="/"
-            className="px-5 py-2.5 text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center gap-1.5 transition-colors"
+            className="px-4 py-2 text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center gap-1.5 transition-colors"
           >
-            <Home className="w-4 h-4 text-slate-600" />
-            <span>Về Trang Chủ</span>
+            <Home className="w-3.5 h-3.5 text-slate-600" />
+            <span>Trang Chủ</span>
           </Link>
         </div>
       </div>
@@ -158,36 +155,36 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
   const optionLabels = ['A', 'B', 'C', 'D'];
 
   return (
-    <div className="max-w-xl mx-auto space-y-4 font-sans">
-      {/* Main Question Card (Pure & Direct - Zero Top Header Bar!) */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 text-center space-y-6 shadow-xs">
-        {/* Korean Question Word */}
-        <div className="flex justify-center items-center gap-3">
-          <h2 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
+    <div className="max-w-lg mx-auto space-y-3 font-sans">
+      {/* Compact Question Card (Zero Scroll Fit) */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 text-center space-y-4 shadow-xs">
+        {/* Korean Word Question */}
+        <div className="flex justify-center items-center gap-2.5">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             {currentCard.korean}
           </h2>
           <button
             onClick={() => speakKorean(currentCard.korean)}
-            className="ios-glass-circle"
+            className="ios-glass-circle !w-7 !h-7 text-xs"
             title="Nghe phát âm"
           >
-            <Volume2 className="w-4 h-4 text-slate-700" />
+            <Volume2 className="w-3.5 h-3.5 text-slate-700" />
           </button>
         </div>
 
         {currentCard.pronunciation && (
-          <p className="text-xs text-slate-500 font-semibold font-mono tracking-widest">
+          <p className="text-xs text-slate-500 font-semibold font-mono tracking-widest -mt-2">
             [{currentCard.pronunciation}]
           </p>
         )}
 
         <p className="text-xs text-slate-600 font-bold flex items-center justify-center gap-1.5">
-          <HelpCircle className="w-4 h-4 text-rose-600" /> Chọn nghĩa tiếng Việt đúng nhất bên dưới:
-          <span className="text-[10px] text-slate-400 font-normal hidden sm:inline">(Dùng phím 1, 2, 3, 4)</span>
+          <HelpCircle className="w-3.5 h-3.5 text-rose-600" /> Chọn nghĩa tiếng Việt đúng nhất bên dưới:
+          <span className="text-[10px] text-slate-400 font-normal hidden sm:inline">(Phím 1, 2, 3, 4)</span>
         </p>
 
         {/* Option Cards Grid with Shortcuts 1, 2, 3, 4 */}
-        <div className="grid grid-cols-1 gap-3 text-left">
+        <div className="grid grid-cols-1 gap-2 text-left">
           {options.map((option, idx) => {
             const isCorrect = option === currentCard.vietnamese;
             const isSelected = selectedAnswer === option;
@@ -199,10 +196,10 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
 
             if (isSubmitted) {
               if (isCorrect) {
-                cardStyle = 'bg-emerald-50 border-emerald-300 text-emerald-950 font-bold ring-2 ring-emerald-400/20';
+                cardStyle = 'bg-emerald-50 border-emerald-300 text-emerald-950 font-bold ring-1 ring-emerald-400/30';
                 badgeStyle = 'bg-emerald-600 text-white border-emerald-600';
               } else if (isSelected) {
-                cardStyle = 'bg-rose-50 border-rose-300 text-rose-950 font-bold ring-2 ring-rose-400/20';
+                cardStyle = 'bg-rose-50 border-rose-300 text-rose-950 font-bold ring-1 ring-rose-400/30';
                 badgeStyle = 'bg-rose-600 text-white border-rose-600';
               } else {
                 cardStyle = 'bg-slate-50/50 border-slate-200 text-slate-400 opacity-60';
@@ -214,21 +211,21 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
                 key={idx}
                 disabled={isSubmitted}
                 onClick={() => handleSelect(option)}
-                className={`w-full p-4 rounded-xl border transition-all flex items-center justify-between text-xs sm:text-sm font-semibold shadow-2xs ${cardStyle}`}
+                className={`w-full py-2.5 px-3.5 rounded-xl border transition-all flex items-center justify-between text-xs font-semibold shadow-2xs ${cardStyle}`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <span
-                    className={`w-7 h-7 rounded-lg border flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs ${badgeStyle}`}
+                    className={`w-6 h-6 rounded-lg border flex items-center justify-center font-bold text-[11px] shrink-0 shadow-2xs ${badgeStyle}`}
                   >
                     {label}
                   </span>
-                  <span>{option}</span>
+                  <span className="truncate max-w-[280px] sm:max-w-xs">{option}</span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 shrink-0">
                   <span className="text-[10px] text-slate-400 font-mono hidden sm:inline">[{idx + 1}]</span>
-                  {isSubmitted && isCorrect && <CheckCircle2 className="w-5 h-5 text-emerald-600" />}
-                  {isSubmitted && isSelected && !isCorrect && <XCircle className="w-5 h-5 text-rose-600" />}
+                  {isSubmitted && isCorrect && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                  {isSubmitted && isSelected && !isCorrect && <XCircle className="w-4 h-4 text-rose-600" />}
                 </div>
               </button>
             );
@@ -239,13 +236,13 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
         <AnimatePresence>
           {isSubmitted && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-3 pt-2"
+              exit={{ opacity: 0, y: -6 }}
+              className="space-y-2.5 pt-1"
             >
               {/* Interactive Explanation Box */}
-              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs text-left space-y-1">
+              <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-xs text-left space-y-1">
                 <div className="font-bold text-slate-900 flex items-center justify-between">
                   <span>Đáp án đúng: &quot;{currentCard.vietnamese}&quot;</span>
                   {currentCard.hanja && (
@@ -255,7 +252,7 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
                   )}
                 </div>
                 {currentCard.exampleKr && (
-                  <p className="text-slate-600 pt-1">
+                  <p className="text-slate-600 text-[11px] pt-0.5">
                     💡 Ví dụ: <strong className="text-slate-900">&quot;{currentCard.exampleKr}&quot;</strong> {currentCard.exampleVi ? `👉 ${currentCard.exampleVi}` : ''}
                   </p>
                 )}
@@ -264,10 +261,10 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
               {/* Next Question CTA */}
               <button
                 onClick={handleNext}
-                className="w-full py-3 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center justify-center gap-2 transition-all"
+                className="w-full py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center justify-center gap-1.5 transition-all"
               >
-                <span>{currentIndex < total - 1 ? 'Câu Tiếp Theo' : 'Xem Kết Quả Quiz'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>{currentIndex < total - 1 ? 'Câu Tiếp Theo (Enter ↵)' : 'Xem Kết Quả Quiz'}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </motion.div>
           )}
