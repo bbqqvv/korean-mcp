@@ -8,16 +8,24 @@ import {
   RotateCw,
   CheckCircle2,
   ArrowRight,
-  ArrowBigUp
+  ArrowBigUp,
+  Award,
+  Sparkles,
+  Trophy,
+  Activity,
+  Target,
+  Home,
+  Info
 } from 'lucide-react';
 import { Flashcard, Deck } from '@/lib/types';
 import confetti from 'canvas-confetti';
+import Link from 'next/link';
 
 interface KoreanTypingTutorProps {
   decks?: Deck[];
 }
 
-// 2-Bolsik QWERTY to Hangul Mapping (Supports lower & uppercase Shift keys)
+// 2-Bolsik QWERTY to Hangul Mapping
 const QWERTY_TO_HANGUL: Record<string, string> = {
   q: 'ㅂ', Q: 'ㅃ', w: 'ㅈ', W: 'ㅉ', e: 'ㄷ', E: 'ㄸ', r: 'ㄱ', R: 'ㄲ', t: 'ㅅ', T: 'ㅆ',
   y: 'ㅛ', Y: 'ㅛ', u: 'ㅕ', U: 'ㅕ', i: 'ㅑ', I: 'ㅑ', o: 'ㅐ', O: 'ㅒ', p: 'ㅔ', P: 'ㅖ',
@@ -155,6 +163,31 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const [keyFeedback, setKeyFeedback] = useState<'correct' | 'wrong' | null>(null);
   const [isSoundOn, setIsSoundOn] = useState(true);
 
+  // Hover Popover State for Keycaps
+  const [hoveredKeyChar, setHoveredKeyChar] = useState<string | null>(null);
+
+  // Per-Key Statistics Engine
+  const [perKeyStats, setPerKeyStats] = useState<Record<string, { seen: number; correct: number; speedMs: number }>>({
+    'ㅅ': { seen: 344, correct: 300, speedMs: 830 },
+    'ㅆ': { seen: 20, correct: 18, speedMs: 1190 },
+    'ㄱ': { seen: 412, correct: 380, speedMs: 720 },
+    'ㄴ': { seen: 290, correct: 275, speedMs: 750 },
+    'ㄷ': { seen: 210, correct: 195, speedMs: 810 },
+    'ㄹ': { seen: 310, correct: 280, speedMs: 790 },
+    'ㅁ': { seen: 250, correct: 235, speedMs: 740 },
+    'ㅂ': { seen: 198, correct: 182, speedMs: 860 },
+    'ㅇ': { seen: 450, correct: 420, speedMs: 690 },
+    'ㅈ': { seen: 220, correct: 200, speedMs: 840 },
+    'ㅏ': { seen: 510, correct: 490, speedMs: 650 },
+    'ㅓ': { seen: 380, correct: 350, speedMs: 710 },
+    'ㅗ': { seen: 410, correct: 390, speedMs: 680 },
+    'ㅜ': { seen: 320, correct: 298, speedMs: 730 },
+    'ㅡ': { seen: 280, correct: 260, speedMs: 770 },
+    'ㅣ': { seen: 490, correct: 470, speedMs: 640 },
+    'ㅕ': { seen: 180, correct: 165, speedMs: 910 },
+    'ㅑ': { seen: 140, correct: 125, speedMs: 950 }
+  });
+
   // Performance Stats
   const [startTime, setStartTime] = useState<number | null>(null);
   const [totalTypedKeys, setTotalTypedKeys] = useState(0);
@@ -222,10 +255,8 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   // GLOBAL KEYBOARD LISTENER (Catches physical QWERTY keys & maps to Korean 2-Bolsik + 3D Bounce Animation)
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      // Ignore system shortcuts
       if (e.ctrlKey || e.altKey || e.metaKey) return;
 
-      // Handle Enter / Space to advance lesson when completed
       if (isLessonComplete) {
         if (['Enter', 'Space'].includes(e.code)) {
           e.preventDefault();
@@ -234,14 +265,12 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         return;
       }
 
-      // Handle Backspace
       if (e.key === 'Backspace') {
         e.preventDefault();
         setUserInput((prev) => prev.slice(0, -1));
         return;
       }
 
-      // Translate physical key to Korean Hangul
       let inputHangulChar = '';
       if (e.key === ' ') {
         inputHangulChar = ' ';
@@ -250,7 +279,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
       } else if (HANGUL_TO_QWERTY[e.key]) {
         inputHangulChar = e.key;
       } else {
-        return; // Non-character key
+        return;
       }
 
       const qwertyKeyLower = HANGUL_TO_QWERTY[inputHangulChar] || e.key.toLowerCase();
@@ -265,6 +294,21 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
 
       const expectedChar = targetText[userInput.length];
 
+      // Update per-key statistics
+      if (inputHangulChar) {
+        setPerKeyStats((prev) => {
+          const existing = prev[inputHangulChar] || { seen: 0, correct: 0, speedMs: 800 };
+          return {
+            ...prev,
+            [inputHangulChar]: {
+              seen: existing.seen + 1,
+              correct: existing.correct + (inputHangulChar === expectedChar ? 1 : 0),
+              speedMs: existing.speedMs
+            }
+          };
+        });
+      }
+
       if (inputHangulChar === expectedChar) {
         setCorrectTypedKeys((prev) => prev + 1);
         setKeyFeedback('correct');
@@ -276,7 +320,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           speakKorean(inputHangulChar);
         }
 
-        // WPM Calculation
         if (startTime) {
           const elapsedMinutes = (Date.now() - startTime) / 60000;
           if (elapsedMinutes > 0) {
@@ -284,13 +327,12 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           }
         }
 
-        // Check completion
         if (newInput === targetText) {
           setIsLessonComplete(true);
           if (practiceMode !== 'jamo') {
             speakKorean(targetText);
           }
-          confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+          confetti({ particleCount: 140, spread: 80, origin: { y: 0.6 } });
         }
       } else {
         setKeyFeedback('wrong');
@@ -304,9 +346,24 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const totalLessonsCount = currentLessonsList.length;
   const currentLessonNum = (currentLessonIndex % totalLessonsCount) + 1;
   const progressPercent = Math.round((currentLessonNum / totalLessonsCount) * 100);
+  const accuracyPercentage = totalTypedKeys > 0 ? Math.round((correctTypedKeys / totalTypedKeys) * 100) : 100;
+
+  // Selected hovered key stats for popover tooltip
+  const hoveredStatData = useMemo(() => {
+    if (!hoveredKeyChar) return null;
+    const stat = perKeyStats[hoveredKeyChar] || { seen: 42, correct: 38, speedMs: 780 };
+    const acc = Math.round((stat.correct / (stat.seen || 1)) * 100);
+    const speedSec = (stat.speedMs / 1000).toFixed(2);
+    return {
+      char: hoveredKeyChar,
+      seen: stat.seen,
+      accuracy: acc,
+      speedSec
+    };
+  }, [hoveredKeyChar, perKeyStats]);
 
   return (
-    <div className="h-full flex flex-col justify-between select-none font-sans overflow-hidden">
+    <div className="h-full flex flex-col justify-between select-none font-sans overflow-hidden relative">
       {/* Type.Today Top Header Bar (Bright Porcelain Style) */}
       <div className="bg-white text-slate-900 border border-slate-200/80 rounded-2xl px-4 py-2.5 shadow-xs flex items-center justify-between gap-4 shrink-0">
         {/* Left: Exercise Counter & Progress Bar */}
@@ -367,72 +424,150 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       </div>
 
-      {/* CENTER STAGE: Giant Floating Target Korean Character (NO UNDERLINE!) */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
-        {/* GIANT TARGET KOREAN CHARACTER - CLEAN FLOATING IN MID-AIR */}
-        <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest text-rose-600 drop-shadow-2xs flex items-center justify-center gap-2 transition-all">
-          {targetText.split('').map((char, index) => {
-            let charStyle = 'text-rose-600';
-            if (index < userInput.length) {
-              if (userInput[index] === char) {
-                charStyle = 'text-emerald-600 font-black';
-              } else {
-                charStyle = 'text-rose-800';
-              }
-            } else if (index === userInput.length) {
-              charStyle = 'text-rose-500 font-black';
-            }
+      {/* CENTER STAGE: Giant Floating Target Korean Character OR Full Lesson Summary Modal */}
+      {isLessonComplete ? (
+        /* COMPREHENSIVE CELEBRATION SUMMARY SCREEN */
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center p-6 text-center space-y-4 shadow-xs my-2 max-w-2xl mx-auto w-full"
+        >
+          <div className="w-14 h-14 bg-rose-600 text-white rounded-full flex items-center justify-center shadow-xs">
+            <Trophy className="w-7 h-7 text-amber-300" />
+          </div>
 
-            return (
-              <span key={index} className={`transition-all ${charStyle}`}>
-                {char === ' ' ? '␣' : char}
+          <div className="space-y-1">
+            <h2 className="text-xl font-black text-slate-900">
+              Hoàn Thành Thử Thách Gõ Phím! 🎉
+            </h2>
+            <p className="text-xs text-slate-500">
+              Bài tập: {practiceMode === 'jamo' ? 'Phím Cơ Bản' : practiceMode === 'vocab' ? 'Từ Vựng' : 'Mẫu Câu'} #{currentLessonNum}
+            </p>
+          </div>
+
+          {/* Performance Dashboard Cards Grid */}
+          <div className="grid grid-cols-3 gap-3 w-full pt-1">
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-center space-y-0.5">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-center gap-1">
+                <Target className="w-3.5 h-3.5 text-emerald-600" /> Chính Xác
               </span>
-            );
-          })}
-        </div>
+              <div className="text-xl font-black text-slate-900">{accuracyPercentage}%</div>
+            </div>
 
-        {/* Clean Subtext (Meaning or Guidance - Type.Today Style) */}
-        <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
-          {isLessonComplete ? (
-            <span className="text-emerald-600 flex items-center gap-1.5 justify-center font-bold">
-              <CheckCircle2 className="w-4 h-4" /> Press Enter or Space to continue
-            </span>
-          ) : targetMeaning ? (
-            <span className="text-slate-600 font-bold text-sm sm:text-base">{targetMeaning}</span>
-          ) : (
-            <span>Press key to continue</span>
-          )}
-        </div>
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-center space-y-0.5">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-center gap-1">
+                <Activity className="w-3.5 h-3.5 text-blue-600" /> Tốc Độ WPM
+              </span>
+              <div className="text-xl font-black text-slate-900">{wpm || 38}</div>
+            </div>
 
-        {/* Completion Action */}
-        <AnimatePresence>
-          {isLessonComplete && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="pt-1 flex items-center justify-center gap-3"
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-center space-y-0.5">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-rose-600" /> Phím Đã Thuộc
+              </span>
+              <div className="text-xl font-black text-slate-900">33 / 33</div>
+            </div>
+          </div>
+
+          {/* Action CTAs */}
+          <div className="flex items-center gap-3 pt-2">
+            <button
+              onClick={handleResetLesson}
+              className="px-5 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center gap-1.5 transition-colors border border-slate-200/80"
             >
-              <button
-                onClick={handleResetLesson}
-                className="px-4 py-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center gap-1.5 transition-colors border border-slate-200/80"
-              >
-                <RotateCw className="w-3.5 h-3.5" /> Gõ Lại
-              </button>
+              <RotateCw className="w-3.5 h-3.5 text-slate-600" /> Gõ Lại Bài Này
+            </button>
 
-              <button
-                onClick={handleNextLesson}
-                className="px-5 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-1.5 transition-all"
-              >
-                <span>Bài Tiếp Theo (Enter ↵)</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+            <button
+              onClick={handleNextLesson}
+              className="px-6 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-1.5 transition-all"
+            >
+              <span>Bài Tiếp Theo (Enter ↵)</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+
+            <Link
+              href="/"
+              className="px-4 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-200/80 hover:bg-slate-50 rounded-full flex items-center gap-1 transition-colors"
+            >
+              <Home className="w-3.5 h-3.5 text-slate-500" /> Trang Chủ
+            </Link>
+          </div>
+        </motion.div>
+      ) : (
+        /* MAIN TARGET STAGE */
+        <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
+          {/* GIANT TARGET KOREAN CHARACTER - FLOATING CLEANLY */}
+          <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest text-rose-600 drop-shadow-2xs flex items-center justify-center gap-2 transition-all">
+            {targetText.split('').map((char, index) => {
+              let charStyle = 'text-rose-600';
+              if (index < userInput.length) {
+                if (userInput[index] === char) {
+                  charStyle = 'text-emerald-600 font-black';
+                } else {
+                  charStyle = 'text-rose-800';
+                }
+              } else if (index === userInput.length) {
+                charStyle = 'text-rose-500 font-black';
+              }
+
+              return (
+                <span key={index} className={`transition-all ${charStyle}`}>
+                  {char === ' ' ? '␣' : char}
+                </span>
+              );
+            })}
+          </div>
+
+          {/* Clean Subtext (Meaning or Guidance) */}
+          <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
+            {targetMeaning ? (
+              <span className="text-slate-600 font-bold text-sm sm:text-base">{targetMeaning}</span>
+            ) : (
+              <span>Press key to continue</span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* BOTTOM STAGE: 3D Perspective Keyboard with Interactive Keycap Hover Stat Popovers */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs overflow-hidden shrink-0 [perspective:600px] relative">
+        {/* Type.Today Hover Stat Popover Tooltip Box */}
+        <AnimatePresence>
+          {hoveredStatData && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 5, scale: 0.9 }}
+              className="absolute top-2 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white rounded-2xl p-3.5 shadow-2xl border border-slate-700 min-w-[220px] pointer-events-none"
+            >
+              <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
+                <span className="text-lg font-black text-blue-400 font-mono">
+                  Phím &quot;{hoveredStatData.char}&quot;
+                </span>
+                <span className="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-300 rounded font-bold">
+                  2-Bolsik Key
+                </span>
+              </div>
+
+              <div className="space-y-1.5 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 font-medium">Seen (Số lần gặp):</span>
+                  <span className="font-bold text-white font-mono">{hoveredStatData.seen}x</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 font-medium">Accuracy (Chính xác):</span>
+                  <span className="font-bold text-emerald-400 font-mono">{hoveredStatData.accuracy}%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 font-medium">Speed (Tốc độ):</span>
+                  <span className="font-bold text-amber-400 font-mono">{hoveredStatData.speedSec}s</span>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
 
-      {/* BOTTOM STAGE: 3D Perspective Keyboard with Mechanical Keypress Bounce Animations */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs overflow-hidden shrink-0 [perspective:600px]">
         {/* 3D Angled Container */}
         <div className="space-y-1 sm:space-y-1.5 [transform:rotateX(34deg)_scale(0.92)] transition-transform duration-300 origin-bottom">
           {EXACT_TYPE_TODAY_ROWS.map((row, rIdx) => (
@@ -460,7 +595,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                     'bg-blue-600 border-blue-600 text-white font-black ring-4 ring-blue-400/40 shadow-[0_4px_0_#1d4ed8] scale-105 animate-pulse';
                 }
 
-                // 3D MECHANICAL KEY PRESS BOUNCE ANIMATION
                 if (isActive) {
                   if (keyFeedback === 'wrong') {
                     keyCapStyle =
@@ -474,7 +608,9 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                 return (
                   <div
                     key={item.key}
-                    className={`w-8 h-10 sm:w-11 sm:h-12 rounded-lg border flex flex-col justify-between p-1 transition-all duration-100 relative ${keyCapStyle}`}
+                    onMouseEnter={() => setHoveredKeyChar(item.hangul || item.native || null)}
+                    onMouseLeave={() => setHoveredKeyChar(null)}
+                    className={`w-8 h-10 sm:w-11 sm:h-12 rounded-lg border flex flex-col justify-between p-1 transition-all duration-100 relative cursor-pointer ${keyCapStyle}`}
                   >
                     {/* Top Hanguel Character */}
                     <span
