@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Volume2,
@@ -17,18 +17,22 @@ interface KoreanTypingTutorProps {
   decks?: Deck[];
 }
 
-// 2-Bolsik QWERTY to Hangul Mapping
+// 2-Bolsik QWERTY to Hangul Mapping (Supports lower & uppercase Shift keys)
 const QWERTY_TO_HANGUL: Record<string, string> = {
   q: 'ㅂ', Q: 'ㅃ', w: 'ㅈ', W: 'ㅉ', e: 'ㄷ', E: 'ㄸ', r: 'ㄱ', R: 'ㄲ', t: 'ㅅ', T: 'ㅆ',
-  y: 'ㅛ', u: 'ㅕ', i: 'ㅑ', o: 'ㅐ', O: 'ㅒ', p: 'ㅔ', P: 'ㅖ',
-  a: 'ㅁ', s: 'ㄴ', d: 'ㅇ', f: 'ㄹ', g: 'ㅎ', h: 'ㅗ', j: 'ㅓ', k: 'ㅏ', l: 'ㅣ',
-  z: 'ㅋ', x: 'ㅌ', c: 'ㅊ', v: 'ㅍ', b: 'ㅠ', n: 'ㅜ', m: 'ㅡ'
+  y: 'ㅛ', Y: 'ㅛ', u: 'ㅕ', U: 'ㅕ', i: 'ㅑ', I: 'ㅑ', o: 'ㅐ', O: 'ㅒ', p: 'ㅔ', P: 'ㅖ',
+  a: 'ㅁ', A: 'ㅁ', s: 'ㄴ', S: 'ㄴ', d: 'ㅇ', D: 'ㅇ', f: 'ㄹ', F: 'ㄹ', g: 'ㅎ', G: 'ㅎ',
+  h: 'ㅗ', H: 'ㅗ', j: 'ㅓ', J: 'ㅓ', k: 'ㅏ', K: 'ㅏ', l: 'ㅣ', L: 'ㅣ',
+  z: 'ㅋ', Z: 'ㅋ', x: 'ㅌ', X: 'ㅌ', c: 'ㅊ', C: 'ㅊ', v: 'ㅍ', V: 'ㅍ',
+  b: 'ㅠ', B: 'ㅠ', n: 'ㅜ', N: 'ㅜ', m: 'ㅡ', M: 'ㅡ'
 };
 
 // Inverse Hangul to QWERTY key
 const HANGUL_TO_QWERTY: Record<string, string> = {};
 Object.entries(QWERTY_TO_HANGUL).forEach(([qwerty, hangul]) => {
-  HANGUL_TO_QWERTY[hangul] = qwerty.toLowerCase();
+  if (!HANGUL_TO_QWERTY[hangul]) {
+    HANGUL_TO_QWERTY[hangul] = qwerty.toLowerCase();
+  }
 });
 
 interface KeyDef {
@@ -132,8 +136,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
   const [wpm, setWpm] = useState(0);
   const [isLessonComplete, setIsLessonComplete] = useState(false);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
   // Vocabulary list from decks
   const vocabList = useMemo(() => {
     const allCards: Flashcard[] = decks.flatMap((d) => d.cards);
@@ -157,11 +159,6 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     setTargetText(currentLessonsList[currentLessonIndex % currentLessonsList.length]);
   }, [practiceMode, currentLessonIndex, currentLessonsList]);
 
-  // Focus input automatically
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, [targetText]);
-
   // Next expected character & QWERTY key
   const nextChar = targetText[userInput.length] || '';
   const nextQwertyKey = HANGUL_TO_QWERTY[nextChar] || (nextChar === ' ' ? 'space' : null);
@@ -176,66 +173,97 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
     }
   }, [isSoundOn]);
 
-  // Handle typing input
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-
-    if (!startTime) {
-      setStartTime(Date.now());
-    }
-
-    setTotalTypedKeys((prev) => prev + 1);
-
-    const typedChar = val[val.length - 1];
-    const expectedChar = targetText[val.length - 1];
-
-    if (typedChar === expectedChar) {
-      setCorrectTypedKeys((prev) => prev + 1);
-      setKeyFeedback('correct');
-      if (practiceMode === 'jamo' && typedChar) {
-        speakKorean(typedChar);
-      }
-    } else {
-      setKeyFeedback('wrong');
-    }
-
-    setUserInput(val);
-
-    // WPM Calculation
-    if (startTime) {
-      const elapsedMinutes = (Date.now() - startTime) / 60000;
-      if (elapsedMinutes > 0) {
-        const calculatedWpm = Math.round((val.length / 5) / elapsedMinutes);
-        setWpm(calculatedWpm);
-      }
-    }
-
-    // Check completion
-    if (val === targetText) {
-      setIsLessonComplete(true);
-      if (practiceMode !== 'jamo') {
-        speakKorean(targetText);
-      }
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    const key = e.key.toLowerCase();
-    setActiveKey(key);
-    setTimeout(() => setActiveKey(null), 150);
-  };
-
-  const handleNextLesson = () => {
+  const handleNextLesson = useCallback(() => {
     setCurrentLessonIndex((prev) => prev + 1);
-  };
+  }, []);
 
-  const handleResetLesson = () => {
+  const handleResetLesson = useCallback(() => {
     setUserInput('');
     setIsLessonComplete(false);
     setStartTime(null);
-    inputRef.current?.focus();
-  };
+  }, []);
+
+  // GLOBAL KEYBOARD LISTENER (Catches physical QWERTY keys & maps to Korean 2-Bolsik + 3D Bounce Animation)
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      // Ignore system shortcuts
+      if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+      // Handle Enter / Space to advance lesson when completed
+      if (isLessonComplete) {
+        if (['Enter', 'Space'].includes(e.code)) {
+          e.preventDefault();
+          handleNextLesson();
+        }
+        return;
+      }
+
+      // Handle Backspace
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        setUserInput((prev) => prev.slice(0, -1));
+        return;
+      }
+
+      // Translate physical key to Korean Hangul
+      let inputHangulChar = '';
+      if (e.key === ' ') {
+        inputHangulChar = ' ';
+      } else if (QWERTY_TO_HANGUL[e.key]) {
+        inputHangulChar = QWERTY_TO_HANGUL[e.key];
+      } else if (HANGUL_TO_QWERTY[e.key]) {
+        inputHangulChar = e.key;
+      } else {
+        return; // Non-character key
+      }
+
+      const qwertyKeyLower = HANGUL_TO_QWERTY[inputHangulChar] || e.key.toLowerCase();
+      setActiveKey(qwertyKeyLower);
+      setTimeout(() => setActiveKey(null), 180);
+
+      if (!startTime) {
+        setStartTime(Date.now());
+      }
+
+      setTotalTypedKeys((prev) => prev + 1);
+
+      const expectedChar = targetText[userInput.length];
+
+      if (inputHangulChar === expectedChar) {
+        setCorrectTypedKeys((prev) => prev + 1);
+        setKeyFeedback('correct');
+
+        const newInput = userInput + inputHangulChar;
+        setUserInput(newInput);
+
+        if (practiceMode === 'jamo' && inputHangulChar) {
+          speakKorean(inputHangulChar);
+        }
+
+        // WPM Calculation
+        if (startTime) {
+          const elapsedMinutes = (Date.now() - startTime) / 60000;
+          if (elapsedMinutes > 0) {
+            setWpm(Math.round((newInput.length / 5) / elapsedMinutes));
+          }
+        }
+
+        // Check completion
+        if (newInput === targetText) {
+          setIsLessonComplete(true);
+          if (practiceMode !== 'jamo') {
+            speakKorean(targetText);
+          }
+          confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+        }
+      } else {
+        setKeyFeedback('wrong');
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [userInput, targetText, isLessonComplete, startTime, practiceMode, speakKorean, handleNextLesson]);
 
   const totalLessonsCount = currentLessonsList.length;
   const currentLessonNum = (currentLessonIndex % totalLessonsCount) + 1;
@@ -303,11 +331,8 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </div>
       </div>
 
-      {/* CENTER STAGE: Giant Floating Korean Character (Bright Porcelain Style) */}
-      <div
-        onClick={() => inputRef.current?.focus()}
-        className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2"
-      >
+      {/* CENTER STAGE: Giant Floating Korean Character (Type.Today Style) */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2">
         {/* GIANT TARGET KOREAN CHARACTER */}
         <div className="text-7xl sm:text-8xl md:text-9xl font-black tracking-widest text-rose-600 drop-shadow-2xs flex items-center justify-center gap-2 transition-all">
           {targetText.split('').map((char, index) => {
@@ -334,23 +359,14 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
           {isLessonComplete ? (
             <span className="text-emerald-600 flex items-center gap-1.5 justify-center">
-              <CheckCircle2 className="w-4 h-4" /> Press key to continue
+              <CheckCircle2 className="w-4 h-4" /> Press Enter or Space to continue
             </span>
           ) : (
-            <span>Press key to continue</span>
+            <span>
+              Gõ phím <strong className="text-blue-600 uppercase font-mono font-black">&apos;{nextQwertyKey || ''}&apos;</strong> trên bàn phím để tiếp tục
+            </span>
           )}
         </div>
-
-        {/* Hidden Input Box */}
-        <input
-          ref={inputRef}
-          type="text"
-          value={userInput}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          className="opacity-0 absolute inset-0 w-full h-full cursor-text"
-          autoFocus
-        />
 
         {/* Completion Action */}
         <AnimatePresence>
@@ -371,7 +387,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                 onClick={handleNextLesson}
                 className="px-5 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-1.5 transition-all"
               >
-                <span>Bài Tiếp Theo</span>
+                <span>Bài Tiếp Theo (Enter ↵)</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </motion.div>
@@ -379,7 +395,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
         </AnimatePresence>
       </div>
 
-      {/* BOTTOM STAGE: Bright 3D Angled Virtual Keyboard (Porcelain & High Contrast) */}
+      {/* BOTTOM STAGE: 3D Perspective Keyboard with Mechanical Keypress Bounce Animations */}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs overflow-hidden shrink-0 [perspective:600px]">
         {/* 3D Angled Container */}
         <div className="space-y-1 sm:space-y-1.5 [transform:rotateX(34deg)_scale(0.92)] transition-transform duration-300 origin-bottom">
@@ -390,7 +406,7 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                   return (
                     <div
                       key={item.key}
-                      className="w-10 sm:w-14 h-9 sm:h-11 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shadow-2xs"
+                      className="w-10 sm:w-14 h-9 sm:h-11 rounded-lg bg-slate-100 border border-slate-200/80 text-slate-700 flex items-center justify-center font-bold text-xs shadow-[0_4px_0_#cbd5e1]"
                     >
                       <ArrowBigUp className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700 fill-current" />
                     </div>
@@ -400,34 +416,55 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
                 const isTarget = nextQwertyKey === item.key;
                 const isActive = activeKey === item.key;
 
-                let keyCapStyle = 'bg-slate-50 border-slate-200/80 text-slate-800 shadow-2xs hover:bg-slate-100';
+                let keyCapStyle =
+                  'bg-slate-50 border-slate-200/80 text-slate-900 shadow-[0_4px_0_#cbd5e1] hover:bg-slate-100';
 
                 if (isTarget) {
-                  keyCapStyle = 'bg-blue-600 border-blue-600 text-white font-black ring-4 ring-blue-400/40 shadow-md scale-105 animate-pulse';
-                } else if (isActive) {
-                  keyCapStyle = keyFeedback === 'wrong'
-                    ? 'bg-rose-600 text-white border-rose-500 scale-95'
-                    : 'bg-emerald-600 text-white border-emerald-500 scale-95';
+                  keyCapStyle =
+                    'bg-blue-600 border-blue-600 text-white font-black ring-4 ring-blue-400/40 shadow-[0_4px_0_#1d4ed8] scale-105 animate-pulse';
+                }
+
+                // 3D MECHANICAL KEY PRESS BOUNCE ANIMATION
+                if (isActive) {
+                  if (keyFeedback === 'wrong') {
+                    keyCapStyle =
+                      'bg-rose-600 text-white border-rose-600 translate-y-1 shadow-[0_1px_0_#9f1239] scale-95 transition-transform duration-75';
+                  } else {
+                    keyCapStyle =
+                      'bg-emerald-600 text-white border-emerald-600 translate-y-1 shadow-[0_1px_0_#065f46] scale-95 transition-transform duration-75';
+                  }
                 }
 
                 return (
                   <div
                     key={item.key}
-                    className={`w-8 h-10 sm:w-11 sm:h-12 rounded-lg border flex flex-col justify-between p-1 transition-all relative ${keyCapStyle}`}
+                    className={`w-8 h-10 sm:w-11 sm:h-12 rounded-lg border flex flex-col justify-between p-1 transition-all duration-100 relative ${keyCapStyle}`}
                   >
                     {/* Top Hanguel Character */}
-                    <span className={`text-xs sm:text-sm font-black leading-none text-left ${isTarget ? 'text-white' : 'text-slate-900'}`}>
+                    <span
+                      className={`text-xs sm:text-sm font-black leading-none text-left ${
+                        isTarget || isActive ? 'text-white' : 'text-slate-900'
+                      }`}
+                    >
                       {item.hangul}
                     </span>
 
                     {/* Bottom Native QWERTY Character */}
-                    <span className={`text-[9px] font-mono uppercase text-right leading-none ${isTarget ? 'text-blue-100' : 'text-slate-400'}`}>
+                    <span
+                      className={`text-[9px] font-mono uppercase text-right leading-none ${
+                        isTarget || isActive ? 'text-blue-100' : 'text-slate-400'
+                      }`}
+                    >
                       {item.native}
                     </span>
 
                     {/* Home Finger Dot Indicator */}
                     {item.isHomeFinger && (
-                      <span className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${isTarget ? 'bg-white' : 'bg-slate-400'}`} />
+                      <span
+                        className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${
+                          isTarget || isActive ? 'bg-white' : 'bg-slate-400'
+                        }`}
+                      />
                     )}
                   </div>
                 );
@@ -439,11 +476,11 @@ export default function KoreanTypingTutor({ decks = [] }: KoreanTypingTutorProps
           <div className="flex justify-center gap-1.5 pt-0.5">
             <div className="w-10 sm:w-14 h-9 sm:h-11" />
             <div
-              className={`w-64 sm:w-80 h-9 sm:h-11 rounded-lg border flex items-center justify-center text-xs font-bold transition-all shadow-2xs ${
+              className={`w-64 sm:w-80 h-9 sm:h-11 rounded-lg border flex items-center justify-center text-xs font-bold transition-all shadow-[0_4px_0_#cbd5e1] ${
                 nextQwertyKey === 'space'
                   ? 'bg-blue-600 border-blue-600 text-white ring-4 ring-blue-400/40 animate-pulse'
                   : 'bg-slate-50 border-slate-200/80 text-slate-500'
-              }`}
+              } ${activeKey === 'space' ? 'translate-y-1 shadow-[0_1px_0_#cbd5e1]' : ''}`}
             >
               <span className="text-[11px] font-mono font-bold">SPACEBAR</span>
             </div>
