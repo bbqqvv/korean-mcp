@@ -191,7 +191,13 @@ export default function AITutorPage() {
   };
 
   const formatMarkdown = (content: string) => {
-    const lines = content.split('\n');
+    // Sanitize and strip any raw reasoning <think>...</think> tags
+    const sanitizedContent = (content || '')
+      .replace(/<think>[\s\S]*?<\/think>/gi, '')
+      .replace(/<think>[\s\S]*/gi, '')
+      .trim();
+
+    const lines = sanitizedContent.split('\n');
     const elements: React.ReactNode[] = [];
     let i = 0;
 

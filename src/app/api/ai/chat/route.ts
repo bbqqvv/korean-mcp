@@ -61,8 +61,13 @@ export async function POST(req: Request) {
           const data = await response.json();
           let rawReply = data.choices?.[0]?.message?.content || '';
           
-          // Remove internal <think>...</think> tags if present
-          rawReply = rawReply.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+          // Remove closed and unclosed <think>...</think> reasoning blocks
+          rawReply = rawReply.replace(/<think>[\s\S]*?<\/think>/gi, '');
+          if (rawReply.includes('<think>')) {
+            const parts = rawReply.split(/<\/think>/i);
+            rawReply = parts.length > 1 ? parts[parts.length - 1] : rawReply.replace(/<think>[\s\S]*/gi, '');
+          }
+          rawReply = rawReply.trim();
 
           if (rawReply) {
             reply = rawReply;
