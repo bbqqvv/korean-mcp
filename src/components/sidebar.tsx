@@ -52,18 +52,26 @@ export default function Sidebar({
   const { themeConfig } = useTheme();
 
   const isBooksActive = pathname === '/books' || pathname.startsWith('/course');
+  const isSpeakingActive = pathname === '/speaking' || pathname === '/shadowing';
   const [isBooksExpanded, setIsBooksExpanded] = useState(true);
+  const [isSpeakingExpanded, setIsSpeakingExpanded] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const mainNavLinks = [
     { href: '/', label: 'Trang Chủ', icon: Home },
-    { href: '/speaking', label: 'Luyện Nói & Shadowing', icon: Mic },
+    { href: '/speaking', label: 'Luyện Nói & Shadowing', icon: Mic, isSpeaking: true },
     { href: '/ai-tutor', label: 'Trợ Lý AI', icon: Bot },
     { href: '/books', label: 'Sách & Giáo Trình', icon: BookOpen, isBooks: true },
     { href: '/dictionary', label: 'Tra Từ Điển', icon: Search },
     { href: '/typing', label: 'Luyện Gõ Phím', icon: Keyboard },
     { href: '/quiz', label: 'Ôn Luyện Quiz', icon: Award },
     { href: '/settings', label: 'Cài Đặt Hệ Thống', icon: Settings }
+  ];
+
+  const speakingSubMenu = [
+    { label: 'Luyện Nhại Video (Shadowing)', href: '/shadowing', color: 'bg-blue-600' },
+    { label: 'Phân Biệt Âm & Khẩu Hình', href: '/speaking?tab=pronunciation', color: 'bg-emerald-600' },
+    { label: 'Đóng Vai Tình Huống (Roleplay)', href: '/speaking?tab=roleplay', color: 'bg-amber-600' }
   ];
 
   const bookSubMenu = [
@@ -170,7 +178,11 @@ export default function Sidebar({
             )}
             {mainNavLinks.map((link) => {
               const Icon = link.icon;
-              const isActive = link.isBooks ? isBooksActive : pathname === link.href;
+              const isActive = link.isSpeaking
+                ? isSpeakingActive
+                : link.isBooks
+                ? isBooksActive
+                : pathname === link.href;
 
               if (isCollapsed) {
                 return (
@@ -197,6 +209,55 @@ export default function Sidebar({
                       <Icon className="w-5 h-5" />
                     )}
                   </Link>
+                );
+              }
+
+              if (link.isSpeaking) {
+                return (
+                  <div key={link.href} className="space-y-1">
+                    <div
+                      className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                        isActive
+                          ? `${themeConfig.badgeBg} font-bold`
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      }`}
+                      onClick={() => {
+                        setIsSpeakingExpanded(!isSpeakingExpanded);
+                      }}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Icon className={`w-4 h-4 ${isActive ? themeConfig.primaryText : 'text-slate-400'}`} />
+                        <span>{link.label}</span>
+                      </div>
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 ${isActive ? themeConfig.primaryText : 'text-slate-400'} transition-transform ${
+                          isSpeakingExpanded ? 'transform rotate-180' : ''
+                        }`}
+                      />
+                    </div>
+
+                    {/* Submenu for Speaking */}
+                    {isSpeakingExpanded && (
+                      <div className="pl-8 space-y-1 pt-0.5">
+                        {speakingSubMenu.map((sub) => (
+                          <Link
+                            key={sub.label}
+                            href={sub.href}
+                            onClick={onCloseMobile}
+                            className={`flex items-center gap-2 py-1.5 px-2 text-[11px] font-medium rounded-lg transition-colors ${
+                              pathname + (typeof window !== 'undefined' ? window.location.search : '') === sub.href ||
+                              (sub.href === '/shadowing' && pathname === '/shadowing')
+                                ? 'bg-slate-100 text-slate-900 font-bold'
+                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                            }`}
+                          >
+                            <span className={`w-1.5 h-1.5 rounded-full ${sub.color}`} />
+                            <span>{sub.label}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 );
               }
 
