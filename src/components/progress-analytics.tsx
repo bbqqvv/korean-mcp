@@ -133,71 +133,71 @@ export default function ProgressAnalytics({ showHeaderAndCards = false }: Progre
       {showHeaderAndCards && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {/* 1. Chuỗi dài nhất */}
-          <div className="bg-slate-50/90 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 shadow-2xs rounded-2xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 flex items-center justify-center shrink-0">
-              <Flame className="w-5 h-5 text-amber-500 fill-current" />
+          <div className="bg-slate-100/70 dark:bg-[#070c18] border border-slate-200/80 dark:border-slate-800 shadow-2xs rounded-2xl p-4 flex items-center gap-3 transition-all">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-500 border border-amber-500/30 flex items-center justify-center shrink-0">
+              <Flame className="w-5 h-5 fill-current" />
             </div>
             <div className="min-w-0">
-              <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
+              <p className="text-lg font-black text-slate-900 dark:text-white leading-tight">
                 {USER_STATS.longestStreak}
-                <span className="ml-1 text-xs font-normal text-slate-500 dark:text-slate-400">ngày</span>
+                <span className="ml-1 text-xs font-bold text-slate-700 dark:text-slate-300">ngày</span>
               </p>
-              <p className="truncate text-[11px] text-slate-500 dark:text-slate-400 font-normal">Chuỗi dài nhất</p>
+              <p className="truncate text-[11px] text-slate-600 dark:text-slate-300 font-semibold">Chuỗi dài nhất</p>
             </div>
           </div>
 
           {/* 2. Từ đã lưu */}
-          <div className="bg-slate-50/90 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 shadow-2xs rounded-2xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100/80 dark:bg-emerald-950/40 flex items-center justify-center shrink-0">
-              <BookOpen className="w-5 h-5 text-emerald-600" />
+          <div className="bg-slate-100/70 dark:bg-[#070c18] border border-slate-200/80 dark:border-slate-800 shadow-2xs rounded-2xl p-4 flex items-center gap-3 transition-all">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 flex items-center justify-center shrink-0">
+              <BookOpen className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
+              <p className="text-lg font-black text-slate-900 dark:text-white leading-tight">
                 {USER_STATS.savedWords}
-                <span className="ml-1 text-xs font-normal text-slate-500 dark:text-slate-400">từ</span>
+                <span className="ml-1 text-xs font-bold text-slate-700 dark:text-slate-300">từ</span>
               </p>
-              <p className="truncate text-[11px] text-slate-500 dark:text-slate-400 font-normal">Từ đã lưu</p>
+              <p className="truncate text-[11px] text-slate-600 dark:text-slate-300 font-semibold">Từ đã lưu</p>
             </div>
           </div>
 
           {/* 3. Thời gian luyện tập */}
-          <div className="bg-slate-50/90 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 shadow-2xs rounded-2xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-100/80 dark:bg-blue-950/40 flex items-center justify-center shrink-0">
-              <Clock className="w-5 h-5 text-blue-600" />
+          <div className="bg-slate-100/70 dark:bg-[#070c18] border border-slate-200/80 dark:border-slate-800 shadow-2xs rounded-2xl p-4 flex items-center gap-3 transition-all">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/15 text-blue-500 border border-blue-500/30 flex items-center justify-center shrink-0">
+              <Clock className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
+              <p className="text-lg font-black text-slate-900 dark:text-white leading-tight">
                 {USER_STATS.practiceTimeMinutes}m
               </p>
-              <p className="truncate text-[11px] text-slate-500 dark:text-slate-400 font-normal">Thời gian luyện tập</p>
+              <p className="truncate text-[11px] text-slate-600 dark:text-slate-300 font-semibold">Thời gian luyện tập</p>
             </div>
           </div>
 
           {/* 4. Tổng XP */}
-          <div className="bg-slate-50/90 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 shadow-2xs rounded-2xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-100/80 dark:bg-purple-950/40 flex items-center justify-center shrink-0">
-              <Target className="w-5 h-5 text-purple-600" />
+          <div className="bg-slate-100/70 dark:bg-[#070c18] border border-slate-200/80 dark:border-slate-800 shadow-2xs rounded-2xl p-4 flex items-center gap-3 transition-all">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-500 border border-purple-500/30 flex items-center justify-center shrink-0">
+              <Target className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
+              <p className="text-lg font-black text-slate-900 dark:text-white leading-tight">
                 {USER_STATS.totalXp}
-                <span className="ml-1 text-[10px] font-bold text-purple-600 dark:text-purple-400">XP</span>
+                <span className="ml-1 text-xs font-black text-purple-600 dark:text-purple-400">XP</span>
               </p>
-              <p className="truncate text-[11px] text-slate-500 dark:text-slate-400 font-normal">Tổng XP</p>
+              <p className="truncate text-[11px] text-slate-600 dark:text-slate-300 font-semibold">Tổng XP</p>
             </div>
           </div>
 
           {/* 5. Hạng của bạn */}
-          <div className="bg-slate-50/90 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80 shadow-2xs rounded-2xl p-4 flex items-center gap-3 col-span-2 sm:col-span-1">
-            <div className="w-10 h-10 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 flex items-center justify-center shrink-0">
-              <Trophy className="w-5 h-5 text-amber-600" />
+          <div className="bg-slate-100/70 dark:bg-[#070c18] border border-slate-200/80 dark:border-slate-800 shadow-2xs rounded-2xl p-4 flex items-center gap-3 col-span-2 sm:col-span-1 transition-all">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-500 border border-amber-500/30 flex items-center justify-center shrink-0">
+              <Trophy className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
+              <p className="text-lg font-black text-slate-900 dark:text-white leading-tight">
                 #{USER_STATS.weeklyRank}
-                <span className="ml-1 text-xs font-normal text-slate-500 dark:text-slate-400">Tuần</span>
+                <span className="ml-1 text-xs font-bold text-slate-700 dark:text-slate-300">Tuần</span>
               </p>
-              <p className="truncate text-[11px] text-slate-500 dark:text-slate-400 font-normal">Hạng của bạn</p>
+              <p className="truncate text-[11px] text-slate-600 dark:text-slate-300 font-semibold">Hạng của bạn</p>
             </div>
           </div>
         </div>
