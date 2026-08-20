@@ -12,7 +12,8 @@ import {
   FolderOpen,
   ChevronRight,
   Settings,
-  Keyboard
+  Keyboard,
+  BookOpen
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -45,6 +46,7 @@ export default function Sidebar({
 
   const mainNavLinks = [
     { href: '/', label: 'Trang Chủ', icon: Home },
+    { href: '/books', label: 'Sách & Giáo Trình', icon: BookOpen },
     { href: '/typing', label: 'Luyện Gõ Phím', icon: Keyboard },
     { href: '/quiz', label: 'Ôn Luyện Quiz', icon: Award },
     { href: '/settings', label: 'Cài Đặt Hệ Thống', icon: Settings }

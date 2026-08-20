@@ -299,3 +299,33 @@ body::-webkit-scrollbar {
 .ios-dropdown-indicator {
   background-color: #e2e8f0;
 }
+
+/* Neobrutalism Utilities for Books & Course Dashboard */
+.border-border {
+  border-color: #000000 !important;
+}
+
+.shadow-shadow {
+  box-shadow: 4px 4px 0px 0px #000000 !important;
+}
+
+.rounded-base {
+  border-radius: 16px !important;
+}
+
+.font-heading {
+  font-weight: 800 !important;
+}
+
+.bg-secondary-background {
+  background-color: #ffffff;
+}
+
+.bg-main {
+  background-color: #0f172a;
+}
+
+.text-main-foreground {
+  color: #ffffff;
+}
+

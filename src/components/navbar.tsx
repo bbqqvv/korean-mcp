@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Sparkles, Layers, Award, Bot } from 'lucide-react';
+import { Sparkles, Layers, Award, Bot, BookOpen } from 'lucide-react';
 import { SmoothDropdown } from '@/components/smooth-dropdown';
 import { useTheme } from '@/lib/theme-context';
 
@@ -13,6 +13,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/', label: 'Trang Chủ', icon: Layers },
+    { href: '/books', label: 'Sách & Giáo Trình', icon: BookOpen },
     { href: '/mcp-guide', label: 'Cấu Hình MCP', icon: Bot, badge: 'Spark' },
     { href: '/quiz', label: 'Ôn Quiz', icon: Award }
   ];
