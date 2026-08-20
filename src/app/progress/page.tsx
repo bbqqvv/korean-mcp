@@ -198,13 +198,13 @@ export default function ProgressPage() {
           {/* TAB 1: HOẠT ĐỘNG CỦA TÔI */}
           {activeView === 'activity' && (
             <div className="space-y-6 animate-fadeIn">
-              {/* Card 1: 6-Month Activity Heatmap Grid */}
-              <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <h2 className="text-sm sm:text-base font-bold text-slate-900">
+              {/* Card 1: 6-Month Activity Heatmap Grid (Micro Compact GitHub Style) */}
+              <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 sm:p-5 space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                  <h2 className="text-xs sm:text-sm font-bold text-slate-900">
                     Tổng quan hoạt động (6 tháng gần đây)
                   </h2>
-                  <div className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full transition-all">
+                  <div className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full transition-all">
                     {hoveredDay ? (
                       <span className="text-blue-600 font-bold">{hoveredDay.date}: Mức độ học {hoveredDay.level}/4</span>
                     ) : (
@@ -213,31 +213,31 @@ export default function ProgressPage() {
                   </div>
                 </div>
 
-                {/* Heatmap Grid Container with Weekday & Month Labels */}
+                {/* Micro Heatmap Grid Container */}
                 <div className="overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                  <div className="min-w-[660px] flex items-start gap-2.5">
-                    {/* Weekday Labels Column (Exact Row 1:1 Alignment) */}
-                    <div className="pt-6 space-y-[6px] text-[10px] font-bold text-slate-400 select-none shrink-0 text-right w-5">
-                      <div className="h-4 leading-4">T2</div>
-                      <div className="h-4 leading-4 opacity-0">T3</div>
-                      <div className="h-4 leading-4">T4</div>
-                      <div className="h-4 leading-4 opacity-0">T5</div>
-                      <div className="h-4 leading-4">T6</div>
+                  <div className="min-w-[480px] flex items-start gap-2 max-w-max">
+                    {/* Weekday Labels Column (Exact Row Alignment) */}
+                    <div className="pt-4 space-y-1 text-[9px] font-bold text-slate-400 select-none shrink-0 text-right w-4">
+                      <div className="h-3 leading-3">T2</div>
+                      <div className="h-3 leading-3 opacity-0">T3</div>
+                      <div className="h-3 leading-3">T4</div>
+                      <div className="h-3 leading-3 opacity-0">T5</div>
+                      <div className="h-3 leading-3">T6</div>
                     </div>
 
                     {/* 26 Week Columns */}
-                    <div className="flex items-start gap-1.5 flex-1">
+                    <div className="flex items-start gap-1">
                       {heatmapWeeks.map((week, weekIdx) => (
-                        <div key={weekIdx} className="flex flex-col gap-1.5 items-center">
-                          {/* Month Header Label above Week column */}
-                          <div className="h-4 text-[10px] font-bold text-slate-400 whitespace-nowrap select-none">
+                        <div key={weekIdx} className="flex flex-col gap-1 items-center">
+                          {/* Month Header Label */}
+                          <div className="h-3.5 text-[9px] font-bold text-slate-400 whitespace-nowrap select-none">
                             {week.monthLabel || ''}
                           </div>
 
                           {/* 7 Days in Week Column */}
                           {week.days.map((day, dayIdx) => {
                             const levelColors = [
-                              'bg-slate-100 border-slate-200/80 hover:bg-slate-200',
+                              'bg-slate-100 border-slate-200/70 hover:bg-slate-200',
                               'bg-emerald-200 border-emerald-300 hover:bg-emerald-300',
                               'bg-emerald-400 border-emerald-500 hover:bg-emerald-500',
                               'bg-emerald-600 border-emerald-700 text-white',
@@ -250,7 +250,7 @@ export default function ProgressPage() {
                                 onMouseEnter={() => setHoveredDay(day)}
                                 onMouseLeave={() => setHoveredDay(null)}
                                 title={`${day.date}: Mức độ học ${day.level}/4`}
-                                className={`w-4 h-4 rounded-xs border transition-all hover:scale-125 cursor-pointer ${levelColors[day.level]}`}
+                                className={`w-3 h-3 rounded-[2px] border transition-all hover:scale-125 cursor-pointer ${levelColors[day.level]}`}
                               />
                             );
                           })}
@@ -261,16 +261,16 @@ export default function ProgressPage() {
                 </div>
 
                 {/* Heatmap Footer Legend */}
-                <div className="flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 font-medium pt-2 border-t border-slate-100 gap-2">
-                  <span className="text-[11px] text-slate-500 font-medium">180 ngày hoạt động gần đây</span>
+                <div className="flex flex-col sm:flex-row items-center justify-between text-[10px] text-slate-500 font-medium pt-2 border-t border-slate-100 gap-2">
+                  <span>180 ngày hoạt động gần đây</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-semibold text-slate-400">Ít học</span>
-                    <span className="w-3.5 h-3.5 rounded-xs bg-slate-100 border border-slate-200/80" />
-                    <span className="w-3.5 h-3.5 rounded-xs bg-emerald-200 border border-emerald-300" />
-                    <span className="w-3.5 h-3.5 rounded-xs bg-emerald-400 border border-emerald-500" />
-                    <span className="w-3.5 h-3.5 rounded-xs bg-emerald-600 border border-emerald-700" />
-                    <span className="w-3.5 h-3.5 rounded-xs bg-emerald-800 border border-emerald-900" />
-                    <span className="text-[10px] font-semibold text-slate-400">Chăm học</span>
+                    <span className="text-[9px] font-semibold text-slate-400">Ít học</span>
+                    <span className="w-2.5 h-2.5 rounded-[2px] bg-slate-100 border border-slate-200/80" />
+                    <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-200 border border-emerald-300" />
+                    <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-400 border border-emerald-500" />
+                    <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-600 border border-emerald-700" />
+                    <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-800 border border-emerald-900" />
+                    <span className="text-[9px] font-semibold text-slate-400">Chăm học</span>
                   </div>
                 </div>
               </div>
