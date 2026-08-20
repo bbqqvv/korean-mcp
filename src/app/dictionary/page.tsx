@@ -20,6 +20,66 @@ const DICTIONARY_DATABASE: Array<{
   exampleVi: string;
 }> = [
   {
+    korean: '비행기',
+    hanja: '飛行機',
+    vietnamese: 'Máy bay',
+    type: 'Danh từ',
+    level: 'Sơ cấp 1',
+    pronunciation: '[bi-haeng-gi]',
+    exampleKr: '저는 내일 비행기를 타고 부산에 갑니다.',
+    exampleVi: 'Ngày mai tôi đi Busan bằng máy bay.'
+  },
+  {
+    korean: '항공기',
+    hanja: '航空機',
+    vietnamese: 'Tàu bay / Máy bay (chính thức/chuyên ngành)',
+    type: 'Danh từ',
+    level: 'Trung cấp',
+    pronunciation: '[hang-gong-gi]',
+    exampleKr: '이 항공기는 매우 안전하고 빠릅니다.',
+    exampleVi: 'Tàu bay này rất an toàn và nhanh chóng.'
+  },
+  {
+    korean: '차',
+    hanja: '車',
+    vietnamese: 'Xe / Ô tô',
+    type: 'Danh từ',
+    level: 'Sơ cấp 1',
+    pronunciation: '[cha]',
+    exampleKr: '새 차를 샀어요.',
+    exampleVi: 'Tôi đã mua một chiếc xe mới.'
+  },
+  {
+    korean: '차량',
+    hanja: '車輛',
+    vietnamese: 'Phương tiện / Xe cộ (chính thức/chuyên ngành)',
+    type: 'Danh từ',
+    level: 'Trung cấp',
+    pronunciation: '[cha-ryang]',
+    exampleKr: '이 도로에는 차량 통행이 금지되어 있습니다.',
+    exampleVi: 'Tuyến đường này cấm các phương tiện xe cộ qua lại.'
+  },
+  {
+    korean: '집',
+    hanja: '',
+    vietnamese: 'Nhà',
+    type: 'Danh từ',
+    level: 'Sơ cấp 1',
+    pronunciation: '[jip]',
+    exampleKr: '오늘 집에서 쉬어요.',
+    exampleVi: 'Hôm nay tôi nghỉ ngơi ở nhà.'
+  },
+  {
+    korean: '댁',
+    hanja: '宅',
+    vietnamese: 'Nhà (kính ngữ)',
+    type: 'Danh từ / Kính ngữ',
+    level: 'Sơ cấp 2',
+    pronunciation: '[daek]',
+    exampleKr: '선생님 댁에 방문했습니다.',
+    exampleVi: 'Tôi đã đến thăm nhà thầy giáo.'
+  },
+  {
     korean: '안녕하세요',
     hanja: '',
     vietnamese: 'Xin chào',

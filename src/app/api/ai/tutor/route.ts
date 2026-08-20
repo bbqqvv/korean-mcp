@@ -45,19 +45,24 @@ export async function POST(req: Request) {
 3. **Phân biệt với từ đồng nghĩa** (Ví dụ phân biệt với từ tương tự nếu có).
 4. **3 Câu ví dụ thực tế nhất** kèm dịch nghĩa tiếng Việt.`;
     } else if (action === 'dict_lookup') {
-      systemPrompt = 'Bạn là hệ thống từ điển Hàn-Việt. CHỈ xuất kết quả JSON Object chuẩn không kèm văn bản lập luận.';
+      systemPrompt = 'Bạn là hệ thống từ điển Hàn-Việt chuẩn xác chuyên sâu. CHỈ xuất kết quả JSON Object chuẩn không kèm văn bản lập luận.';
       userPrompt = `Hãy tra cứu nghĩa của từ hoặc cụm từ: "${word}".
+Yêu cầu phân biệt chuẩn xác sắc thái từ vựng:
+- Nếu từ mang sắc thái chính thức, hành chính, văn bản hoặc kỹ thuật (ví dụ: 항공기, 차량): Ghi nghĩa là "Máy bay / Tàu bay (chính thức/chuyên ngành)" và xếp cấp độ "Trung cấp" hoặc "Cao cấp".
+- Nếu từ thông dụng trong giao tiếp hằng ngày (ví dụ: 비행기, 차): Ghi nghĩa ngắn gọn "Máy bay", "Xe / Ô tô" và xếp cấp độ "Sơ cấp 1" hoặc "Sơ cấp 2".
+- Nếu từ kính ngữ (ví dụ: 댁, 성함): Chú thích "(kính ngữ)".
+
 Trả về dữ liệu dưới dạng JSON Object duy nhất với key "results" chứa danh sách từ 1 đến 3 kết quả từ điển:
 {
   "results": [
     {
       "korean": "Từ tiếng Hàn",
       "hanja": "Gốc Hán nếu có hoặc rỗng",
-      "vietnamese": "Nghĩa tiếng Việt chuẩn",
+      "vietnamese": "Nghĩa tiếng Việt chuẩn (chú thích sắc thái nếu có)",
       "type": "Danh từ / Động từ / Tính từ / Cụm từ",
-      "level": "Sơ cấp 1 / Sơ cấp 2 / Trung cấp",
+      "level": "Sơ cấp 1 / Sơ cấp 2 / Trung cấp / Cao cấp",
       "pronunciation": "[phiên âm đọc]",
-      "exampleKr": "Câu ví dụ tiếng Hàn",
+      "exampleKr": "Câu ví dụ tiếng Hàn thực tế",
       "exampleVi": "Dịch câu ví dụ tiếng Việt"
     }
   ]
