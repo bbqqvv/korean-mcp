@@ -20,6 +20,7 @@ import {
   FolderOpen
 } from 'lucide-react';
 import Link from 'next/link';
+import ProgressAnalytics from '@/components/progress-analytics';
 
 function DashboardContent() {
   const searchParams = useSearchParams();
@@ -285,6 +286,8 @@ function DashboardContent() {
                 </button>
               </div>
             )}
+            {/* Integrated Progress Analytics & Heatmap Dashboard */}
+            <ProgressAnalytics />
           </section>
         </main>
       </div>

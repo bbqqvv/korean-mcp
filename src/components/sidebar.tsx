@@ -74,9 +74,8 @@ export default function Sidebar({
 
   const mainNavLinks = [
     { href: '/', label: 'Trang Chủ', icon: Home },
-    { href: '/progress', label: 'Tiến Trình Học Tập', icon: TrendingUp },
-    { href: '/speaking', label: 'Luyện Nói', icon: Mic, isSpeaking: true },
     { href: '/ai-tutor', label: 'Trợ Lý AI', icon: Bot },
+    { href: '/speaking', label: 'Luyện Nói', icon: Mic, isSpeaking: true },
     { href: '/books', label: 'Sách & Giáo Trình', icon: BookOpen, isBooks: true },
     { href: '/dictionary', label: 'Tra Từ Điển', icon: Search },
     { href: '/typing', label: 'Luyện Gõ Phím', icon: Keyboard },
