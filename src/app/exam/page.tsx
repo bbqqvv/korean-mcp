@@ -172,11 +172,10 @@ export default function ExamPage() {
                     <button
                       key={tab}
                       onClick={() => setFilterLevel(tab)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        filterLevel === tab
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${filterLevel === tab
                           ? `${themeConfig.primaryBg} text-white shadow-xs`
                           : 'bg-slate-100 dark:bg-zinc-800/80 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700'
-                      }`}
+                        }`}
                     >
                       {tab}
                     </button>
@@ -298,31 +297,28 @@ export default function ExamPage() {
                 <div className="flex border-b border-slate-200 dark:border-zinc-800 gap-6 text-xs font-bold">
                   <button
                     onClick={() => setDetailTab('practice')}
-                    className={`pb-3 transition-colors cursor-pointer ${
-                      detailTab === 'practice'
+                    className={`pb-3 transition-colors cursor-pointer ${detailTab === 'practice'
                         ? 'border-b-2 border-blue-600 text-blue-600 dark:text-blue-400'
                         : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
+                      }`}
                   >
                     Luyện tập
                   </button>
                   <button
                     onClick={() => setDetailTab('full')}
-                    className={`pb-3 transition-colors cursor-pointer ${
-                      detailTab === 'full'
+                    className={`pb-3 transition-colors cursor-pointer ${detailTab === 'full'
                         ? 'border-b-2 border-blue-600 text-blue-600 dark:text-blue-400'
                         : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
+                      }`}
                   >
                     Làm full test
                   </button>
                   <button
                     onClick={() => setDetailTab('discussion')}
-                    className={`pb-3 transition-colors cursor-pointer ${
-                      detailTab === 'discussion'
+                    className={`pb-3 transition-colors cursor-pointer ${detailTab === 'discussion'
                         ? 'border-b-2 border-blue-600 text-blue-600 dark:text-blue-400'
                         : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
+                      }`}
                   >
                     Thảo luận ({comments.length})
                   </button>

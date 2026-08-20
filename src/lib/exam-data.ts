@@ -37,6 +37,10 @@ export interface TopikExamSuite {
   description: string;
   difficulty: 'Dễ' | 'Trung bình' | 'Thách thức';
   tag: string;
+  rating?: number;
+  passRate?: string;
+  targetLevel?: string;
+  keyTopics?: string[];
   listeningTags?: ExamSectionTag[];
   readingTags?: ExamSectionTag[];
   comments: ExamComment[];
@@ -55,6 +59,10 @@ export const TOPIK_EXAM_SUITES: TopikExamSuite[] = [
     participantsCount: 27774,
     commentsCount: 5,
     tag: '#TOPIK I',
+    rating: 4.9,
+    passRate: '84%',
+    targetLevel: 'Cấp 1 & Cấp 2',
+    keyTopics: ['Từ vựng đời sống', 'Biển báo', 'Nghe thoại ngắn'],
     difficulty: 'Trung bình',
     description: 'Đề thi chính thức kỳ 35 TOPIK I bao gồm 30 câu Nghe và 40 câu Đọc hiểu kèm đáp án & lời giải chi tiết.',
     listeningTags: [
@@ -189,8 +197,12 @@ export const TOPIK_EXAM_SUITES: TopikExamSuite[] = [
     totalQuestions: 70,
     totalSections: 2,
     participantsCount: 7719,
-    commentsCount: 9,
+    commentsCount: 4,
     tag: '#TOPIK I',
+    rating: 4.8,
+    passRate: '79%',
+    targetLevel: 'Cấp 1 & Cấp 2',
+    keyTopics: ['Ngữ pháp sơ cấp', 'Đoạn văn ngắn', 'Hội thoại hàng ngày'],
     difficulty: 'Trung bình',
     description: 'Đề thi thử TOPIK I kỳ 36 gồm 30 câu Nghe và 40 câu Đọc hiểu chuẩn cấu trúc.',
     listeningTags: [
@@ -201,7 +213,36 @@ export const TOPIK_EXAM_SUITES: TopikExamSuite[] = [
       { name: '#[TOPIK Reading] Chọn chủ đề', count: 5 },
       { name: '#[TOPIK Reading] Điền từ vào chỗ trống', count: 8 }
     ],
-    comments: [],
+    comments: [
+      {
+        id: 'c36_1',
+        author: 'tranhainam.korean',
+        avatarLetter: 'T',
+        date: 'Tháng 01. 15, 2026',
+        content: 'Phần đọc hiểu câu 10 đến 15 ngữ pháp khá hay, mọi người chú ý chia đuôi câu 비웁니다/습니다 nhé!'
+      },
+      {
+        id: 'c36_2',
+        author: 'leminhthu.topik',
+        avatarLetter: 'L',
+        date: 'Tháng 01. 02, 2026',
+        content: 'Mình vừa làm xong đạt 85/100 điểm, đề này vừa sức thi TOPIK 1 Cấp 2 nha.'
+      },
+      {
+        id: 'c36_3',
+        author: 'hoangviet.hanoi',
+        avatarLetter: 'H',
+        date: 'Tháng 12. 28, 2025',
+        content: 'Audio phần nghe phát âm rất rõ và chuẩn giọng Seoul, luyện nghe hằng ngày tuyệt vời lắm.'
+      },
+      {
+        id: 'c36_4',
+        author: 'buiyenvu.korea',
+        avatarLetter: 'B',
+        date: 'Tháng 11. 19, 2025',
+        content: 'Cho mình hỏi phần giải thích câu 24 đoạn văn dài nằm ở mục nào vậy ạ?'
+      }
+    ],
     questions: [
       {
         id: 1,
@@ -224,11 +265,37 @@ export const TOPIK_EXAM_SUITES: TopikExamSuite[] = [
     totalQuestions: 70,
     totalSections: 2,
     participantsCount: 4668,
-    commentsCount: 1,
+    commentsCount: 3,
     tag: '#TOPIK I',
+    rating: 4.7,
+    passRate: '82%',
+    targetLevel: 'Cấp 1 & Cấp 2',
+    keyTopics: ['Văn hóa Hàn Quốc', 'Nghe tranh', 'Bài tập liên từ'],
     difficulty: 'Trung bình',
     description: 'Đề thi thử TOPIK I kỳ 37 tổng hợp ngữ pháp và từ vựng sơ cấp.',
-    comments: [],
+    comments: [
+      {
+        id: 'c37_1',
+        author: 'vuongngocmai',
+        avatarLetter: 'V',
+        date: 'Tháng 02. 10, 2026',
+        content: 'Đề 37 này có nhiều từ vựng về chủ đề ẩm thực và phương tiện giao thông rất bổ ích.'
+      },
+      {
+        id: 'c37_2',
+        author: 'dinhvananh.kr',
+        avatarLetter: 'D',
+        date: 'Tháng 01. 18, 2026',
+        content: 'Cấu trúc bài thi thiết kế chuẩn đét, làm xong biết luôn đáp án và từ vựng mới.'
+      },
+      {
+        id: 'c37_3',
+        author: 'kimchihanquoc',
+        avatarLetter: 'K',
+        date: 'Tháng 12. 10, 2025',
+        content: 'Cảm ơn admin LynKore đã tổng hợp bộ đề đầy đủ lời giải tiếng Việt nhé!'
+      }
+    ],
     questions: [
       {
         id: 1,
@@ -251,11 +318,37 @@ export const TOPIK_EXAM_SUITES: TopikExamSuite[] = [
     totalQuestions: 70,
     totalSections: 2,
     participantsCount: 3900,
-    commentsCount: 2,
+    commentsCount: 3,
     tag: '#TOPIK I',
+    rating: 4.9,
+    passRate: '88%',
+    targetLevel: 'Cấp 1 & Cấp 2',
+    keyTopics: ['Dự định -(으)려고 하다', 'Cửa hàng & Giá cả'],
     difficulty: 'Trung bình',
     description: 'Đề thi chính thức TOPIK I kỳ 41 sát với xu hướng ra đề mới nhất.',
-    comments: [],
+    comments: [
+      {
+        id: 'c41_1',
+        author: 'doanthanhtung.99',
+        avatarLetter: 'D',
+        date: 'Tháng 02. 14, 2026',
+        content: 'Đề thi kỳ 41 rất hay, cấu trúc ngữ pháp -(으)려고 하다 xuất hiện trong 2 câu đọc liền!'
+      },
+      {
+        id: 'c41_2',
+        author: 'nguyenthithanh',
+        avatarLetter: 'N',
+        date: 'Tháng 01. 22, 2026',
+        content: 'Lần đầu ôn trên web mà giao diện mượt thế này, có timer đếm ngược chuẩn áp lực phòng thi.'
+      },
+      {
+        id: 'c41_3',
+        author: 'tranthihan.hn',
+        avatarLetter: 'T',
+        date: 'Tháng 12. 05, 2025',
+        content: 'Mình vừa đỗ TOPIK Cấp 2 kỳ trước nhờ ôn bộ đề 41 này nè mọi người!'
+      }
+    ],
     questions: [
       {
         id: 1,
@@ -278,11 +371,44 @@ export const TOPIK_EXAM_SUITES: TopikExamSuite[] = [
     totalQuestions: 100,
     totalSections: 3,
     participantsCount: 12450,
-    commentsCount: 14,
+    commentsCount: 4,
     tag: '#TOPIK II',
+    rating: 4.95,
+    passRate: '65%',
+    targetLevel: 'Cấp 3 đến Cấp 6',
+    keyTopics: ['Báo chí', 'Ngữ pháp trung cao cấp', 'Viết đoạn văn 51-54'],
     difficulty: 'Thách thức',
     description: 'Đề thi thử TOPIK II kỳ 83 dành cho thí sinh ôn luyện Cấp 3 đến Cấp 6.',
-    comments: [],
+    comments: [
+      {
+        id: 'c83_1',
+        author: 'phamducmanh.topik6',
+        avatarLetter: 'P',
+        date: 'Tháng 02. 18, 2026',
+        content: 'Đề TOPIK II này phần viết câu 51 và 52 rất sát thực tế, đáp án mẫu chi tiết từng cấu trúc luôn.'
+      },
+      {
+        id: 'c83_2',
+        author: 'lethiquynhtrang',
+        avatarLetter: 'L',
+        date: 'Tháng 02. 01, 2026',
+        content: 'Phần đọc hiểu tin tức báo chí khá thách thức, học được rất nhiều từ vựng chuyên ngành xã hội.'
+      },
+      {
+        id: 'c83_3',
+        author: 'nguyenvanbao.kr',
+        avatarLetter: 'N',
+        date: 'Tháng 01. 10, 2026',
+        content: 'Có ai làm xong câu 53 biểu đồ phần Viết chưa cho mình trao đổi dàn ý với nha!'
+      },
+      {
+        id: 'c83_4',
+        author: 'tranquangkhai',
+        avatarLetter: 'T',
+        date: 'Tháng 12. 15, 2025',
+        content: 'Giao diện làm bài mượt mà, cảm ơn LynKore đã hỗ trợ đề thi thử chất lượng cao thế này.'
+      }
+    ],
     questions: [
       {
         id: 1,
