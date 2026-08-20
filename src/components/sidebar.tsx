@@ -118,14 +118,27 @@ export default function Sidebar({
       } md:relative md:translate-x-0 transition-all duration-300 ease-in-out shrink-0`}
     >
       <div
-        className={`flex flex-col h-full bg-white shadow-xs text-slate-900 select-none transition-all duration-300 ${
+        className={`flex flex-col h-full bg-white shadow-xs text-slate-900 select-none transition-all duration-300 relative ${
           isCollapsed ? 'w-20' : 'w-64'
         }`}
       >
-        {/* Brand Header & Collapse Toggle Button */}
+        {/* Floating Outer Edge Collapse Toggle Button (Does Not Take Up Space Inside Sidebar) */}
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="hidden md:flex absolute -right-3.5 top-5 z-30 w-7 h-7 rounded-full bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/90 shadow-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 items-center justify-center transition-all hover:scale-110 cursor-pointer"
+          title={isCollapsed ? 'Mở rộng Sidebar' : 'Thu hẹp Sidebar'}
+        >
+          {isCollapsed ? (
+            <ChevronRight className="w-4 h-4 ml-0.5" />
+          ) : (
+            <ChevronLeft className="w-4 h-4 mr-0.5" />
+          )}
+        </button>
+
+        {/* Brand Header */}
         <div className="p-3.5">
           {isCollapsed ? (
-            <div className="flex flex-col items-center justify-center gap-3">
+            <div className="flex justify-center">
               <Link href="/" title="Trang chủ LynKore">
                 <Image
                   src="/krlogo.png"
@@ -135,13 +148,6 @@ export default function Sidebar({
                   className="w-8.5 h-8.5 rounded-xl object-contain hover:scale-105 transition-transform shadow-xs"
                 />
               </Link>
-              <button
-                onClick={() => setIsCollapsed(false)}
-                className="w-8.5 h-8.5 rounded-full bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/70 dark:hover:bg-blue-900 text-blue-600 dark:text-blue-400 flex items-center justify-center transition-all shadow-xs hover:scale-105"
-                title="Mở rộng Sidebar"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
             </div>
           ) : (
             <div className="flex items-center justify-between pl-1">
@@ -162,15 +168,6 @@ export default function Sidebar({
                   </span>
                 </div>
               </Link>
-
-              {/* Desktop Sidebar Collapse Toggle Button (Fully Rounded & Positioned Outside) */}
-              <button
-                onClick={() => setIsCollapsed(true)}
-                className="hidden md:flex w-8.5 h-8.5 rounded-full bg-slate-100/90 hover:bg-slate-200/90 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white items-center justify-center transition-all shadow-xs hover:scale-105 shrink-0 ml-auto"
-                title="Thu hẹp Sidebar"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
 
               {onCloseMobile && (
                 <button
@@ -359,9 +356,13 @@ export default function Sidebar({
               className="w-10 h-10 mx-auto rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center hover:bg-slate-200 transition-colors"
               title="LynKore Learner (Tài khoản)"
             >
-              <div className="w-7 h-7 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">
-                LK
-              </div>
+              <Image
+                src="/krlogo.png"
+                alt="LynKore Icon"
+                width={28}
+                height={28}
+                className="w-7 h-7 rounded-lg object-contain shadow-2xs"
+              />
             </button>
           ) : (
             <div className="relative">
@@ -370,9 +371,13 @@ export default function Sidebar({
                 className="w-full p-2 rounded-xl hover:bg-slate-100/80 transition-colors flex items-center justify-between gap-2.5 group text-left"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8.5 h-8.5 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
-                    LK
-                  </div>
+                  <Image
+                    src="/krlogo.png"
+                    alt="LynKore Icon"
+                    width={34}
+                    height={34}
+                    className="w-8.5 h-8.5 rounded-xl object-contain shadow-2xs shrink-0"
+                  />
                   <div className="min-w-0">
                     <span className="text-xs font-semibold text-slate-900 block truncate leading-tight group-hover:text-blue-600 transition-colors">
                       LynKore Learner
@@ -397,9 +402,13 @@ export default function Sidebar({
                   <div className="absolute left-[calc(100%+10px)] bottom-0 w-72 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-2xl p-3.5 space-y-3 z-50 animate-fadeIn">
                     {/* User Header */}
                     <div className="flex items-center gap-2.5 pb-2.5 border-b border-slate-100 dark:border-slate-800">
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
-                        LK
-                      </div>
+                      <Image
+                        src="/krlogo.png"
+                        alt="LynKore Icon"
+                        width={36}
+                        height={36}
+                        className="w-9 h-9 rounded-xl object-contain shadow-2xs shrink-0"
+                      />
                       <div className="min-w-0">
                         <span className="text-xs font-semibold text-slate-900 dark:text-slate-100 block truncate">
                           LynKore Learner
