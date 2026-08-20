@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { useTheme } from '@/lib/theme-context';
+import { useTheme, DarkStyleId, LightStyleId } from '@/lib/theme-context';
 import {
   Award,
   Home,
@@ -58,7 +58,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { themeConfig } = useTheme();
+  const { mode, darkStyle, lightStyle, setMode, setDarkStyle, setLightStyle, themeConfig } = useTheme();
 
   const isBooksActive = pathname === '/books' || pathname.startsWith('/course');
   const isSpeakingActive =
@@ -421,17 +421,89 @@ export default function Sidebar({
                     </div>
 
                     {/* Theme Mode Quick Switcher */}
-                    <div className="bg-slate-50 p-1.5 rounded-xl flex items-center justify-between text-[11px] font-medium text-slate-600">
-                      <button className="flex-1 py-1 px-1.5 bg-white shadow-2xs rounded-lg text-slate-900 font-semibold flex items-center justify-center gap-1">
+                    <div className="bg-slate-100 p-1 rounded-xl flex items-center justify-between text-[11px] font-medium text-slate-600">
+                      <button
+                        onClick={() => setMode('light')}
+                        className={`flex-1 py-1 px-1 rounded-lg font-semibold flex items-center justify-center gap-1 transition-all ${
+                          mode === 'light' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'
+                        }`}
+                      >
                         <Sun className="w-3 h-3 text-amber-500" /> Sáng
                       </button>
-                      <button className="flex-1 py-1 px-1.5 hover:text-slate-900 flex items-center justify-center gap-1">
-                        <Moon className="w-3 h-3 text-slate-400" /> Tối
+                      <button
+                        onClick={() => setMode('dark')}
+                        className={`flex-1 py-1 px-1 rounded-lg font-semibold flex items-center justify-center gap-1 transition-all ${
+                          mode === 'dark' ? 'bg-slate-900 text-white shadow-2xs' : 'text-slate-500 hover:text-slate-800'
+                        }`}
+                      >
+                        <Moon className="w-3 h-3 text-blue-400" /> Tối
                       </button>
-                      <button className="flex-1 py-1 px-1.5 hover:text-slate-900 flex items-center justify-center gap-1">
+                      <button
+                        onClick={() => setMode('system')}
+                        className={`flex-1 py-1 px-1 rounded-lg font-semibold flex items-center justify-center gap-1 transition-all ${
+                          mode === 'system' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'
+                        }`}
+                      >
                         <Laptop className="w-3 h-3 text-slate-400" /> Auto
                       </button>
                     </div>
+
+                    {/* Sub-Style Selector Grid (4 Styles Matching Reference Image!) */}
+                    {mode === 'dark' ? (
+                      <div className="grid grid-cols-4 gap-1.5 pt-0.5">
+                        {(['dimmed', 'midnight', 'slate', 'oled'] as DarkStyleId[]).map((styleId) => {
+                          const isSelected = darkStyle === styleId;
+                          const swatches: Record<DarkStyleId, { color: string; label: string }> = {
+                            dimmed: { color: 'bg-[#22272e] border-[#30363d]', label: 'Dimmed' },
+                            midnight: { color: 'bg-[#0d1117] border-[#21262d]', label: 'Midnight' },
+                            slate: { color: 'bg-slate-800 border-slate-700', label: 'Slate' },
+                            oled: { color: 'bg-black border-zinc-800', label: 'OLED' }
+                          };
+                          const swatch = swatches[styleId];
+                          return (
+                            <button
+                              key={styleId}
+                              onClick={() => setDarkStyle(styleId)}
+                              className={`p-1.5 rounded-xl border flex flex-col items-center gap-1 transition-all ${
+                                isSelected
+                                  ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20 text-blue-600 font-bold'
+                                  : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
+                              }`}
+                            >
+                              <span className={`w-3.5 h-3.5 rounded-full border ${swatch.color} shadow-2xs`} />
+                              <span className="text-[9px] truncate w-full text-center leading-none">{swatch.label}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-4 gap-1.5 pt-0.5">
+                        {(['default', 'paper', 'indigo', 'pure'] as LightStyleId[]).map((styleId) => {
+                          const isSelected = lightStyle === styleId;
+                          const swatches: Record<LightStyleId, { color: string; label: string }> = {
+                            default: { color: 'bg-slate-100 border-slate-300', label: 'Default' },
+                            paper: { color: 'bg-[#faf8f5] border-[#e8e4df]', label: 'Paper' },
+                            indigo: { color: 'bg-[#f5f7fb] border-indigo-200', label: 'Indigo' },
+                            pure: { color: 'bg-white border-slate-200', label: 'Pure' }
+                          };
+                          const swatch = swatches[styleId];
+                          return (
+                            <button
+                              key={styleId}
+                              onClick={() => setLightStyle(styleId)}
+                              className={`p-1.5 rounded-xl border flex flex-col items-center gap-1 transition-all ${
+                                isSelected
+                                  ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20 text-blue-600 font-bold'
+                                  : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
+                              }`}
+                            >
+                              <span className={`w-3.5 h-3.5 rounded-full border ${swatch.color} shadow-2xs`} />
+                              <span className="text-[9px] truncate w-full text-center leading-none">{swatch.label}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
 
                     {/* Settings Item */}
                     <div className="space-y-0.5 text-xs font-medium">
