@@ -75,7 +75,7 @@ export default function TypingStage({
   }, [targetText, practiceMode]);
 
   return (
-    <div className="bg-white border border-slate-200/80 rounded-2xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden py-4 shadow-xs my-2 font-sans select-none">
+    <div className="bg-white border-2 border-slate-900 rounded-3xl flex-1 flex flex-col items-center justify-center text-center space-y-3 cursor-text relative overflow-hidden p-6 shadow-xs my-2 font-sans select-none">
       {/* GIANT TARGET KOREAN CHARACTER - ACCURATE LIVE PARTIAL SYLLABLE COMPOSED HIGHLIGHT ENGINE */}
       <div className={`${fontSizeClass} font-black tracking-widest flex flex-wrap items-center justify-center gap-2 sm:gap-4 max-w-full px-4 transition-all`}>
         {targetText.split('').map((originalChar, index) => {

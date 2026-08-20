@@ -71,14 +71,14 @@ export default function CourseDetailPage({ params }: CoursePageProps) {
   };
 
   return (
-    <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
+    <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans p-2.5 sm:p-4 gap-3 sm:gap-4">
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
         onOpenCreateModal={() => setIsCreateModalOpen(true)}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-caro-grid border-2 border-slate-900 rounded-3xl relative shadow-xs">
         <main className="relative flex flex-col gap-6 min-h-[calc(98vh-24px)] px-4 lg:px-8 py-8 max-w-[1215px] mx-auto w-full overflow-y-auto pb-28 md:pb-12">
           {/* Back button */}
           <div>

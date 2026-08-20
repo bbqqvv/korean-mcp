@@ -99,7 +99,7 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
   if (isCompleted || !currentCard) {
     const percentage = Math.round((score / total) * 100);
     return (
-      <div className="flex flex-col items-center justify-center p-6 bg-white border border-slate-200/80 rounded-2xl max-w-lg mx-auto text-center space-y-4 shadow-xs">
+      <div className="flex flex-col items-center justify-center p-6 sm:p-8 bg-white border-2 border-slate-900 rounded-3xl max-w-lg mx-auto text-center space-y-4 shadow-xs">
         <div className="w-14 h-14 bg-slate-900 text-white rounded-full flex items-center justify-center shadow-xs">
           <Award className="w-7 h-7 text-indigo-400" />
         </div>
@@ -111,7 +111,7 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
           <p className="text-slate-500 text-xs font-medium">Bộ từ vựng: {deckTitle}</p>
         </div>
 
-        <div className="w-full bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-1.5">
+        <div className="w-full bg-slate-50 border-2 border-slate-900 rounded-2xl p-4 space-y-1.5">
           <div className="text-3xl font-black text-slate-900">
             {score} / {total}
           </div>
@@ -135,14 +135,14 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
               setSelectedAnswer(null);
               setIsCompleted(false);
             }}
-            className="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-xs flex items-center gap-1.5 transition-all"
+            className="px-5 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full border-2 border-slate-900 shadow-xs flex items-center gap-1.5 transition-all"
           >
             <RotateCw className="w-3.5 h-3.5" /> Thử Lại Quiz
           </button>
 
           <Link
             href="/"
-            className="px-4 py-2 text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center gap-1.5 transition-colors"
+            className="px-4 py-2.5 text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-full border-2 border-slate-900 flex items-center gap-1.5 transition-colors"
           >
             <Home className="w-3.5 h-3.5 text-slate-600" />
             <span>Trang Chủ</span>
@@ -157,7 +157,7 @@ export default function QuizMode({ cards, deckTitle }: QuizModeProps) {
   return (
     <div className="max-w-lg mx-auto space-y-3 font-sans">
       {/* Compact Question Card (Zero Scroll Fit) */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 text-center space-y-4 shadow-xs">
+      <div className="bg-white border-2 border-slate-900 rounded-3xl p-6 text-center space-y-4 shadow-xs">
         {/* Korean Word Question */}
         <div className="flex justify-center items-center gap-2.5">
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">

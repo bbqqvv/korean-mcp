@@ -110,20 +110,6 @@ export default function Sidebar({
           )}
         </div>
 
-        {/* Primary Action Button */}
-        <div className="p-4 border-b border-slate-100">
-          <button
-            onClick={() => {
-              if (onOpenCreateModal) onOpenCreateModal();
-              if (onCloseMobile) onCloseMobile();
-            }}
-            className={`w-full py-2.5 px-4 ${themeConfig.primaryBg} ${themeConfig.primaryHover} text-white font-bold text-xs rounded-full shadow-xs flex items-center justify-center gap-2 transition-all hover:shadow-sm`}
-          >
-            <Plus className="w-4 h-4 text-white" />
-            <span>Tạo Bộ Bài AI Mới</span>
-          </button>
-        </div>
-
         {/* Main Navigation & Category List */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* Main Routes */}

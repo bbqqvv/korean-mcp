@@ -206,14 +206,14 @@ function SettingsContent() {
   };
 
   return (
-    <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
+    <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans p-2.5 sm:p-4 gap-3 sm:gap-4">
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
         onOpenCreateModal={() => setIsCreateModalOpen(true)}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-caro-grid border-2 border-slate-900 rounded-3xl relative shadow-xs">
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 pb-24 md:pb-8 max-w-5xl w-full mx-auto">
           {/* Header Title */}
           <div className="border-b border-slate-200/80 pb-4">
@@ -306,10 +306,10 @@ function SettingsContent() {
                       <div
                         key={id}
                         onClick={() => setTheme(id)}
-                        className={`border rounded-2xl p-5 cursor-pointer transition-all duration-200 relative overflow-hidden flex flex-col justify-between space-y-4 ${
+                        className={`border-2 border-slate-900 rounded-3xl p-5 cursor-pointer transition-all duration-200 relative overflow-hidden flex flex-col justify-between space-y-4 ${
                           isActive
-                            ? `bg-white border-2 ${cfg.accentRing} shadow-md ring-4`
-                            : 'bg-slate-50/70 border-slate-200/80 hover:bg-slate-100/80 hover:border-slate-300'
+                            ? `bg-white shadow-md ring-4 ${cfg.accentRing}`
+                            : 'bg-white hover:bg-slate-50'
                         }`}
                       >
                         {/* Header Swatch */}
