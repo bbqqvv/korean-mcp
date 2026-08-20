@@ -453,8 +453,99 @@ export default function Sidebar({
                       </button>
                     </div>
 
+                    {/* Sub-Options Color Grid (4 Buttons matching Image 1!) */}
+                    <div className="grid grid-cols-4 gap-1.5 pt-0.5">
+                      {(
+                        [
+                          { id: 'default', label: 'Dimmed', colorBg: mode === 'dark' ? 'bg-[#1c2128]' : 'bg-slate-100', dot: 'bg-slate-400' },
+                          { id: 'purple', label: 'Tím', colorBg: mode === 'dark' ? 'bg-[#2a123d]' : 'bg-purple-100', dot: 'bg-purple-500' },
+                          { id: 'pink', label: 'Hồng', colorBg: mode === 'dark' ? 'bg-[#3b1223]' : 'bg-pink-100', dot: 'bg-pink-500' },
+                          { id: 'blue', label: 'Xanh', colorBg: mode === 'dark' ? 'bg-[#0e2a47]' : 'bg-sky-100', dot: 'bg-sky-500' }
+                        ] as const
+                      ).map((item) => {
+                        const isSelected = subStyle === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            onClick={() => setSubStyle(item.id as SubStyleId)}
+                            className={`p-2 rounded-xl border flex flex-col items-center gap-1 transition-all ${
+                              isSelected
+                                ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/40 ring-2 ring-blue-500/20 text-blue-600 dark:text-blue-400 font-bold'
+                                : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-600 dark:text-slate-300 font-medium'
+                            }`}
+                          >
+                            <span className={`w-4 h-4 rounded-full border border-slate-300 dark:border-slate-600 ${item.colorBg} flex items-center justify-center shadow-2xs`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${item.dot}`} />
+                            </span>
+                            <span className="text-[10px] truncate w-full text-center leading-none">{item.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Ambient Effects Section */}
+                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
+                      <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+                        HIỆU ỨNG MÔI TRƯỜNG
+                      </span>
+                      <div className="grid grid-cols-4 gap-1">
+                        {[
+                          { id: 'none', label: 'Tắt 🚫' },
+                          { id: 'sakura', label: 'Anh Đào 🌸' },
+                          { id: 'snow', label: 'Tuyết ❄️' },
+                          { id: 'stars', label: 'Sao ✨' }
+                        ].map((ef) => (
+                          <button
+                            key={ef.id}
+                            onClick={() => setAmbientEffect(ef.id as any)}
+                            className={`py-1 px-1 rounded-lg text-[10px] font-semibold transition-all text-center ${
+                              ambientEffect === ef.id
+                                ? 'bg-blue-600 text-white shadow-2xs font-bold'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {ef.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Ambient Audio / Lofi Beats Section */}
+                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+                          NHẠC NỀN LOFI & AMBIENT
+                        </span>
+                        {ambientAudio !== 'none' && (
+                          <span className="text-[9px] font-bold text-blue-600 dark:text-blue-400 animate-pulse flex items-center gap-0.5">
+                            <Volume2 className="w-2.5 h-2.5" /> Đang phát
+                          </span>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-4 gap-1">
+                        {[
+                          { id: 'none', label: 'Tắt 🔇' },
+                          { id: 'lofi', label: 'Lofi 🎵' },
+                          { id: 'rain', label: 'Mưa 🌧️' },
+                          { id: 'cafe', label: 'Cà phê ☕' }
+                        ].map((au) => (
+                          <button
+                            key={au.id}
+                            onClick={() => setAmbientAudio(au.id as any)}
+                            className={`py-1 px-1 rounded-lg text-[10px] font-semibold transition-all text-center ${
+                              ambientAudio === au.id
+                                ? 'bg-blue-600 text-white shadow-2xs font-bold'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {au.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* Navigation items leading directly to dedicated Settings page */}
-                    <div className="space-y-0.5 text-xs font-medium pt-1 border-t border-slate-100 dark:border-slate-800">
+                    <div className="space-y-0.5 text-xs font-medium pt-1.5 border-t border-slate-100 dark:border-slate-800">
                       <button
                         onClick={() => {
                           setIsProfileMenuOpen(false);
