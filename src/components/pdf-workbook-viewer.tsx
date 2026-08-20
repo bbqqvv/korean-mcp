@@ -541,13 +541,20 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
             {/* Real PDF Page Viewer Container */}
             {uploadedPdfUrl ? (
               <div className="relative z-10 w-full h-full flex-1 flex flex-col overflow-hidden bg-white">
-                <iframe
+                <object
                   key={`pdf-page-${pdfPageNumber}-${readingViewMode}`}
-                  src={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=0&view=${
+                  data={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=0&view=${
                     readingViewMode === 'page' ? 'Fit' : 'FitH'
                   }`}
-                  className="w-full h-full flex-1 border-none bg-white [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                />
+                  type="application/pdf"
+                  className="w-full h-full flex-1 border-none bg-white pointer-events-auto"
+                >
+                  <embed
+                    src={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=0`}
+                    type="application/pdf"
+                    className="w-full h-full flex-1 border-none bg-white"
+                  />
+                </object>
               </div>
             ) : (
               /* Interactive Sample Page */

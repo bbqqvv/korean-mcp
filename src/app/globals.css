@@ -162,6 +162,17 @@ html.dark .bg-slate-100.border-slate-200\/70 {
   border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
+/* HIDE BROWSER & EXTENSION PDF OCR EXTRACTION FLOATING TOASTS */
+div[id*="pdf"],
+div[class*="pdf-extract"],
+div[class*="ocr-toast"],
+div[style*="Extracting text"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* AMBIENT PARTICLE ANIMATIONS (SAKURA, SNOW, STARS) */
 @keyframes ambientFall {
   0% {
