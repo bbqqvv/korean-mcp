@@ -42,10 +42,10 @@
 }
 
 [data-theme="dark"] {
-  --bg-canvas: #0f172a;
-  --bg-card: #1e293b;
-  --text-main: #f8fafc;
-  --border-card: #334155;
+  --bg-canvas: #09090b;
+  --bg-card: #121215;
+  --text-main: #f4f4f5;
+  --border-card: #27272a;
   color-scheme: dark;
 }
 
@@ -58,10 +58,10 @@
 }
 
 [data-theme="purple-dark"] {
-  --bg-canvas: #1a0927;
-  --bg-card: #2a123d;
+  --bg-canvas: #0b0712;
+  --bg-card: #140b22;
   --text-main: #faf5ff;
-  --border-card: #3e1d59;
+  --border-card: #271542;
   color-scheme: dark;
 }
 
@@ -74,10 +74,10 @@
 }
 
 [data-theme="pink-dark"] {
-  --bg-canvas: #240a15;
-  --bg-card: #3b1223;
+  --bg-canvas: #0e0409;
+  --bg-card: #1b0812;
   --text-main: #fff5f7;
-  --border-card: #541a34;
+  --border-card: #361025;
   color-scheme: dark;
 }
 
@@ -90,10 +90,10 @@
 }
 
 [data-theme="blue-dark"] {
-  --bg-canvas: #081c2e;
-  --bg-card: #0e2a47;
+  --bg-canvas: #040912;
+  --bg-card: #091325;
   --text-main: #f0f9ff;
-  --border-card: #173d63;
+  --border-card: #122444;
   color-scheme: dark;
 }
 
