@@ -3,13 +3,12 @@ import { NextResponse } from 'next/server';
 const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 
 const MODELS_TO_TRY = [
-  process.env.GROQ_MODEL,
-  'llama-3.1-8b-instant',
-  'llama-3.3-70b-versatile',
-  'gemma2-9b-it',
-  'mixtral-8x7b-32768',
-  'llama3-70b-8192'
-].filter(Boolean) as string[];
+  'qwen/qwen3.6-27b',
+  'groq/compound',
+  'groq/compound-mini',
+  'openai/gpt-oss-20b',
+  'openai/gpt-oss-120b'
+];
 
 export async function POST(req: Request) {
   try {
@@ -23,7 +22,7 @@ export async function POST(req: Request) {
       );
     }
 
-    let roleSystemPrompt = 'Bạn là LynKore AI - Trợ lý & Gia sư tiếng Hàn Quốc xuất sắc dành cho người Việt Nam. Trả lời bằng tiếng Việt thân thiện, rõ ràng, giàu hình ảnh, dùng định dạng Markdown với các biểu tượng emoji sinh động.';
+    let roleSystemPrompt = 'Bạn là LynKore AI - Trợ lý & Gia sư tiếng Hàn Quốc xuất sắc dành cho người Việt Nam. Trả lời trực tiếp bằng tiếng Việt tự nhiên, ấm áp, ngắn gọn, dùng định dạng Markdown với các biểu tượng emoji sinh động.';
 
     if (role === 'grammar') {
       roleSystemPrompt = 'Bạn là Chuyên gia Ngữ pháp Tiếng Hàn LynKore. Nhiệm vụ của bạn là phân tích lỗi sai ngữ pháp, phân biệt các cấu trúc tương tự (như -아/어 보다 vs -고 싶다, -은/는 vs -이/가), chia đuôi kính ngữ (해요/하십시오/해), giải thích chi tiết gốc Hán Hàn (한자) và đưa ra ví dụ minh họa.';
@@ -60,8 +59,13 @@ export async function POST(req: Request) {
 
         if (response.ok) {
           const data = await response.json();
-          reply = data.choices?.[0]?.message?.content || '';
-          if (reply) {
+          let rawReply = data.choices?.[0]?.message?.content || '';
+          
+          // Remove internal <think>...</think> tags if present
+          rawReply = rawReply.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+
+          if (rawReply) {
+            reply = rawReply;
             usedModel = modelName;
             break; // Success!
           }
