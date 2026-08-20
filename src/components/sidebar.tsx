@@ -32,7 +32,8 @@ import {
   TrendingUp,
   ChevronLeft,
   ChevronRight,
-  Users
+  Users,
+  GraduationCap
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -80,6 +81,7 @@ export default function Sidebar({
     { href: '/ai-tutor', label: 'Trợ Lý AI', icon: Bot },
     { href: '/speaking', label: 'Luyện Nói', icon: Mic, isSpeaking: true },
     { href: '/books', label: 'Sách & Giáo Trình', icon: BookOpen },
+    { href: '/exam', label: 'Luyện Đề TOPIK', icon: GraduationCap },
     { href: '/dictionary', label: 'Tra Từ Điển', icon: Search },
     { href: '/typing', label: 'Luyện Gõ Phím', icon: Keyboard },
     { href: '/quiz', label: 'Ôn Luyện Quiz', icon: Award }
