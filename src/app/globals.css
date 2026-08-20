@@ -30,12 +30,15 @@
 
 /* HIDE ALL BROWSER SCROLLBARS GLOBALLY */
 * {
-  -ms-overflow-style: none !important; /* IE and Edge */
-  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important;
+  /* IE and Edge */
+  scrollbar-width: none !important;
+  /* Firefox */
 }
 
 *::-webkit-scrollbar {
-  display: none !important; /* Chrome, Safari, Opera */
+  display: none !important;
+  /* Chrome, Safari, Opera */
   width: 0px !important;
   height: 0px !important;
   background: transparent !important;
@@ -58,7 +61,7 @@ body {
   min-height: 100svh;
   background-color: var(--color-ios-canvas, #faf8f5);
   color: var(--color-ios-fg);
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(0, 70, 180, 0.12) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0, 70, 180, 0.12) 1px, transparent 1px);
   background-size: 24px 24px;
@@ -74,7 +77,7 @@ body {
 
 .bg-caro-grid {
   background-color: var(--color-ios-canvas, #faf8f5);
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(0, 70, 180, 0.12) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0, 70, 180, 0.12) 1px, transparent 1px);
   background-size: 24px 24px;
@@ -82,7 +85,7 @@ body {
 
 .bg-caro-grid-dark {
   background-color: #09090b;
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
   background-size: 24px 24px;
@@ -178,6 +181,7 @@ body::-webkit-scrollbar {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -349,4 +353,3 @@ body::-webkit-scrollbar {
 .text-main-foreground {
   color: #ffffff;
 }
-
