@@ -39,20 +39,20 @@ export const USER_STATS: UserProgressStats = {
 // Generate 6 months of mock activity heatmap data (180 days)
 export const generateHeatmapData = (): HeatmapDay[] => {
   const days: HeatmapDay[] = [];
-  const today = new Date();
+  const fixedBaseDate = new Date('2026-08-20T00:00:00.000Z');
 
   for (let i = 179; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(today.getDate() - i);
+    const d = new Date(fixedBaseDate);
+    d.setDate(fixedBaseDate.getDate() - i);
     const dateStr = d.toISOString().split('T')[0];
 
-    // Determine pseudo-random activity level
-    const rand = Math.random();
+    // Deterministic pseudo-random algorithm based on day index 'i'
+    const pseudoRandom = (Math.abs(Math.sin(i * 997 + 13)) * 10000) % 1;
     let level: 0 | 1 | 2 | 3 | 4 = 0;
-    if (rand > 0.45 && rand <= 0.65) level = 1;
-    else if (rand > 0.65 && rand <= 0.8) level = 2;
-    else if (rand > 0.8 && rand <= 0.92) level = 3;
-    else if (rand > 0.92) level = 4;
+    if (pseudoRandom > 0.45 && pseudoRandom <= 0.65) level = 1;
+    else if (pseudoRandom > 0.65 && pseudoRandom <= 0.8) level = 2;
+    else if (pseudoRandom > 0.8 && pseudoRandom <= 0.92) level = 3;
+    else if (pseudoRandom > 0.92) level = 4;
 
     days.push({ date: dateStr, level });
   }
