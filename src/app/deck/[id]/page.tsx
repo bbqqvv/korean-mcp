@@ -53,11 +53,6 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <Header
-          onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
-          onOpenCreateModal={() => setIsCreateModalOpen(true)}
-        />
-
         <main className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 pb-20 md:pb-6 max-w-4xl w-full mx-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {isLoading ? (
             <DeckDetailSkeleton />

@@ -30,7 +30,7 @@ function TypingContent() {
   }, []);
 
   return (
-    <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans">
+    <div className="flex h-screen bg-caro-grid text-slate-900 overflow-hidden font-sans">
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -38,11 +38,6 @@ function TypingContent() {
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <Header
-          onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
-          onOpenCreateModal={() => setIsCreateModalOpen(true)}
-        />
-
         <main className="flex-1 overflow-hidden p-2 sm:p-4 max-w-5xl w-full mx-auto flex flex-col justify-between">
           <KoreanTypingTutor decks={decks} />
         </main>

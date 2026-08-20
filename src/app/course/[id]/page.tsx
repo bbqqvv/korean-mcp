@@ -79,12 +79,6 @@ export default function CourseDetailPage({ params }: CoursePageProps) {
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <Header
-          onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
-          onOpenCreateModal={() => setIsCreateModalOpen(true)}
-          onOpenAITutor={() => setIsAITutorOpen(true)}
-        />
-
         <main className="relative flex flex-col gap-6 min-h-[calc(98vh-24px)] px-4 lg:px-8 py-8 max-w-[1215px] mx-auto w-full overflow-y-auto pb-28 md:pb-12">
           {/* Back button */}
           <div>

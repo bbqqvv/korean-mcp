@@ -214,11 +214,6 @@ function SettingsContent() {
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <Header
-          onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
-          onOpenCreateModal={() => setIsCreateModalOpen(true)}
-        />
-
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 pb-24 md:pb-8 max-w-5xl w-full mx-auto">
           {/* Header Title */}
           <div className="border-b border-slate-200/80 pb-4">

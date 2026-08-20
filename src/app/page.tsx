@@ -101,12 +101,6 @@ function DashboardContent() {
 
       {/* Main Workspace */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <Header
-          searchQuery={searchQuery}
-          onSearchChange={(q) => setSearchQuery(q)}
-          onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
-        />
-
         <main className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 pb-20 md:pb-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-w-6xl w-full mx-auto">
           {/* Welcome & Progress Overview Banner */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3.5">

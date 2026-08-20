@@ -52,15 +52,7 @@ export default function BooksPage() {
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <Header
-          searchQuery={searchQuery}
-          onSearchChange={(q) => setSearchQuery(q)}
-          onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
-          onOpenCreateModal={() => setIsCreateModalOpen(true)}
-          onOpenAITutor={() => setIsAITutorOpen(true)}
-        />
-
-        <main className="relative flex flex-col gap-6 min-h-[calc(98vh-24px)] px-4 lg:px-8 py-8 max-w-[1215px] mx-auto w-full overflow-y-auto pb-32 md:pb-16">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 pb-24 max-w-6xl w-full mx-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* SECTION 1: TIẾNG HÀN MÀU XANH LÁ */}
           <section className="flex flex-col gap-3">
             <header className="border-l-4 border-[#0076BE] pl-3">
