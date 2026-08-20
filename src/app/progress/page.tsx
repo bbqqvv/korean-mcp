@@ -35,8 +35,36 @@ export default function ProgressPage() {
   const [activeSkill, setActiveSkill] = useState<SkillTab>('dictation');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
+  const [hoveredDay, setHoveredDay] = useState<{ date: string; level: number } | null>(null);
+
   // Generate 6 months of heatmap days
   const heatmapDays = useMemo(() => generateHeatmapData(), []);
+
+  // Group heatmapDays into 26 weeks (each week has 7 days) for pixel-perfect month & weekday alignment
+  const heatmapWeeks = useMemo(() => {
+    const weeks: Array<{ monthLabel?: string; days: HeatmapDay[] }> = [];
+    for (let w = 0; w < 26; w++) {
+      const days = heatmapDays.slice(w * 7, (w + 1) * 7);
+      let monthLabel: string | undefined = undefined;
+      if (days[0]) {
+        const d = new Date(days[0].date);
+        const m = d.getMonth() + 1;
+        if (w === 0) {
+          monthLabel = `Thg ${m}`;
+        } else {
+          const prevDay = heatmapDays[(w - 1) * 7];
+          if (prevDay) {
+            const prevM = new Date(prevDay.date).getMonth() + 1;
+            if (m !== prevM) {
+              monthLabel = `Thg ${m}`;
+            }
+          }
+        }
+      }
+      weeks.push({ monthLabel, days });
+    }
+    return weeks;
+  }, [heatmapDays]);
 
   // Calculate practice stats
   const skillChartData = SKILL_PRACTICE_DATA[activeSkill] || SKILL_PRACTICE_DATA.dictation;
@@ -171,72 +199,78 @@ export default function ProgressPage() {
           {activeView === 'activity' && (
             <div className="space-y-6 animate-fadeIn">
               {/* Card 1: 6-Month Activity Heatmap Grid */}
-              <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-4">
-                <div className="flex items-center justify-between">
+              <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <h2 className="text-sm sm:text-base font-bold text-slate-900">
                     Tổng quan hoạt động (6 tháng gần đây)
                   </h2>
-                  <span className="text-[11px] text-slate-400 font-semibold">180 Ngày</span>
+                  <div className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full transition-all">
+                    {hoveredDay ? (
+                      <span className="text-blue-600 font-bold">{hoveredDay.date}: Mức độ học {hoveredDay.level}/4</span>
+                    ) : (
+                      <span>180 Ngày hoạt động</span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Heatmap Grid Container with Weekday & Month Labels */}
-                <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 sm:p-5 space-y-3">
-                  <div className="flex items-start gap-3">
-                    {/* Weekday Labels Left Column */}
-                    <div className="flex flex-col justify-between pt-6 text-[10px] font-bold text-slate-400 h-[116px] select-none shrink-0">
-                      <span>T2</span>
-                      <span>T4</span>
-                      <span>T6</span>
+                <div className="overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  <div className="min-w-[660px] flex items-start gap-2.5">
+                    {/* Weekday Labels Column (Exact Row 1:1 Alignment) */}
+                    <div className="pt-6 space-y-[6px] text-[10px] font-bold text-slate-400 select-none shrink-0 text-right w-5">
+                      <div className="h-4 leading-4">T2</div>
+                      <div className="h-4 leading-4 opacity-0">T3</div>
+                      <div className="h-4 leading-4">T4</div>
+                      <div className="h-4 leading-4 opacity-0">T5</div>
+                      <div className="h-4 leading-4">T6</div>
                     </div>
 
-                    <div className="flex-1 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                      <div className="min-w-[640px] space-y-2">
-                        {/* Month Labels Top Row */}
-                        <div className="flex justify-between px-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                          <span>Thg 3</span>
-                          <span>Thg 4</span>
-                          <span>Thg 5</span>
-                          <span>Thg 6</span>
-                          <span>Thg 7</span>
-                          <span>Thg 8</span>
-                        </div>
+                    {/* 26 Week Columns */}
+                    <div className="flex items-start gap-1.5 flex-1">
+                      {heatmapWeeks.map((week, weekIdx) => (
+                        <div key={weekIdx} className="flex flex-col gap-1.5 items-center">
+                          {/* Month Header Label above Week column */}
+                          <div className="h-4 text-[10px] font-bold text-slate-400 whitespace-nowrap select-none">
+                            {week.monthLabel || ''}
+                          </div>
 
-                        {/* 7 Rows x 26 Columns Grid (Flow Column-by-Column) */}
-                        <div className="grid grid-rows-7 grid-flow-col gap-1.5">
-                          {heatmapDays.map((day, idx) => {
+                          {/* 7 Days in Week Column */}
+                          {week.days.map((day, dayIdx) => {
                             const levelColors = [
-                              'bg-slate-200/60 border-slate-300/40',
-                              'bg-emerald-200 border-emerald-300',
-                              'bg-emerald-400 border-emerald-500',
+                              'bg-slate-100 border-slate-200/80 hover:bg-slate-200',
+                              'bg-emerald-200 border-emerald-300 hover:bg-emerald-300',
+                              'bg-emerald-400 border-emerald-500 hover:bg-emerald-500',
                               'bg-emerald-600 border-emerald-700 text-white',
                               'bg-emerald-800 border-emerald-900 text-white'
                             ];
 
                             return (
                               <div
-                                key={idx}
+                                key={dayIdx}
+                                onMouseEnter={() => setHoveredDay(day)}
+                                onMouseLeave={() => setHoveredDay(null)}
                                 title={`${day.date}: Mức độ học ${day.level}/4`}
-                                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-xs border transition-transform hover:scale-125 cursor-pointer ${levelColors[day.level]}`}
+                                className={`w-4 h-4 rounded-xs border transition-all hover:scale-125 cursor-pointer ${levelColors[day.level]}`}
                               />
                             );
                           })}
                         </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
+                </div>
 
-                  {/* Heatmap Footer Legend */}
-                  <div className="flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 font-medium pt-2 border-t border-slate-200/60 gap-2">
-                    <span className="text-[11px] text-slate-500 font-medium">180 ngày hoạt động gần đây</span>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-semibold text-slate-400">Ít học</span>
-                      <span className="w-3 h-3 rounded-xs bg-slate-200/60 border border-slate-300/40" />
-                      <span className="w-3 h-3 rounded-xs bg-emerald-200 border border-emerald-300" />
-                      <span className="w-3 h-3 rounded-xs bg-emerald-400 border border-emerald-500" />
-                      <span className="w-3 h-3 rounded-xs bg-emerald-600 border border-emerald-700" />
-                      <span className="w-3 h-3 rounded-xs bg-emerald-800 border border-emerald-900" />
-                      <span className="text-[10px] font-semibold text-slate-400">Chăm học</span>
-                    </div>
+                {/* Heatmap Footer Legend */}
+                <div className="flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 font-medium pt-2 border-t border-slate-100 gap-2">
+                  <span className="text-[11px] text-slate-500 font-medium">180 ngày hoạt động gần đây</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-semibold text-slate-400">Ít học</span>
+                    <span className="w-3.5 h-3.5 rounded-xs bg-slate-100 border border-slate-200/80" />
+                    <span className="w-3.5 h-3.5 rounded-xs bg-emerald-200 border border-emerald-300" />
+                    <span className="w-3.5 h-3.5 rounded-xs bg-emerald-400 border border-emerald-500" />
+                    <span className="w-3.5 h-3.5 rounded-xs bg-emerald-600 border border-emerald-700" />
+                    <span className="w-3.5 h-3.5 rounded-xs bg-emerald-800 border border-emerald-900" />
+                    <span className="text-[10px] font-semibold text-slate-400">Chăm học</span>
                   </div>
                 </div>
               </div>
