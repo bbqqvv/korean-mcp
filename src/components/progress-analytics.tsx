@@ -42,28 +42,35 @@ export default function ProgressAnalytics({ showHeaderAndCards = false }: Progre
 
   // Group heatmapDays into 52 weeks (each week has 7 days) for 1 full year GitHub style card coverage
   const heatmapWeeks = useMemo(() => {
-    const weeks: Array<{ monthLabel?: string; days: HeatmapDay[] }> = [];
+    const weeks: Array<{ days: HeatmapDay[] }> = [];
     for (let w = 0; w < 52; w++) {
       const days = heatmapDays.slice(w * 7, (w + 1) * 7);
-      let monthLabel: string | undefined = undefined;
-      if (days[0]) {
-        const d = new Date(days[0].date);
-        const m = d.getMonth() + 1;
-        if (w === 0) {
-          monthLabel = `Thg ${m}`;
-        } else {
-          const prevDay = heatmapDays[(w - 1) * 7];
-          if (prevDay) {
-            const prevM = new Date(prevDay.date).getMonth() + 1;
-            if (m !== prevM) {
-              monthLabel = `Thg ${m}`;
-            }
-          }
-        }
-      }
-      weeks.push({ monthLabel, days });
+      weeks.push({ days });
     }
     return weeks;
+  }, [heatmapDays]);
+
+  // Compute Month Header Positions in px for the 52 weeks (28px left offset + weekIndex * 18px)
+  const monthHeaderPositions = useMemo(() => {
+    const positions: Array<{ label: string; leftPx: number }> = [];
+    let lastMonth = -1;
+
+    heatmapDays.forEach((day, idx) => {
+      if (idx % 7 === 0) {
+        const weekIndex = Math.floor(idx / 7);
+        const d = new Date(day.date);
+        const m = d.getMonth() + 1;
+        if (m !== lastMonth) {
+          lastMonth = m;
+          positions.push({
+            label: `Thg ${m}`,
+            leftPx: 28 + weekIndex * 18
+          });
+        }
+      }
+    });
+
+    return positions;
   }, [heatmapDays]);
 
   // Calculate practice stats
@@ -212,22 +219,30 @@ export default function ProgressAnalytics({ showHeaderAndCards = false }: Progre
 
             {/* Heatmap Matrix (52 Weeks x 7 Days Grid) */}
             <div className="overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="min-w-[720px] space-y-1.5 select-none">
-                {/* Month Labels */}
-                <div className="flex gap-1 pl-6 text-[10px] font-semibold text-slate-400">
-                  {heatmapWeeks.map((week, idx) => (
-                    <div key={idx} className="w-3.5 text-center truncate">
-                      {week.monthLabel || ''}
-                    </div>
+              <div className="min-w-[960px] space-y-1.5 select-none pt-1">
+                {/* Positioned Month Labels */}
+                <div className="relative h-4 text-[11px] font-bold text-slate-400">
+                  {monthHeaderPositions.map((m, idx) => (
+                    <span
+                      key={idx}
+                      className="absolute whitespace-nowrap font-semibold"
+                      style={{ left: `${m.leftPx}px` }}
+                    >
+                      {m.label}
+                    </span>
                   ))}
                 </div>
 
-                <div className="flex gap-1.5">
-                  {/* Day of Week Labels (T2, T4, T6) */}
-                  <div className="flex flex-col justify-between text-[10px] font-semibold text-slate-400 py-0.5 pr-1">
-                    <span>T2</span>
-                    <span>T4</span>
-                    <span>T6</span>
+                <div className="flex gap-1.5 items-start">
+                  {/* Day of Week Labels (Exact 14px row height matching cells) */}
+                  <div className="flex flex-col gap-1 text-[10px] font-semibold text-slate-400 pr-1 select-none">
+                    <span className="h-3.5 leading-none flex items-center"></span>
+                    <span className="h-3.5 leading-none flex items-center">T2</span>
+                    <span className="h-3.5 leading-none flex items-center"></span>
+                    <span className="h-3.5 leading-none flex items-center">T4</span>
+                    <span className="h-3.5 leading-none flex items-center"></span>
+                    <span className="h-3.5 leading-none flex items-center">T6</span>
+                    <span className="h-3.5 leading-none flex items-center"></span>
                   </div>
 
                   {/* 52 Columns of Weeks */}
@@ -257,7 +272,7 @@ export default function ProgressAnalytics({ showHeaderAndCards = false }: Progre
                 </div>
 
                 {/* Footer Legend */}
-                <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2">
+                <div className="flex items-center justify-between text-[11px] text-slate-400 pt-3">
                   <span>365 ngày hoạt động gần đây</span>
                   <div className="flex items-center gap-1.5">
                     <span>Ít học</span>
