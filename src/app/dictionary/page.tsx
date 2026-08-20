@@ -160,14 +160,14 @@ export default function DictionaryPage() {
   };
 
   return (
-    <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans p-2.5 sm:p-4 gap-3 sm:gap-4">
+    <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
         onOpenCreateModal={() => setIsCreateModalOpen(true)}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-caro-grid border-2 border-slate-900 rounded-3xl relative shadow-xs">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 max-w-6xl w-full mx-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* Header Title Section */}
           <div className="space-y-1">
