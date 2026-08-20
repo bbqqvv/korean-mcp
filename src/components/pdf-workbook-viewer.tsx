@@ -601,28 +601,24 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
 
             {/* Real PDF Page Viewer Container */}
             {uploadedPdfUrl ? (
-              <div className="relative z-10 w-full h-full flex-1 flex flex-col items-center justify-center overflow-auto bg-slate-100 dark:bg-slate-950 p-4">
-                {useCanvasPdf ? (
-                  <canvas
-                    ref={pdfRenderCanvasRef}
-                    className="shadow-xl rounded-xl bg-white max-w-full h-auto transition-all"
-                  />
-                ) : (
-                  <object
-                    key={`pdf-page-${pdfPageNumber}-${readingViewMode}`}
-                    data={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=0&view=${
-                      readingViewMode === 'page' ? 'Fit' : 'FitH'
-                    }`}
+              <div className="relative z-10 w-full h-full flex-1 flex flex-col overflow-hidden bg-white">
+                <object
+                  key={`pdf-page-${pdfPageNumber}-${readingViewMode}`}
+                  data={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=1&view=${
+                    readingViewMode === 'page' ? 'Fit' : 'FitH'
+                  }`}
+                  type="application/pdf"
+                  className="w-full h-full flex-1 border-none bg-white pointer-events-auto"
+                >
+                  <embed
+                    src={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=1`}
                     type="application/pdf"
-                    className="w-full h-full flex-1 border-none bg-white pointer-events-auto"
-                  >
-                    <embed
-                      src={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=0`}
-                      type="application/pdf"
-                      className="w-full h-full flex-1 border-none bg-white"
-                    />
-                  </object>
-                )}
+                    className="w-full h-full flex-1 border-none bg-white"
+                  />
+                </object>
+
+                {/* Bottom-left Floating Mask Overlay (Blocks Chrome PDFium 'Extracting text from PDF...' Toast) */}
+                <div className="absolute bottom-0 left-0 z-30 w-72 h-12 bg-slate-200/95 dark:bg-slate-900/95 backdrop-blur-xs pointer-events-none rounded-tr-xl border-t border-r border-slate-300/40 dark:border-slate-800/40 hidden" />
               </div>
             ) : (
               /* Interactive Sample Page */
