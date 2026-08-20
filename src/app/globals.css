@@ -60,10 +60,7 @@ body {
   min-height: 100dvh;
   min-height: 100svh;
   background-color: #f8fafc;
-  color: var(--color-ios-fg);
-  background-image: radial-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px);
-  background-size: 20px 20px;
-  background-attachment: fixed;
+  color: #0f172a;
   color-scheme: light;
   -webkit-font-smoothing: antialiased;
   font-weight: 400;
@@ -75,14 +72,10 @@ body {
 
 .bg-caro-grid {
   background-color: #f8fafc;
-  background-image: radial-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px);
-  background-size: 20px 20px;
 }
 
 .bg-caro-grid-dark {
-  background-color: #09090b;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
+  background-color: #0f172a;
 }
 
 body::-webkit-scrollbar {

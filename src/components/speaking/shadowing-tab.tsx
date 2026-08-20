@@ -233,7 +233,7 @@ export default function ShadowingTab() {
                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${themeConfig.badgeBg}`}>
                   {selectedVideo.categoryLabel}
                 </span>
-                <h3 className="text-sm sm:text-base font-black text-slate-900">
+                <h3 className="text-sm sm:text-base font-bold text-slate-900">
                   {selectedVideo.title}
                 </h3>
               </div>
@@ -294,7 +294,7 @@ export default function ShadowingTab() {
                   <button
                     key={speed}
                     onClick={() => setPlaybackSpeed(speed)}
-                    className={`px-2 py-0.5 rounded-lg text-[11px] font-black transition-all ${
+                    className={`px-2 py-0.5 rounded-lg text-[11px] font-bold transition-all ${
                       playbackSpeed === speed
                         ? 'bg-slate-900 text-white'
                         : 'text-slate-500 hover:text-slate-900'
@@ -313,12 +313,12 @@ export default function ShadowingTab() {
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
                   PHỤ ĐỀ KARAOKE THEO THỜI GIAN THỰC
                 </span>
-                <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded font-black">
+                <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded font-bold">
                   {Math.floor(currentTime)}s / {activeSegment.startTime}s - {activeSegment.endTime}s
                 </span>
               </div>
 
-              <div className="text-xl sm:text-2xl font-black font-noto tracking-tight text-white leading-snug">
+              <div className="text-xl sm:text-2xl font-bold font-noto tracking-tight text-white leading-snug">
                 {activeSegment.korean}
               </div>
 
@@ -371,7 +371,7 @@ export default function ShadowingTab() {
                       )}
                     </div>
 
-                    <p className={`text-xs sm:text-sm font-black font-noto ${isActive ? 'text-white' : 'text-slate-900'}`}>
+                    <p className={`text-xs sm:text-sm font-bold font-noto ${isActive ? 'text-white' : 'text-slate-900'}`}>
                       {sub.korean}
                     </p>
                     <p className={`text-[11px] ${isActive ? 'text-blue-200' : 'text-slate-500'}`}>
@@ -405,7 +405,7 @@ export default function ShadowingTab() {
                   >
                     <div className="space-y-0.5 min-w-0 flex-1">
                       <span className="text-[10px] font-bold text-slate-400 block">{video.categoryLabel}</span>
-                      <h5 className="text-xs font-black text-slate-900 line-clamp-1">{video.title}</h5>
+                      <h5 className="text-xs font-bold text-slate-900 line-clamp-1">{video.title}</h5>
                     </div>
                     <PlayCircle className={`w-5 h-5 shrink-0 ${isSelected ? 'text-blue-600' : 'text-slate-400'}`} />
                   </div>

@@ -110,7 +110,7 @@ function DashboardContent() {
                   안녕하세요! 🇰🇷 LynKore Learning Hub
                 </span>
               </div>
-              <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+              <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
                 Bắt Đầu Bài Học Tiếng Hàn Hôm Nay
               </h1>
               <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
@@ -124,21 +124,21 @@ function DashboardContent() {
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                   <Flame className="w-3 h-3 text-amber-500 fill-current" /> Chuỗi Học
                 </span>
-                <div className="text-sm sm:text-base font-black text-slate-900">5 Ngày liên tiếp</div>
+                <div className="text-sm sm:text-base font-bold text-slate-900">5 Ngày liên tiếp</div>
               </div>
 
               <div className="p-2 space-y-0.5">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                   <TrendingUp className="w-3 h-3 text-emerald-600" /> Từ Đã Thuộc
                 </span>
-                <div className="text-sm sm:text-base font-black text-slate-900">32 / 100 từ</div>
+                <div className="text-sm sm:text-base font-bold text-slate-900">32 / 100 từ</div>
               </div>
 
               <div className="p-2 space-y-0.5">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                   <Layers className="w-3 h-3 text-blue-600" /> Bộ Từ Vựng
                 </span>
-                <div className="text-sm sm:text-base font-black text-slate-900">
+                <div className="text-sm sm:text-base font-bold text-slate-900">
                   {isLoading ? <Skeleton className="w-12 h-5 inline-block" /> : `${decks.length} Bộ bài`}
                 </div>
               </div>
@@ -147,7 +147,7 @@ function DashboardContent() {
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                   <Award className={`w-3 h-3 ${themeConfig.primaryText}`} /> Thẻ Từ Vựng
                 </span>
-                <div className="text-sm sm:text-base font-black text-slate-900">
+                <div className="text-sm sm:text-base font-bold text-slate-900">
                   {isLoading ? <Skeleton className="w-12 h-5 inline-block" /> : `${totalCardsCount} Thẻ`}
                 </div>
               </div>
@@ -178,7 +178,7 @@ function DashboardContent() {
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-0.5">
                   <div className="space-y-0.5">
-                    <h2 className="text-base sm:text-lg font-black text-slate-900">
+                    <h2 className="text-base sm:text-lg font-bold text-slate-900">
                       {recommendedDeck.title}
                     </h2>
                     <p className="text-xs text-slate-600 leading-relaxed line-clamp-1">
@@ -213,7 +213,7 @@ function DashboardContent() {
             <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
               <div className="flex items-center gap-2">
                 <FolderOpen className={`w-4 h-4 ${themeConfig.primaryText}`} />
-                <h3 className="text-sm sm:text-base font-black text-slate-900">
+                <h3 className="text-sm sm:text-base font-bold text-slate-900">
                   {activeCategory === 'Tất cả' ? 'Thư Viện Bài Học Tiếng Hàn' : `Danh Mục: ${activeCategory}`}
                 </h3>
               </div>
@@ -243,7 +243,7 @@ function DashboardContent() {
                         </span>
                       </div>
 
-                      <h4 className="text-sm font-black text-slate-900 line-clamp-1">
+                      <h4 className="text-sm font-bold text-slate-900 line-clamp-1">
                         {deck.title}
                       </h4>
 

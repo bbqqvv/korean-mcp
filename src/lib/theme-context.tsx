@@ -27,7 +27,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     primaryHover: 'hover:bg-blue-700',
     primaryText: 'text-blue-600',
     badgeBg: 'bg-blue-50 text-blue-700 border-blue-200',
-    canvasBg: 'bg-caro-grid',
+    canvasBg: 'bg-slate-50',
     canvasText: 'text-slate-900',
     accentRing: 'ring-blue-400/40 border-blue-600',
     swatchGradient: 'from-blue-600 to-indigo-700'
@@ -40,7 +40,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     primaryHover: 'hover:bg-lime-700',
     primaryText: 'text-lime-600',
     badgeBg: 'bg-lime-50 text-lime-800 border-lime-300',
-    canvasBg: 'bg-caro-grid',
+    canvasBg: 'bg-slate-50',
     canvasText: 'text-slate-900',
     accentRing: 'ring-lime-400/40 border-lime-600',
     swatchGradient: 'from-lime-500 to-emerald-600'
@@ -53,7 +53,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     primaryHover: 'hover:bg-rose-700',
     primaryText: 'text-rose-600',
     badgeBg: 'bg-rose-50 text-rose-700 border-rose-200',
-    canvasBg: 'bg-caro-grid',
+    canvasBg: 'bg-slate-50',
     canvasText: 'text-slate-900',
     accentRing: 'ring-rose-400/40 border-rose-600',
     swatchGradient: 'from-rose-600 to-red-700'
@@ -66,7 +66,7 @@ export const THEME_CONFIGS: Record<ThemeId, ThemeConfig> = {
     primaryHover: 'hover:bg-blue-500',
     primaryText: 'text-blue-400',
     badgeBg: 'bg-slate-800 text-blue-300 border-slate-700',
-    canvasBg: 'bg-caro-grid-dark',
+    canvasBg: 'bg-slate-900',
     canvasText: 'text-white',
     accentRing: 'ring-blue-400/40 border-blue-500',
     swatchGradient: 'from-slate-900 via-slate-800 to-blue-900'

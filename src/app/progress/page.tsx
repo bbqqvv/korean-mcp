@@ -63,7 +63,7 @@ export default function ProgressPage() {
                 <TrendingUp className="w-3.5 h-3.5" /> LYNKORE ANALYTICS &amp; DASHBOARD
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
               Tiến Trình Học Tập 📈
             </h1>
             <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
@@ -79,7 +79,7 @@ export default function ProgressPage() {
                 <Flame className="w-5 h-5 text-amber-500 fill-current" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-black text-slate-900 leading-tight">
+                <p className="text-lg font-bold text-slate-900 leading-tight">
                   {USER_STATS.longestStreak}
                   <span className="ml-1 text-xs font-semibold text-slate-500">ngày</span>
                 </p>
@@ -93,7 +93,7 @@ export default function ProgressPage() {
                 <BookOpen className="w-5 h-5 text-emerald-600" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-black text-slate-900 leading-tight">
+                <p className="text-lg font-bold text-slate-900 leading-tight">
                   {USER_STATS.savedWords}
                   <span className="ml-1 text-xs font-semibold text-slate-500">từ</span>
                 </p>
@@ -107,7 +107,7 @@ export default function ProgressPage() {
                 <Clock className="w-5 h-5 text-blue-600" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-black text-slate-900 leading-tight">
+                <p className="text-lg font-bold text-slate-900 leading-tight">
                   {USER_STATS.practiceTimeMinutes}m
                 </p>
                 <p className="truncate text-[11px] text-slate-500 font-medium">Thời gian luyện tập</p>
@@ -120,7 +120,7 @@ export default function ProgressPage() {
                 <Target className="w-5 h-5 text-indigo-600" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-black text-slate-900 leading-tight">
+                <p className="text-lg font-bold text-slate-900 leading-tight">
                   {USER_STATS.totalXp}
                   <span className="ml-1 text-xs font-semibold text-slate-500">XP</span>
                 </p>
@@ -134,7 +134,7 @@ export default function ProgressPage() {
                 <Trophy className="w-5 h-5 text-amber-600" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-black text-slate-900 leading-tight">
+                <p className="text-lg font-bold text-slate-900 leading-tight">
                   #{USER_STATS.weeklyRank}
                   <span className="ml-1 text-xs font-semibold text-slate-500">Tuần</span>
                 </p>
@@ -173,7 +173,7 @@ export default function ProgressPage() {
               {/* Card 1: 6-Month Activity Heatmap Grid */}
               <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-blue-600" />
                     Tổng quan hoạt động (6 tháng gần đây)
                   </h2>
@@ -223,7 +223,7 @@ export default function ProgressPage() {
               {/* Card 2: 30-Day Daily Practice Breakdown */}
               <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                  <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
                     <BarChart3 className="w-4 h-4 text-blue-600" />
                     Luyện tập hàng ngày (30 ngày gần đây)
                   </h2>
@@ -257,10 +257,10 @@ export default function ProgressPage() {
                   {/* Left Chart: Phút luyện tập */}
                   <div className="space-y-3 bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-black uppercase tracking-wider text-slate-500">
+                      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
                         PHÚT LUYỆN TẬP (30 NGÀY)
                       </p>
-                      <span className="text-xs font-black text-blue-600">
+                      <span className="text-xs font-bold text-blue-600">
                         Tổng: {totalMinutesSkill} phút
                       </span>
                     </div>
@@ -287,10 +287,10 @@ export default function ProgressPage() {
                   {/* Right Chart: Bài tập đã làm */}
                   <div className="space-y-3 bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-black uppercase tracking-wider text-slate-500">
+                      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
                         BÀI TẬP ĐÃ HOÀN THÀNH
                       </p>
-                      <span className="text-xs font-black text-emerald-600">
+                      <span className="text-xs font-bold text-emerald-600">
                         Tổng: {totalExercisesSkill} bài
                       </span>
                     </div>
@@ -323,7 +323,7 @@ export default function ProgressPage() {
             <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-4 animate-fadeIn">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div>
-                  <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
                     <Trophy className="w-5 h-5 text-amber-500" />
                     Bảng Xếp Hạng Siêng Năng Tuần Này
                   </h2>
@@ -346,7 +346,7 @@ export default function ProgressPage() {
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       {/* Rank Badge */}
-                      <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 font-black text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                      <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
                         {user.rank === 1 ? '🥇' : user.rank === 2 ? '🥈' : user.rank === 3 ? '🥉' : `#${user.rank}`}
                       </div>
 
@@ -356,7 +356,7 @@ export default function ProgressPage() {
                       {/* Info */}
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-black text-slate-900 truncate">
+                          <h4 className="text-sm font-bold text-slate-900 truncate">
                             {user.name}
                           </h4>
                           {user.isCurrentUser && (
@@ -375,14 +375,14 @@ export default function ProgressPage() {
                     <div className="flex items-center gap-4 shrink-0 text-right">
                       <div className="hidden sm:block">
                         <span className="text-[10px] text-slate-400 font-bold uppercase block">CHUỖI NGÀY</span>
-                        <span className="text-xs font-black text-amber-500 flex items-center gap-1 justify-end">
+                        <span className="text-xs font-bold text-amber-500 flex items-center gap-1 justify-end">
                           <Flame className="w-3.5 h-3.5 fill-current" /> {user.streak} ngày
                         </span>
                       </div>
 
                       <div>
                         <span className="text-[10px] text-slate-400 font-bold uppercase block">ĐIỂM XP</span>
-                        <span className="text-sm font-black text-slate-900">
+                        <span className="text-sm font-bold text-slate-900">
                           {user.xp.toLocaleString()} XP
                         </span>
                       </div>
