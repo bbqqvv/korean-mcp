@@ -556,17 +556,6 @@ export default function Sidebar({
                         <Settings className="w-4 h-4 text-slate-400" />
                         <span>Thiết lập Tài khoản</span>
                       </button>
-
-                      <button
-                        onClick={() => {
-                          setIsProfileMenuOpen(false);
-                          router.push('/settings?tab=members');
-                        }}
-                        className="w-full flex items-center gap-2.5 px-2.5 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors text-left font-semibold"
-                      >
-                        <Users className="w-4 h-4 text-slate-400" />
-                        <span>Thiết lập tổ chức</span>
-                      </button>
                     </div>
 
                     {/* Logout */}
