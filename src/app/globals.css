@@ -114,14 +114,26 @@
   border-color: transparent !important;
 }
 
-/* AUTOMATIC DARK MODE COMPONENT OVERRIDES */
-html.dark body,
-html.dark main {
+/* AUTOMATIC THEME BACKGROUND & COMPONENT OVERRIDES */
+body,
+main,
+[class*="bg-[#faf8f5]"],
+[class*="bg-caro-grid"] {
   background-color: var(--bg-canvas) !important;
+  color: var(--text-main);
+}
+
+html.dark body,
+html.dark main,
+html.dark [class*="bg-[#faf8f5]"],
+html.dark [class*="bg-caro-grid"] {
+  background-color: var(--bg-canvas) !important;
+  background-image: none !important;
   color: var(--text-main) !important;
 }
 
-html.dark .bg-white {
+html.dark .bg-white,
+html.dark [class*="bg-white"] {
   background-color: var(--bg-card) !important;
   color: var(--text-main) !important;
 }

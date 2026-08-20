@@ -46,7 +46,7 @@ function QuizContent() {
   }, [deckId]);
 
   return (
-    <div className="flex h-screen bg-caro-grid text-slate-900 overflow-hidden font-sans">
+    <div className="flex h-screen bg-[var(--bg-canvas)] text-slate-900 overflow-hidden font-sans">
       <Sidebar
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
@@ -63,7 +63,7 @@ function QuizContent() {
               deckTitle={selectedDeck.title}
             />
           ) : (
-            <div className="text-center p-8 bg-white border border-slate-200 rounded-3xl">
+            <div className="text-center p-8 bg-white rounded-3xl">
               <p className="text-sm font-bold text-slate-700">Chưa có dữ liệu bộ câu hỏi Quiz</p>
             </div>
           )}
@@ -84,7 +84,7 @@ function QuizContent() {
 
 export default function QuizPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#faf8f5] p-6 max-w-3xl mx-auto"><QuizSkeleton /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[var(--bg-canvas)] p-6 max-w-3xl mx-auto"><QuizSkeleton /></div>}>
       <QuizContent />
     </Suspense>
   );

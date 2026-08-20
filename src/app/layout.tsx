@@ -34,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className={`${beVietnamPro.variable} ${notoSansKR.variable}`}>
-      <body className="bg-[#faf8f5] text-slate-900 antialiased font-sans selection:bg-blue-500 selection:text-white min-h-screen flex flex-col">
+      <body className="bg-[var(--bg-canvas,#f8fafc)] text-[var(--text-main,#0f172a)] antialiased font-sans selection:bg-blue-500 selection:text-white min-h-screen flex flex-col">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
