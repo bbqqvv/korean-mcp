@@ -17,7 +17,6 @@ import {
   Bug,
   ArrowRightCircle,
   ArrowLeft,
-  Sparkles,
   CheckCircle2
 } from 'lucide-react';
 import { useTheme } from '@/lib/theme-context';
@@ -28,6 +27,8 @@ type ChatMessage = {
   content: string;
   isTyping?: boolean;
 };
+
+const BANNERS = ['/banner.png', '/banner-1.png'];
 
 export function HelpWidget() {
   const pathname = usePathname();
@@ -40,13 +41,14 @@ export function HelpWidget() {
   const [isChatting, setIsChatting] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [feedbackText, setFeedbackText] = useState('');
+  const [bannerIndex, setBannerIndex] = useState(0);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
       role: 'assistant',
-      content: 'Xin chào! 👋 Mình là trợ lý AI của LynKore. Mình có thể giúp gì cho bạn về việc học tiếng Hàn & TOPIK hôm nay?'
+      content: 'Xin chào! 👋 Mình là trợ lý AI của OtterSync × LynKore. Mình có thể giúp gì cho bạn hôm nay?'
     }
   ]);
 
@@ -57,6 +59,15 @@ export function HelpWidget() {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(null), 3000);
   };
+
+  // Banner slideshow effect
+  useEffect(() => {
+    if (!showBanner || !isOpen) return;
+    const interval = setInterval(() => {
+      setBannerIndex((prev) => (prev + 1) % BANNERS.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [showBanner, isOpen]);
 
   useEffect(() => {
     if (isChatting) {
@@ -90,7 +101,7 @@ export function HelpWidget() {
   const handleSendFeedback = (e: React.FormEvent) => {
     e.preventDefault();
     if (!feedbackText.trim()) return;
-    showToast('Cảm ơn bạn đã gửi ý kiến đóng góp cho LynKore!');
+    showToast('Cảm ơn bạn đã gửi ý kiến đóng góp!');
     setFeedbackText('');
     setShowFeedback(false);
     setIsOpen(false);
@@ -114,13 +125,15 @@ export function HelpWidget() {
 
     setTimeout(() => {
       const q = question.toLowerCase();
-      let answer = 'Hệ thống đã ghi nhận câu hỏi. Trợ lý AI sẽ trả lời chi tiết và gửi hướng dẫn học tập cho bạn!';
-      if (q.includes('topik') || q.includes('đề') || q.includes('thi')) {
+      let answer = 'Hệ thống đã ghi nhận câu hỏi. Trợ lý AI sẽ trả lời chi tiết qua email của bạn sớm nhất!';
+      if (q.includes('kênh') || q.includes('kết nối') || q.includes('channel') || q.includes('tài khoản')) {
+        answer = 'Để kết nối kênh, bạn hãy truy cập trang "Kênh xã hội" và nhấp liên kết tài khoản mong muốn.';
+      } else if (q.includes('đăng') || q.includes('lịch') || q.includes('post') || q.includes('schedule')) {
+        answer = 'Bạn có thể soạn và đặt lịch bài đăng mới trong menu "Studio" hoặc qua giao diện "Lịch đăng bài".';
+      } else if (q.includes('topik') || q.includes('đề') || q.includes('thi')) {
         answer = 'Bạn có thể truy cập mục "Luyện Đề TOPIK" ở menu bên trái để chọn các bộ đề thi thử TOPIK I và TOPIK II có bấm giờ thực tế!';
-      } else if (q.includes('từ vựng') || q.includes('flashcard') || q.includes('học')) {
-        answer = 'Hãy chọn mục "Bộ Thẻ Bài Học" để luyện từ vựng tiếng Hàn theo phương pháp lặp lại ngắt quãng (Spaced Repetition).';
       } else if (q.includes('phím tắt') || q.includes('shortcut')) {
-        answer = 'Mở bảng phím tắt bên dưới để xem danh sách phím thao tác nhanh nhé!';
+        answer = 'Mở bảng phím tắt bên dưới để xem chi tiết nhé.';
         setShowShortcuts(true);
       }
 
@@ -141,13 +154,11 @@ export function HelpWidget() {
     ]);
 
     setTimeout(() => {
-      let answer = 'Bạn có thể xem chi tiết ở mục Tài liệu hướng dẫn sử dụng LynKore.';
-      if (question.includes('tự động') || question.includes('lịch')) {
-        answer = 'Tính năng nhắc nhở học tập tự động giúp bạn duy trì chuỗi Streak học tiếng Hàn hằng ngày mà không lo bị gián đoạn!';
-      } else if (question.includes('instagram') || question.includes('kết nối')) {
-        answer = 'Để kết nối tài khoản xã hội, bạn vào Cài Đặt -> Tài Khoản Xã Hội và làm theo hướng dẫn liên kết nhanh.';
-      } else if (question.includes('nhiều kênh') || question.includes('luyện')) {
-        answer = 'Bạn có thể chọn chế độ "Luyện tập từng phần" hoặc "Làm Full Test" trong bộ luyện đề TOPIK.';
+      let answer = 'Bạn có thể xem chi tiết ở mục Tài liệu hướng dẫn sử dụng.';
+      if (question.includes('kết nối')) {
+        answer = 'Bạn hãy vào trang "Kênh xã hội" (Accounts) ở thanh bên trái để thực hiện kết nối kênh đầu tiên.';
+      } else if (question.includes('lên lịch')) {
+        answer = 'Sử dụng chức năng "Studio" hoặc kéo thả bài viết trực tiếp vào giao diện "Lịch đăng bài" (Calendar).';
       }
 
       setMessages((prev) => {
@@ -159,7 +170,7 @@ export function HelpWidget() {
 
   return (
     <div className="fixed bottom-5 right-5 z-50 select-none" ref={containerRef}>
-      {/* Toast alert message overlay */}
+      {/* Toast Overlay */}
       {toastMsg && (
         <div className="absolute bottom-14 right-0 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold shadow-lg border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200 whitespace-nowrap z-50">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -167,7 +178,7 @@ export function HelpWidget() {
         </div>
       )}
 
-      {/* Floating Launcher Button */}
+      {/* Floating Action Button */}
       <button
         onClick={() => {
           setIsOpen(!isOpen);
@@ -179,7 +190,7 @@ export function HelpWidget() {
             ? 'border-blue-500 text-blue-600 dark:text-blue-400 shadow-blue-500/20'
             : 'border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-500'
         } ${isOpen && isChatting ? 'opacity-0 scale-50 pointer-events-none' : 'opacity-100 scale-100'}`}
-        title="Trợ giúp & Tài nguyên OtterSync / LynKore"
+        title="Trợ giúp & Tài nguyên OtterSync × LynKore"
       >
         {isOpen ? (
           <X className="h-5 w-5 transition-transform duration-300 rotate-90" strokeWidth={2} />
@@ -195,57 +206,65 @@ export function HelpWidget() {
             isChatting ? 'bottom-0 max-h-[calc(100vh-60px)]' : 'bottom-14 max-h-[calc(100vh-100px)]'
           }`}
         >
-          {/* Header Banner */}
+          {/* Header Block with Real Banner Image Slideshow (from OtterSync) */}
           {showBanner ? (
-            <div className="w-full h-32 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden shrink-0 group p-4 flex flex-col justify-between text-white">
-              <div className="flex items-center justify-between z-10">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center font-extrabold text-xs">
-                    🦦
-                  </div>
-                  <span className="text-xs font-black tracking-wide">OtterSync × LynKore</span>
-                </div>
-
-                <div className="flex items-center gap-2.5 text-white/80">
-                  <button
-                    onClick={() => showToast('Đang kết nối cổng hỗ trợ...')}
-                    className="hover:text-white transition-colors cursor-pointer"
-                    title="Mở rộng"
-                  >
-                    <Maximize2 className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={() => showToast('Không có lịch sử câu hỏi.')}
-                    className="hover:text-white transition-colors cursor-pointer"
-                    title="Lịch sử"
-                  >
-                    <History className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsOpen(false);
-                      setIsChatting(false);
+            <div className="w-full aspect-[21/9] relative overflow-hidden shrink-0 group">
+              <div
+                className="absolute inset-0 flex transition-transform duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                style={{ transform: `translateX(-${bannerIndex * 100}%)` }}
+              >
+                {BANNERS.map((src, i) => (
+                  <div
+                    key={i}
+                    className="w-full h-full shrink-0"
+                    style={{
+                      backgroundImage: `url('${src}')`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
                     }}
-                    className="hover:text-white transition-colors cursor-pointer"
-                    title="Đóng"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
+                  />
+                ))}
               </div>
 
-              <div className="z-10 space-y-0.5">
-                <h4 className="text-sm font-black tracking-tight">Create Once. Sync Everywhere.</h4>
-                <p className="text-[11px] text-blue-100/90 font-medium">Hỗ trợ thông minh & Luyện thi TOPIK hiệu quả</p>
-              </div>
+              {/* Gradient Overlay for Controls Visibility */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/10 to-transparent pointer-events-none" />
 
+              {/* Hide Banner Button */}
               <button
                 onClick={() => setShowBanner(false)}
-                className="absolute top-2 left-2 bg-black/40 hover:bg-black/60 text-white rounded-full p-1 transition-all opacity-0 group-hover:opacity-100 cursor-pointer border border-white/20 z-20"
+                className="absolute top-2 left-2 bg-black/40 hover:bg-black/60 text-white rounded-full p-1 transition-all opacity-0 group-hover:opacity-100 cursor-pointer border border-white/20 z-20 backdrop-blur-xs"
                 title="Ẩn banner"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3.5 w-3.5" />
               </button>
+
+              {/* Header Controls (Expand, History, Close) */}
+              <div className="absolute top-3.5 right-3.5 flex items-center gap-3 text-white/80 z-10">
+                <button
+                  onClick={() => showToast('Đang kết nối cổng hỗ trợ...')}
+                  className="hover:text-white transition-colors cursor-pointer"
+                  title="Mở rộng"
+                >
+                  <Maximize2 className="h-3.5 w-3.5 drop-shadow-md" strokeWidth={2.2} />
+                </button>
+                <button
+                  onClick={() => showToast('Không có lịch sử câu hỏi.')}
+                  className="hover:text-white transition-colors cursor-pointer"
+                  title="Lịch sử"
+                >
+                  <History className="h-4 w-4 drop-shadow-md" strokeWidth={1.8} />
+                </button>
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    setIsChatting(false);
+                  }}
+                  className="hover:text-white transition-colors cursor-pointer"
+                  title="Đóng"
+                >
+                  <X className="h-4 w-4 drop-shadow-md" strokeWidth={2.2} />
+                </button>
+              </div>
             </div>
           ) : (
             <div className="bg-slate-900 text-white p-3.5 flex items-center justify-between shrink-0 border-b border-slate-800">
@@ -268,14 +287,14 @@ export function HelpWidget() {
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`flex flex-col gap-1 w-full ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
+                    className={`flex flex-col gap-1.5 w-full ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
                   >
                     {msg.role === 'assistant' && (
-                      <div className="flex items-center gap-1.5 mb-0.5">
-                        <div className="w-5 h-5 rounded-full bg-blue-600 text-white text-[10px] font-black flex items-center justify-center">
-                          AI
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-slate-200 dark:border-zinc-700">
+                          <img src="/helpcenter.png" alt="Otter AI" className="w-full h-full object-cover" />
                         </div>
-                        <span className="text-[11px] font-bold text-slate-800 dark:text-zinc-200">Otter AI</span>
+                        <span className="text-[12px] font-bold text-slate-900 dark:text-white tracking-tight">Otter AI</span>
                       </div>
                     )}
 
@@ -302,11 +321,11 @@ export function HelpWidget() {
               </div>
             </div>
 
-            {/* Search Box Card */}
+            {/* Search Box Card Container */}
             <div className="p-3 bg-white dark:bg-[#121215] border-b border-slate-200/80 dark:border-zinc-800/80 shrink-0">
               <div className="border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#070709] rounded-xl p-3 flex flex-col gap-2 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500/20 transition-all shadow-3xs">
                 <form onSubmit={handleSearchSubmit} className="relative flex items-start">
-                  <Search className="h-3.5 w-3.5 text-slate-400 mt-0.5 mr-2 shrink-0" />
+                  <Search className="h-3.5 w-3.5 text-slate-400 mt-0.5 mr-2 shrink-0" strokeWidth={2} />
                   <textarea
                     value={searchQuery}
                     onFocus={() => setIsChatting(true)}
@@ -329,26 +348,26 @@ export function HelpWidget() {
                       <button
                         type="button"
                         onClick={() => setIsChatting(false)}
-                        className="text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 cursor-pointer p-1"
+                        className="text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 cursor-pointer p-1 flex items-center"
                         title="Quay lại danh sách"
                       >
-                        <ArrowLeft className="h-3.5 w-3.5" />
+                        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
                       </button>
                     )}
                     <button
                       type="button"
                       onClick={() => showToast('Tính năng đính kèm ảnh sắp ra mắt!')}
-                      className="text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 cursor-pointer p-1"
+                      className="text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 cursor-pointer p-1 flex items-center"
                       title="Đính kèm ảnh"
                     >
-                      <ImageIcon className="h-3.5 w-3.5" />
+                      <ImageIcon className="h-3.5 w-3.5" strokeWidth={1.5} />
                     </button>
                   </div>
 
                   <button
                     onClick={handleSearchSubmit}
                     disabled={!searchQuery.trim()}
-                    className={`flex h-6 w-6 items-center justify-center rounded-lg transition-all cursor-pointer ${
+                    className={`flex h-6 w-6 items-center justify-center rounded-lg transition-all cursor-pointer border-none ${
                       searchQuery.trim()
                         ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-95'
                         : 'bg-slate-200 dark:bg-zinc-800 text-slate-400 cursor-not-allowed'
@@ -374,23 +393,23 @@ export function HelpWidget() {
                       <span>Danh sách phím tắt</span>
                       <button
                         onClick={() => setShowShortcuts(false)}
-                        className="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                        className="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer font-medium"
                       >
                         Quay lại
                       </button>
                     </div>
                     <div className="space-y-2 bg-white dark:bg-[#121215] p-3 rounded-xl border border-slate-200/80 dark:border-zinc-800/80 text-xs">
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-600 dark:text-zinc-400">Mở bảng tìm kiếm</span>
-                        <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-slate-100 dark:bg-zinc-800 border rounded font-semibold">Ctrl + K</kbd>
+                        <span className="text-slate-600 dark:text-zinc-400">Mở bảng lệnh nhanh</span>
+                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">⌘K / Ctrl+K</kbd>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-600 dark:text-zinc-400">Đổi giao diện Sáng/Tối</span>
-                        <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-slate-100 dark:bg-zinc-800 border rounded font-semibold">Shift + L</kbd>
+                        <span className="text-slate-600 dark:text-zinc-400">Đổi giao diện sáng/tối</span>
+                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">Shift + L</kbd>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-600 dark:text-zinc-400">Chuyển thẻ Flashcard</span>
-                        <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-slate-100 dark:bg-zinc-800 border rounded font-semibold">Phím Space / ← →</kbd>
+                        <span className="text-slate-600 dark:text-zinc-400">Thu gọn sidebar</span>
+                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">Shift + S</kbd>
                       </div>
                     </div>
                   </div>
@@ -404,7 +423,7 @@ export function HelpWidget() {
                           setShowFeedback(false);
                           setFeedbackText('');
                         }}
-                        className="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                        className="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer font-medium"
                       >
                         Quay lại
                       </button>
@@ -412,14 +431,14 @@ export function HelpWidget() {
                     <textarea
                       value={feedbackText}
                       onChange={(e) => setFeedbackText(e.target.value)}
-                      placeholder="Ý kiến của bạn sẽ giúp LynKore hoàn thiện sản phẩm hơn..."
-                      className="w-full text-xs p-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 outline-none h-20 resize-none"
+                      placeholder="Ý kiến của bạn sẽ giúp chúng tôi hoàn thiện sản phẩm..."
+                      className="w-full text-xs p-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 outline-none h-20 resize-none leading-relaxed"
                       required
                       autoFocus
                     />
                     <button
                       type="submit"
-                      className="w-full py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-all cursor-pointer"
+                      className="w-full py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-all cursor-pointer border-none"
                     >
                       Gửi góp ý của bạn
                     </button>
@@ -428,36 +447,36 @@ export function HelpWidget() {
                   <div className="space-y-3.5">
                     {/* FAQs (Matching OtterSync Screenshot) */}
                     <div className="space-y-2">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+                      <span className="text-[11px] font-bold text-slate-500 dark:text-zinc-400 tracking-tight">
                         Câu hỏi thường gặp
                       </span>
                       <div className="space-y-1.5">
                         <button
                           onClick={() => handleQuestionClick('Lịch đăng bài tự động hoạt động như thế nào?')}
-                          className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-medium rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
+                          className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-normal rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
                         >
                           Lịch đăng bài tự động hoạt động như thế nào?
                         </button>
                         <button
                           onClick={() => handleQuestionClick('Làm sao để kết nối tài khoản Instagram?')}
-                          className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-medium rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
+                          className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-normal rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
                         >
                           Làm sao để kết nối tài khoản Instagram?
                         </button>
                         <button
                           onClick={() => handleQuestionClick('Làm cách nào để lên lịch đăng cho nhiều kênh cùng lúc?')}
-                          className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-medium rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
+                          className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-normal rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
                         >
                           Làm cách nào để lên lịch đăng cho nhiều kênh cùng lúc?
                         </button>
                       </div>
                     </div>
 
-                    <div className="h-px bg-slate-200 dark:bg-zinc-800" />
+                    <div className="h-px bg-slate-200/60 dark:bg-zinc-800/60" />
 
                     {/* Quick Help Options (Matching OtterSync Screenshot) */}
                     <div className="space-y-1.5">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+                      <span className="text-[11px] font-bold text-slate-500 dark:text-zinc-400 tracking-tight">
                         Tùy chọn trợ giúp nhanh
                       </span>
                       <div className="space-y-1">
@@ -466,10 +485,10 @@ export function HelpWidget() {
                           className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer group"
                         >
                           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
-                            <RefreshCw className="h-3.5 w-3.5" />
+                            <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.5} />
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
-                            <span className="text-xs font-bold text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                               Hiện thanh thiết lập
                             </span>
                             <span className="text-[10px] text-slate-400">Khôi phục hướng dẫn thiết lập</span>
@@ -481,10 +500,10 @@ export function HelpWidget() {
                           className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer group"
                         >
                           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold">
-                            <Keyboard className="h-3.5 w-3.5" />
+                            <Keyboard className="h-3.5 w-3.5" strokeWidth={1.5} />
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
-                            <span className="text-xs font-bold text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                               Danh sách phím tắt
                             </span>
                             <span className="text-[10px] text-slate-400">Phím tắt thao tác nhanh</span>
@@ -496,10 +515,10 @@ export function HelpWidget() {
                           className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer group"
                         >
                           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-pink-500/10 text-pink-600 dark:text-pink-400 font-bold">
-                            <MessageSquare className="h-3.5 w-3.5" />
+                            <MessageSquare className="h-3.5 w-3.5" strokeWidth={1.5} />
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
-                            <span className="text-xs font-bold text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                               Gửi ý kiến đóng góp
                             </span>
                             <span className="text-[10px] text-slate-400">Góp ý cải tiến chất lượng</span>
@@ -511,10 +530,10 @@ export function HelpWidget() {
                           className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer group"
                         >
                           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold">
-                            <Bug className="h-3.5 w-3.5" />
+                            <Bug className="h-3.5 w-3.5" strokeWidth={1.5} />
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
-                            <span className="text-xs font-bold text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                               Báo cáo lỗi kỹ thuật
                             </span>
                             <span className="text-[10px] text-slate-400">Báo sự cố hoặc lỗi hiển thị</span>
@@ -542,10 +561,12 @@ export function HelpWidget() {
                   className="p-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:bg-slate-50 dark:hover:bg-zinc-800 cursor-pointer flex items-center justify-between text-xs font-medium transition-all text-slate-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-3xs group"
                 >
                   <div className="flex items-center gap-2">
-                    <ArrowRightCircle className="h-4 w-4 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
-                    <span>Liên hệ trực tiếp với bộ phận hỗ trợ (Live Chat)</span>
+                    <ArrowRightCircle className="h-4 w-4 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" strokeWidth={1.8} />
+                    <span className="text-slate-600 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-white">
+                      Liên hệ trực tiếp với bộ phận hỗ trợ (Live Chat)
+                    </span>
                   </div>
-                  <ExternalLink className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                  <ExternalLink className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" strokeWidth={1.8} />
                 </button>
               )}
 
