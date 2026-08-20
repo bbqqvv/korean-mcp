@@ -40,7 +40,7 @@ Tôi có thể giúp bạn:
 - 🎯 **Luyện thi TOPIK I, II & KIIP**
 
 Hãy chọn gợi ý nhanh bên dưới hoặc gõ câu hỏi của bạn nhé!`,
-  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  timestamp: 'Vừa xong',
   chips: [
     '🎭 Luyện hội thoại gọi món ở nhà hàng Seoul 🇰🇷',
     '📝 Sửa lỗi câu: "저는 한국어를 공부를 해요"',
