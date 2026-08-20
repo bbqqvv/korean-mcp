@@ -1,15 +1,23 @@
-export interface ShadowingItem {
+export interface SubtitleSegment {
+  id: number;
+  startTime: number; // in seconds
+  endTime: number;   // in seconds
+  korean: string;
+  romaja: string;
+  vietnamese: string;
+  speaker?: string;
+}
+
+export interface ShadowingVideoItem {
   id: string;
   title: string;
-  category: 'k-drama' | 'daily' | 'kpop' | 'topik';
+  youtubeId: string;
+  category: 'k-drama' | 'vlog' | 'kpop' | 'daily';
   categoryLabel: string;
-  korean: string;
-  pronunciation: string;
-  vietnamese: string;
-  context: string;
-  speaker: string;
   difficulty: 'Sơ cấp' | 'Trung cấp' | 'Nâng cao';
-  tags: string[];
+  duration: string;
+  description: string;
+  subtitles: SubtitleSegment[];
 }
 
 export interface SoundItem {
@@ -49,71 +57,141 @@ export interface RoleplayScenario {
   dialogue: DialogueLine[];
 }
 
-export const SHADOWING_DATA: ShadowingItem[] = [
+export const SHADOWING_VIDEOS: ShadowingVideoItem[] = [
   {
-    id: 'sh-1',
-    title: 'Tỏ tình lãng mạn K-Drama',
+    id: 'vid-kdrama-1',
+    title: '🎬 Queen of Tears - Lời Tỏ Tình Ngọt Ngào',
+    youtubeId: 'P_S94Hh6m5Q',
     category: 'k-drama',
     categoryLabel: 'Phim K-Drama',
-    korean: '내가 당신을 얼마나 좋아하는지 모르죠? 매일 생각나요.',
-    pronunciation: 'Nae-ga dang-sin-eul ol-ma-na jo-a-ha-neun-ji mo-reu-jyo? Mae-il saeng-gak-na-yo.',
-    vietnamese: 'Anh có biết em thích anh đến mức nào không? Ngày nào em cũng nhớ anh.',
-    context: 'Trích lời thoại K-Drama Queen of Tears (Nước Mắt Hoàng Hậu)',
-    speaker: 'Nữ chính (Hải In)',
     difficulty: 'Sơ cấp',
-    tags: ['K-Drama', 'Tình cảm', 'Hội thoại hot']
+    duration: '0:45',
+    description: 'Trích đoạn thoại tình cảm lãng mạn được yêu thích nhất trong phim Nước Mắt Hoàng Hậu.',
+    subtitles: [
+      {
+        id: 1,
+        startTime: 0,
+        endTime: 6,
+        korean: '내가 당신을 얼마나 좋아하는지 모르죠?',
+        romaja: 'Nae-ga dang-sin-eul ol-ma-na jo-a-ha-neun-ji mo-reu-jyo?',
+        vietnamese: 'Anh có biết em thích anh đến mức nào không?',
+        speaker: 'Hải In (Nữ chính)'
+      },
+      {
+        id: 2,
+        startTime: 6,
+        endTime: 12,
+        korean: '매일매일 생각나고, 보고 싶었어요.',
+        romaja: 'Mae-il-mae-il saeng-gak-na-go, bo-go sip-eoss-eo-yo.',
+        vietnamese: 'Ngày nào em cũng nhớ và muốn gặp anh.',
+        speaker: 'Hải In (Nữ chính)'
+      },
+      {
+        id: 3,
+        startTime: 12,
+        endTime: 18,
+        korean: '앞으로도 내 옆에 계속 있어 줄래요?',
+        romaja: 'Ap-eu-ro-do nae yeop-e gye-sok iss-eo jul-rae-yo?',
+        vietnamese: 'Từ nay về sau anh vẫn sẽ luôn ở bên em chứ?',
+        speaker: 'Hải In (Nữ chính)'
+      },
+      {
+        id: 4,
+        startTime: 18,
+        endTime: 25,
+        korean: '당연하죠. 언제나 당신 곁에 있을게요.',
+        romaja: 'Dang-yeon-ha-jyo. Eon-je-na dang-sin gyeot-e iss-eul-ge-yo.',
+        vietnamese: 'Tất nhiên rồi. Anh sẽ luôn luôn ở bên cạnh em.',
+        speaker: 'Hiện Thụ (Nam chính)'
+      }
+    ]
   },
   {
-    id: 'sh-2',
-    title: 'Đặt cà phê chuẩn Seoul',
-    category: 'daily',
-    categoryLabel: 'Giao tiếp hàng ngày',
-    korean: '아이스타입 아메리카노 한 잔이랑 딸기 케이크 하나 주세요. 포장해 주세요.',
-    pronunciation: 'A-i-seu a-me-ri-ka-no han jan-i-rang ttal-gi ke-i-keu ha-na ju-se-yo. Po-jang-hae ju-se-yo.',
-    vietnamese: 'Cho tôi một ly Iced Americano và một phần bánh dâu tây ạ. Cho tôi mang đi nhé.',
-    context: 'Giao tiếp gọi đồ tại Cafe Hongdae, Seoul',
-    speaker: 'Khách hàng',
+    id: 'vid-vlog-1',
+    title: '☕ Vlog Đi Gọi Cà Phê & Bánh Ngọt Tại Hongdae',
+    youtubeId: 'k2N2Y5H6X4w',
+    category: 'vlog',
+    categoryLabel: 'Vlog Đời Sống',
     difficulty: 'Sơ cấp',
-    tags: ['Quán Cafe', 'Gọi đồ', 'Giao tiếp']
+    duration: '0:50',
+    description: 'Học hội thoại giao tiếp thực tế khi đi uống cà phê với bạn bè tại quán Cafe Seoul.',
+    subtitles: [
+      {
+        id: 1,
+        startTime: 0,
+        endTime: 5,
+        korean: '안녕하세요! 아이스 아메리카노 두 잔 부탁드려요.',
+        romaja: 'An-nyeong-ha-se-yo! A-i-seu a-me-ri-ka-no du jan bu-tak-deu-ryeo-yo.',
+        vietnamese: 'Xin chào! Vui lòng cho tôi 2 ly Iced Americano ạ.',
+        speaker: 'Vlogger'
+      },
+      {
+        id: 2,
+        startTime: 5,
+        endTime: 11,
+        korean: '디저트로는 딸기 생크림 케이크 하나 주세요.',
+        romaja: 'Di-jeo-teu-ro-neun ttal-gi saeng-keu-rim ke-i-keu ha-na ju-se-yo.',
+        vietnamese: 'Tráng miệng cho tôi một chiếc bánh kem dâu tươi nhé.',
+        speaker: 'Vlogger'
+      },
+      {
+        id: 3,
+        startTime: 11,
+        endTime: 18,
+        korean: '여기 창가 자리가 정말 예쁜 것 같아요!',
+        romaja: 'Yeo-gi chang-ga ja-ri-ga jeong-mal ye-ppeun geot gat-a-yo!',
+        vietnamese: 'Ghế ngồi cạnh cửa sổ ở đây trông đẹp tuyệt vời!',
+        speaker: 'Bạn đi cùng'
+      },
+      {
+        id: 4,
+        startTime: 18,
+        endTime: 24,
+        korean: '맞아, 사진도 잘 나오고 분위기도 좋다.',
+        romaja: 'Maj-a, sa-jin-do jal na-o-go bun-wi-gi-do jot-da.',
+        vietnamese: 'Đúng vậy, chụp ảnh lên đẹp mà không khí cũng thích nữa.',
+        speaker: 'Vlogger'
+      }
+    ]
   },
   {
-    id: 'sh-3',
-    title: 'Lời cảm ơn fan từ idol K-Pop',
+    id: 'vid-kpop-1',
+    title: '🌟 Idol K-Pop Phát Biểu Cảm Ơn Fan Đêm Concert',
+    youtubeId: '07d2dXHYb94',
     category: 'kpop',
-    categoryLabel: 'Thần tượng K-Pop',
-    korean: '여러분 덕분에 오늘 1위를 했어요! 정말 감사합니다. 사랑해요!',
-    pronunciation: 'Yeo-reo-bun deok-bu-ne o-neul il-wi-reul haess-eo-yo! Jeong-mal gam-sa-ham-ni-da. Sa-rang-hae-yo!',
-    vietnamese: 'Nhờ có các bạn mà hôm nay chúng mình đã giành Cúp No.1! Cảm ơn mọi người rất nhiều. Yêu các bạn!',
-    context: 'Lời phát biểu nhận cúp tại chương trình âm nhạc Inkigayo',
-    speaker: 'Idol K-Pop',
-    difficulty: 'Sơ cấp',
-    tags: ['K-Pop', 'Cảm ơn', 'Phát biểu']
-  },
-  {
-    id: 'sh-4',
-    title: 'Hỏi đường đi tàu điện ngầm',
-    category: 'daily',
-    categoryLabel: 'Giao tiếp hàng ngày',
-    korean: '실례지만, 명동역으로 가려면 몇 번 출구로 나가야 하나요?',
-    pronunciation: 'Sil-lye-ji-man, Myeong-dong-yeok-eu-ro ga-ryeo-myeon myeot beon chul-gu-ro na-ga-ya ha-na-yo?',
-    vietnamese: 'Xin lỗi cho tôi hỏi, nếu muốn đi ga Myeongdong thì phải ra cửa số mấy ạ?',
-    context: 'Hỏi đường người đi đường tại ga ngầm Seoul',
-    speaker: 'Du khách',
+    categoryLabel: 'K-Pop Idol',
     difficulty: 'Trung cấp',
-    tags: ['Hỏi đường', 'Tàu điện ngầm', 'Du lịch']
-  },
-  {
-    id: 'sh-5',
-    title: 'Trả lời phỏng vấn xin việc',
-    category: 'topik',
-    categoryLabel: 'TOPIK & Công sở',
-    korean: '저는 열정적이고 책임감이 강한 사람입니다. 회사 발전에 기여하겠습니다.',
-    pronunciation: 'Jeo-neun yeol-jeong-jeok-i-go chaek-im-gam-i gang-han sa-ram-im-ni-da. Hoe-sa bal-jeon-e gi-yeo-ha-gess-seum-ni-da.',
-    vietnamese: 'Tôi là người nhiệt huyết và có tinh thần trách nhiệm cao. Tôi sẽ đóng góp cho sự phát triển của công ty.',
-    context: 'Phỏng vấn tuyển dụng tại tập đoàn Hàn Quốc',
-    speaker: 'Ứng viên',
-    difficulty: 'Trung cấp',
-    tags: ['Phỏng vấn', 'Công sở', 'Trang trọng']
+    duration: '0:55',
+    description: 'Luyện nói nhại phát biểu truyền cảm hứng ngọt ngào của idol K-Pop dành tặng người hâm mộ.',
+    subtitles: [
+      {
+        id: 1,
+        startTime: 0,
+        endTime: 7,
+        korean: '오늘 이 자리를 빛내주신 팬 여러분, 진심으로 감사드립니다!',
+        romaja: 'O-neul i ja-ri-reul bit-nae-ju-sin paen yeo-reo-bun, jin-sim-eu-ro gam-sa-deu-rim-ni-da!',
+        vietnamese: 'Các bạn fan đã đến làm sáng bừng đêm nay, mình xin chân thành cảm ơn mọi người!',
+        speaker: 'Idol K-Pop'
+      },
+      {
+        id: 2,
+        startTime: 7,
+        endTime: 14,
+        korean: '여러분 덕분에 저희가 꿈을 이루고 무대에 설 수 있었어요.',
+        romaja: 'Yeo-reo-bun deok-bu-ne jeo-hui-ga kkum-eul i-ru-go mu-dae-e seol su iss-eoss-eo-yo.',
+        vietnamese: 'Nhờ có các bạn mà chúng mình mới thực hiện được ước mơ và đứng trên sân khấu này.',
+        speaker: 'Idol K-Pop'
+      },
+      {
+        id: 3,
+        startTime: 14,
+        endTime: 22,
+        korean: '앞으로도 더 멋진 음악으로 보답하겠습니다. 영원히 사랑해요!',
+        romaja: 'Ap-eu-ro-do deo meos-jin eum-ak-eu-ro bo-dap-ha-gess-seum-ni-da. Yeong-won-hi sa-rang-hae-yo!',
+        vietnamese: 'Từ nay về sau chúng mình sẽ đáp lại bằng những bản nhạc tuyệt vời hơn nữa. Yêu các bạn mãi mãi!',
+        speaker: 'Idol K-Pop'
+      }
+    ]
   }
 ];
 
