@@ -143,7 +143,7 @@ function SettingsContent() {
       }
     };
 
-    if (activeTool === 'create_vocab_deck') {
+    if (activeTool === 'create_vocab_deck' || activeTool === 'add_flashcards') {
       try {
         payload.params.arguments = JSON.parse(jsonInput);
       } catch (err) {
@@ -434,12 +434,57 @@ function SettingsContent() {
                     <p className="text-xs text-slate-500 mt-0.5">Giả lập việc AI Agent gọi trực tiếp vào các Tool của MCP Server</p>
                   </div>
 
-                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-full border border-slate-200">
-                    {['create_vocab_deck', 'send_daily_study_email', 'get_decks'].map((tool) => (
+                  <div className="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-2xl border border-slate-200">
+                    {['create_vocab_deck', 'add_flashcards', 'get_decks', 'send_daily_study_email'].map((tool) => (
                       <button
                         key={tool}
-                        onClick={() => setActiveTool(tool)}
-                        className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${
+                        onClick={() => {
+                          setActiveTool(tool);
+                          if (tool === 'add_flashcards') {
+                            setJsonInput(
+                              JSON.stringify(
+                                {
+                                  deck_id: 'deck-places-work',
+                                  vocabulary: [
+                                    {
+                                      korean: '사무실',
+                                      pronunciation: 'sa-mu-sil',
+                                      vietnamese: 'Văn phòng',
+                                      hanja: '事務室 (Sự vụ thất)',
+                                      example_kr: '사무실에서 일하고 있습니다.',
+                                      example_vi: 'Tôi đang làm việc ở văn phòng.'
+                                    }
+                                  ]
+                                },
+                                null,
+                                2
+                              )
+                            );
+                          } else if (tool === 'create_vocab_deck') {
+                            setJsonInput(
+                              JSON.stringify(
+                                {
+                                  title: 'Từ vựng Tiếng Hàn Công Sở (Gemini Spark)',
+                                  category: 'Công sở & Địa điểm',
+                                  description: 'Được tự động trích xuất bởi Gemini Spark',
+                                  vocabulary: [
+                                    {
+                                      korean: '회의',
+                                      pronunciation: 'hoe-ui',
+                                      vietnamese: 'Cuộc họp / Khóa họp',
+                                      hanja: '會議 (Hội nghị)',
+                                      example_kr: '오후 2시에 회의가 있습니다.',
+                                      example_vi: 'Có cuộc họp lúc 2 giờ chiều.'
+                                    }
+                                  ]
+                                },
+                                null,
+                                2
+                              )
+                            );
+                          }
+                        }}
+                        className={`px-3 py-1 rounded-xl text-xs font-bold transition-colors ${
                           activeTool === tool
                             ? `${themeConfig.primaryBg} text-white shadow-xs`
                             : 'text-slate-600 hover:text-slate-900'
@@ -457,7 +502,7 @@ function SettingsContent() {
                       Payload Tham Số ({activeTool}):
                     </label>
 
-                    {activeTool === 'create_vocab_deck' && (
+                    {(activeTool === 'create_vocab_deck' || activeTool === 'add_flashcards') && (
                       <textarea
                         rows={9}
                         value={jsonInput}

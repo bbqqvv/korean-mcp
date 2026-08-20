@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createNewDeckAsync, getDecksAsync, addCardsToDeckAsync } from '@/lib/store';
+import { createNewDeckAsync, getDecksAsync, addCardsToDeckAsync, addEmailLog } from '@/lib/store';
 import { generateKoreanVocabWithGroq } from '@/lib/groq';
 import { Flashcard } from '@/lib/types';
 
@@ -120,6 +120,19 @@ export async function POST(req: Request) {
               inputSchema: {
                 type: 'object',
                 properties: {}
+              }
+            },
+            {
+              name: 'send_daily_study_email',
+              description: 'Gửi email nhắc nhở học từ vựng tiếng Hàn kèm đường dẫn bài học trực tiếp.',
+              inputSchema: {
+                type: 'object',
+                properties: {
+                  recipient_email: { type: 'string', description: 'Địa chỉ email người nhận' },
+                  deck_id: { type: 'string', description: 'ID bộ từ vựng cần học (tùy chọn)' },
+                  note_for_today: { type: 'string', description: 'Lời nhắn hoặc ghi chú học từ Gemini Spark' }
+                },
+                required: ['recipient_email']
               }
             }
           ]
@@ -270,6 +283,59 @@ export async function POST(req: Request) {
         });
       }
 
+      if (name === 'send_daily_study_email') {
+        const { recipient_email, deck_id, note_for_today } = args || {};
+        const decks = await getDecksAsync();
+        const targetDeck = deck_id ? decks.find((d) => d.id === deck_id) : decks[0];
+
+        if (!targetDeck) {
+          return NextResponse.json({
+            jsonrpc: '2.0',
+            id,
+            result: {
+              content: [{ type: 'text', text: 'Không tìm thấy bộ từ vựng để gửi email.' }],
+              isError: true
+            }
+          });
+        }
+
+        const domain = getDomain(req);
+        const studyLink = `${domain}/deck/${targetDeck.id}`;
+        const log = addEmailLog({
+          recipient: recipient_email || 'vanbuiquoc@gmail.com',
+          deckId: targetDeck.id,
+          deckTitle: targetDeck.title,
+          cardCount: targetDeck.cards.length,
+          status: 'sent',
+          note: note_for_today || 'Nhắc nhở học từ vựng tiếng Hàn hôm nay từ Gemini Spark!',
+          previewUrl: studyLink
+        });
+
+        return NextResponse.json({
+          jsonrpc: '2.0',
+          id,
+          result: {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(
+                  {
+                    status: 'success',
+                    message: `Đã gửi email nhắc học thành công tới: ${log.recipient}`,
+                    deck_title: targetDeck.title,
+                    card_count: targetDeck.cards.length,
+                    study_link: studyLink,
+                    note: log.note
+                  },
+                  null,
+                  2
+                )
+              }
+            ]
+          }
+        });
+      }
+
       return NextResponse.json({
         jsonrpc: '2.0',
         id,
@@ -301,7 +367,7 @@ export async function GET(req: Request) {
     server_name: 'Korean Flashcard MCP Server',
     protocol: 'Model Context Protocol (MCP 2024-11-05)',
     endpoint: `${domain}/api/mcp`,
-    available_tools: ['create_vocab_deck', 'add_flashcards', 'get_decks'],
+    available_tools: ['create_vocab_deck', 'add_flashcards', 'get_decks', 'send_daily_study_email'],
     guide: `${domain}/mcp-guide`
   });
 }
