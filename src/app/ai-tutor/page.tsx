@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Sidebar from '@/components/sidebar';
 import CreateDeckModal from '@/components/create-deck-modal';
 import { useTheme } from '@/lib/theme-context';
+import { KoreaFlag } from '@/components/korea-flag';
 import {
   Bot,
   Send,
@@ -42,7 +43,7 @@ Tôi có thể giúp bạn:
 Hãy chọn gợi ý nhanh bên dưới hoặc gõ câu hỏi của bạn nhé!`,
   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
   chips: [
-    '🎭 Luyện hội thoại gọi món ở nhà hàng Seoul',
+    '🎭 Luyện hội thoại gọi món ở nhà hàng Seoul 🇰🇷',
     '📝 Sửa lỗi câu: "저는 한국어를 공부를 해요"',
     '💡 Phân biệt -아/어 보다 và -고 싶다',
     '🇰🇷 Cho tôi 5 câu giao tiếp công sở Hàn Quốc'
@@ -148,32 +149,35 @@ export default function AITutorPage() {
     }
   };
 
-  // Helper to parse inline markdown: **bold**, `code`, *italic*, <br>, etc.
+  // Helper to parse inline markdown: **bold**, `code`, *italic*, <br>, and 🇰🇷 flag
   const renderFormattedText = (text: string) => {
     // 1. Split by <br> or <br/> or <br />
     const brParts = text.split(/<br\s*\/?>/gi);
 
     return brParts.map((brPart, brIdx) => {
-      // 2. Tokenize by **bold**, `code`, *italic*
-      const tokens = brPart.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g);
+      // 2. Tokenize by **bold**, `code`, *italic*, 🇰🇷 flag
+      const tokens = brPart.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*|🇰🇷)/g);
       const renderedTokens = tokens.map((token, tokenIdx) => {
+        if (token === '🇰🇷') {
+          return <KoreaFlag key={tokenIdx} className="w-4 h-3 mx-1 inline-block" />;
+        }
         if (token.startsWith('**') && token.endsWith('**')) {
           return (
-            <strong key={tokenIdx} className="font-extrabold text-slate-900">
+            <strong key={tokenIdx} className="font-extrabold text-slate-900 dark:text-white">
               {token.slice(2, -2)}
             </strong>
           );
         }
         if (token.startsWith('`') && token.endsWith('`')) {
           return (
-            <code key={tokenIdx} className="bg-blue-50 text-blue-700 font-mono text-[11px] font-bold px-1.5 py-0.5 rounded border border-blue-200/80 mx-0.5 inline-block">
+            <code key={tokenIdx} className="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-mono text-[11px] font-bold px-1.5 py-0.5 rounded border border-blue-200/80 dark:border-blue-800/80 mx-0.5 inline-block">
               {token.slice(1, -1)}
             </code>
           );
         }
         if (token.startsWith('*') && token.endsWith('*')) {
           return (
-            <em key={tokenIdx} className="italic text-slate-600 font-medium">
+            <em key={tokenIdx} className="italic text-slate-600 dark:text-zinc-400 font-medium">
               {token.slice(1, -1)}
             </em>
           );
@@ -357,10 +361,10 @@ export default function AITutorPage() {
                         <button
                           key={idx}
                           onClick={() => handleSendMessage(chip)}
-                          className="px-3 py-1.5 bg-white border border-slate-200/80 shadow-xs rounded-2xl text-slate-800 font-bold text-xs shadow-2xs hover:bg-blue-50 hover:border-blue-600 transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-white dark:bg-[#121215] border border-slate-200/80 dark:border-zinc-800 shadow-xs rounded-2xl text-slate-800 dark:text-zinc-200 font-bold text-xs shadow-2xs hover:bg-blue-50 dark:hover:bg-zinc-800 hover:border-blue-600 transition-all flex items-center gap-1.5 cursor-pointer"
                         >
-                          <span>{chip}</span>
-                          <ArrowRight className="w-3 h-3 text-slate-400" />
+                          <span className="flex items-center gap-1">{renderFormattedText(chip)}</span>
+                          <ArrowRight className="w-3 h-3 text-slate-400 shrink-0" />
                         </button>
                       ))}
                     </div>
