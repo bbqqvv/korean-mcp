@@ -20,7 +20,10 @@ import {
   Bot,
   PanelLeftClose,
   PanelLeft,
-  Mic
+  Mic,
+  Film,
+  Volume2,
+  MessageSquare
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -52,7 +55,12 @@ export default function Sidebar({
   const { themeConfig } = useTheme();
 
   const isBooksActive = pathname === '/books' || pathname.startsWith('/course');
-  const isSpeakingActive = pathname === '/speaking' || pathname === '/shadowing';
+  const isSpeakingActive =
+    pathname === '/speaking' ||
+    pathname === '/shadowing' ||
+    pathname === '/pronunciation' ||
+    pathname === '/roleplay';
+
   const [isBooksExpanded, setIsBooksExpanded] = useState(true);
   const [isSpeakingExpanded, setIsSpeakingExpanded] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -69,9 +77,9 @@ export default function Sidebar({
   ];
 
   const speakingSubMenu = [
-    { label: 'Luyện Nhại Video (Shadowing)', href: '/shadowing', color: 'bg-blue-600' },
-    { label: 'Phân Biệt Âm & Khẩu Hình', href: '/speaking?tab=pronunciation', color: 'bg-emerald-600' },
-    { label: 'Đóng Vai Tình Huống (Roleplay)', href: '/speaking?tab=roleplay', color: 'bg-amber-600' }
+    { label: 'Luyện Nhại Video (Shadowing)', href: '/shadowing', icon: Film, color: 'text-blue-600' },
+    { label: 'Phân Biệt Âm & Khẩu Hình', href: '/pronunciation', icon: Volume2, color: 'text-emerald-600' },
+    { label: 'Đóng Vai Tình Huống (Roleplay)', href: '/roleplay', icon: MessageSquare, color: 'text-amber-600' }
   ];
 
   const bookSubMenu = [
@@ -238,23 +246,26 @@ export default function Sidebar({
 
                     {/* Submenu for Speaking */}
                     {isSpeakingExpanded && (
-                      <div className="pl-8 space-y-1 pt-0.5">
-                        {speakingSubMenu.map((sub) => (
-                          <Link
-                            key={sub.label}
-                            href={sub.href}
-                            onClick={onCloseMobile}
-                            className={`flex items-center gap-2 py-1.5 px-2 text-[11px] font-medium rounded-lg transition-colors ${
-                              pathname + (typeof window !== 'undefined' ? window.location.search : '') === sub.href ||
-                              (sub.href === '/shadowing' && pathname === '/shadowing')
-                                ? 'bg-slate-100 text-slate-900 font-bold'
-                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                            }`}
-                          >
-                            <span className={`w-1.5 h-1.5 rounded-full ${sub.color}`} />
-                            <span>{sub.label}</span>
-                          </Link>
-                        ))}
+                      <div className="pl-7 space-y-1 pt-0.5">
+                        {speakingSubMenu.map((sub) => {
+                          const SubIcon = sub.icon;
+                          const isSubActive = pathname === sub.href;
+                          return (
+                            <Link
+                              key={sub.label}
+                              href={sub.href}
+                              onClick={onCloseMobile}
+                              className={`flex items-center gap-2 py-2 px-2.5 text-[11px] font-semibold rounded-xl transition-all ${
+                                isSubActive
+                                  ? 'bg-slate-900 text-white font-bold shadow-2xs'
+                                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                              }`}
+                            >
+                              <SubIcon className={`w-3.5 h-3.5 shrink-0 ${isSubActive ? 'text-white' : sub.color}`} />
+                              <span className="truncate">{sub.label}</span>
+                            </Link>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
