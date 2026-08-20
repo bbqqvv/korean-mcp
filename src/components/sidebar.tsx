@@ -13,6 +13,11 @@ import {
   Flame,
   FolderOpen,
   ChevronDown,
+  ChevronsUpDown,
+  LogOut,
+  Sun,
+  Moon,
+  Laptop,
   Settings,
   Keyboard,
   BookOpen,
@@ -65,6 +70,7 @@ export default function Sidebar({
   const [isBooksExpanded, setIsBooksExpanded] = useState(true);
   const [isSpeakingExpanded, setIsSpeakingExpanded] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const mainNavLinks = [
     { href: '/', label: 'Trang Chủ', icon: Home },
@@ -355,27 +361,95 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* Footer Streak Progress Card */}
-        <div className="p-3 border-t border-slate-100 bg-slate-50/50 pb-4">
+        {/* Footer Profile Component */}
+        <div className="p-2.5 border-t border-slate-200/80 bg-white relative">
           {isCollapsed ? (
-            <div
-              className="w-11 h-11 mx-auto rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-center shadow-2xs cursor-pointer hover:scale-105 transition-transform"
-              title="Chuỗi 5 Ngày (32/100 từ)"
+            <button
+              onClick={() => router.push('/settings')}
+              className="w-10 h-10 mx-auto rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center hover:bg-slate-200 transition-colors"
+              title="LynKore Learner (Tài khoản)"
             >
-              <Flame className="w-5 h-5 text-amber-500 fill-current" />
-            </div>
+              <div className="w-7 h-7 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">
+                LK
+              </div>
+            </button>
           ) : (
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-3 space-y-2 shadow-2xs">
-              <div className="flex items-center justify-between text-xs font-bold">
-                <span className="flex items-center gap-1 text-slate-800">
-                  <Flame className="w-3.5 h-3.5 text-amber-500 fill-current" /> Chuỗi 5 Ngày
-                </span>
-                <span className="text-[10px] text-blue-600">32/100 từ</span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-600 rounded-full w-[32%]" />
-              </div>
-              <p className="text-[10px] text-slate-400 italic">«Học từ vựng tiếng Hàn mỗi ngày»</p>
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                className="w-full p-2 rounded-xl hover:bg-slate-100/80 transition-colors flex items-center justify-between gap-2.5 group text-left"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8.5 h-8.5 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                    LK
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-xs font-semibold text-slate-900 block truncate leading-tight group-hover:text-blue-600 transition-colors">
+                      LynKore Learner
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-normal block truncate">
+                      learner@lynkore.edu.vn
+                    </span>
+                  </div>
+                </div>
+                <ChevronsUpDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              </button>
+
+              {/* Profile Popover Menu */}
+              {isProfileMenuOpen && (
+                <div className="absolute bottom-full left-0 mb-2 w-60 bg-white border border-slate-200 shadow-xl rounded-2xl p-3 space-y-3 z-50 animate-fadeIn">
+                  {/* User Header */}
+                  <div className="flex items-center gap-2.5 pb-2.5 border-b border-slate-100">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                      LK
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-xs font-semibold text-slate-900 block truncate">
+                        LynKore Learner
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-normal block truncate">
+                        learner@lynkore.edu.vn
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Theme Mode Quick Switcher */}
+                  <div className="bg-slate-50 p-1.5 rounded-xl flex items-center justify-between text-[11px] font-medium text-slate-600">
+                    <button className="flex-1 py-1 px-1.5 bg-white shadow-2xs rounded-lg text-slate-900 font-semibold flex items-center justify-center gap-1">
+                      <Sun className="w-3 h-3 text-amber-500" /> Sáng
+                    </button>
+                    <button className="flex-1 py-1 px-1.5 hover:text-slate-900 flex items-center justify-center gap-1">
+                      <Moon className="w-3 h-3 text-slate-400" /> Tối
+                    </button>
+                    <button className="flex-1 py-1 px-1.5 hover:text-slate-900 flex items-center justify-center gap-1">
+                      <Laptop className="w-3 h-3 text-slate-400" /> Auto
+                    </button>
+                  </div>
+
+                  {/* Settings Item */}
+                  <div className="space-y-0.5 text-xs font-medium">
+                    <Link
+                      href="/settings"
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="flex items-center gap-2 px-2.5 py-2 text-slate-700 hover:bg-slate-100 rounded-xl transition-colors"
+                    >
+                      <Settings className="w-4 h-4 text-slate-400" />
+                      <span>Thiết lập Tài khoản</span>
+                    </Link>
+                  </div>
+
+                  {/* Logout */}
+                  <div className="pt-2 border-t border-slate-100">
+                    <button
+                      onClick={() => setIsProfileMenuOpen(false)}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-medium transition-colors text-left"
+                    >
+                      <LogOut className="w-4 h-4 text-rose-500" />
+                      <span>Đăng xuất</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
