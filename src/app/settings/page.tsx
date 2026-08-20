@@ -39,7 +39,8 @@ import {
   Languages,
   KeyRound,
   Smartphone,
-  BookOpen
+  BookOpen,
+  Lock
 } from 'lucide-react';
 
 type SettingsTab =
@@ -75,6 +76,8 @@ function SettingsContent() {
   // Security State
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [is2FAEnabled, setIs2FAEnabled] = useState(false);
   const [isSavedSecurity, setIsSavedSecurity] = useState(false);
 
   // Notifications State
@@ -806,43 +809,144 @@ function SettingsContent() {
             </div>
           )}
 
-          {/* TAB 6: BẢO MẬT TÀI KHOẢN */}
+          {/* TAB 6: BẢO MẬT (EXACT MATCH WITH SCREENSHOT!) */}
           {activeTab === 'security' && (
             <div className="space-y-8 animate-in fade-in duration-200">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                  <Shield className="w-7 h-7 text-indigo-600" /> Bảo Mật Tài Khoản 🔒
+              <div className="space-y-1">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Bảo mật
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 mt-1">Đổi mật khẩu và quản lý thiết bị đăng nhập.</p>
               </div>
 
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-xs">
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">Đổi Mật Khẩu</h2>
-                <div className="space-y-3">
+              {/* Card 1: Đổi mật khẩu */}
+              <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl overflow-hidden shadow-2xs">
+                <div className="p-6 space-y-5">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Mật khẩu hiện tại:</label>
-                    <input
-                      type="password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none"
-                    />
+                    <h2 className="text-base font-extrabold text-slate-900 dark:text-white">
+                      Đổi mật khẩu
+                    </h2>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Cập nhật mật khẩu đăng nhập của bạn.
+                    </p>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Mật khẩu mới:</label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none"
-                    />
+
+                  <div className="space-y-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                        Mật khẩu hiện tại
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="••••••••"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 shadow-2xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                        Mật khẩu mới
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="••••••••"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 shadow-2xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                        Xác nhận mật khẩu
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 shadow-2xs"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500 pt-1">
+                      <span className="text-slate-400 font-serif font-bold">ⓘ</span>
+                      <span>Tối thiểu 8 ký tự, gồm chữ hoa, chữ thường và số.</span>
+                    </div>
                   </div>
+                </div>
+
+                <div className="p-4 bg-slate-50/50 dark:bg-slate-950/40 border-t border-slate-100 dark:border-slate-800 flex justify-end">
                   <button
-                    onClick={() => { setIsSavedSecurity(true); setTimeout(() => setIsSavedSecurity(false), 2000); }}
-                    className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-2xs"
+                    onClick={() => {
+                      setIsSavedSecurity(true);
+                      setTimeout(() => setIsSavedSecurity(false), 2000);
+                    }}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all hover:scale-102"
                   >
-                    {isSavedSecurity ? '✓ Đã Cập Nhật!' : 'Cập Nhật Mật Khẩu'}
+                    {isSavedSecurity ? '✓ Đã Cập Nhật!' : 'Cập nhật mật khẩu'}
                   </button>
+                </div>
+              </div>
+
+              {/* Card 2: Xác thực hai bước (2FA) */}
+              <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 space-y-5 shadow-2xs">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className="text-base font-extrabold text-slate-900 dark:text-white">
+                      Xác thực hai bước (2FA)
+                    </h2>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Bảo vệ tài khoản với mã OTP mỗi lần đăng nhập.
+                    </p>
+                  </div>
+                  <span className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-extrabold uppercase tracking-wider rounded-md">
+                    {is2FAEnabled ? 'ĐÃ BẬT' : 'CHƯA BẬT'}
+                  </span>
+                </div>
+
+                <div className="p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center shrink-0 shadow-2xs">
+                    <Shield className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                        Thêm lớp bảo vệ cho tài khoản
+                      </h3>
+                      <p className="text-xs text-slate-500 leading-relaxed mt-0.5">
+                        Thêm một lớp bảo vệ bằng mã OTP từ ứng dụng xác thực. Sau khi bật, mỗi lần đăng nhập bạn sẽ cần nhập mã từ ứng dụng như Google Authenticator.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setIs2FAEnabled(!is2FAEnabled)}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5"
+                    >
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>{is2FAEnabled ? 'Tắt 2FA' : 'Bật 2FA'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 3: Mã khôi phục */}
+              <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 space-y-4 shadow-2xs">
+                <div>
+                  <h2 className="text-base font-extrabold text-slate-900 dark:text-white">
+                    Mã khôi phục
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Mã dự phòng để đăng nhập khi mất thiết bị 2FA.
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 text-center py-6">
+                  <p className="text-xs text-slate-400 italic">
+                    {is2FAEnabled ? 'Danh sách 8 mã dự phòng: [ 8492-4910, 9301-5820, 2049-1829, ... ]' : 'Bật xác thực hai bước để tạo mã khôi phục.'}
+                  </p>
                 </div>
               </div>
             </div>
