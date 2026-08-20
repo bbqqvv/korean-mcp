@@ -3,6 +3,7 @@ import { Be_Vietnam_Pro, Noto_Sans_KR } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/lib/theme-context';
 import AmbientEffects from '@/components/ambient-effects';
+import AmbientAudio from '@/components/ambient-audio';
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ['latin', 'vietnamese'],
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body className="bg-[var(--bg-canvas,#f8fafc)] text-[var(--text-main,#0f172a)] antialiased font-sans selection:bg-blue-500 selection:text-white min-h-screen flex flex-col">
         <ThemeProvider>
           <AmbientEffects />
+          <AmbientAudio />
           {children}
         </ThemeProvider>
       </body>

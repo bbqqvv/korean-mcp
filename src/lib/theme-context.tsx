@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 export type ModeType = 'light' | 'dark' | 'system';
 export type SubStyleId = 'default' | 'purple' | 'pink' | 'blue';
 export type EffectId = 'none' | 'sakura' | 'snow' | 'stars';
+export type AudioId = 'none' | 'lofi' | 'rain' | 'cafe';
 
 export type AppThemeId =
   | 'light'
@@ -195,12 +196,14 @@ interface ThemeContextType {
   mode: ModeType;
   subStyle: SubStyleId;
   ambientEffect: EffectId;
+  ambientAudio: AudioId;
   activeThemeId: AppThemeId;
   themePreset: ThemePreset;
   themeConfig: ThemeConfig;
   setMode: (mode: ModeType) => void;
   setSubStyle: (sub: SubStyleId) => void;
   setAmbientEffect: (effect: EffectId) => void;
+  setAmbientAudio: (audio: AudioId) => void;
   setAppTheme: (themeId: AppThemeId) => void;
   // Backward compatibility
   theme: ThemeId;
@@ -211,12 +214,14 @@ const ThemeContext = createContext<ThemeContextType>({
   mode: 'light',
   subStyle: 'default',
   ambientEffect: 'none',
+  ambientAudio: 'none',
   activeThemeId: 'light',
   themePreset: THEME_PRESETS.light,
   themeConfig: THEME_PRESETS.light as unknown as ThemeConfig,
   setMode: () => {},
   setSubStyle: () => {},
   setAmbientEffect: () => {},
+  setAmbientAudio: () => {},
   setAppTheme: () => {},
   theme: 'light',
   setTheme: () => {}
@@ -234,6 +239,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setModeState] = useState<ModeType>('light');
   const [subStyle, setSubStyleState] = useState<SubStyleId>('default');
   const [ambientEffect, setAmbientEffectState] = useState<EffectId>('none');
+  const [ambientAudio, setAmbientAudioState] = useState<AudioId>('none');
 
   const activeThemeId = resolveThemeId(mode, subStyle);
 
@@ -241,9 +247,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const savedMode = localStorage.getItem('lynkore-mode') as ModeType;
     const savedSub = localStorage.getItem('lynkore-sub-style') as SubStyleId;
     const savedEffect = localStorage.getItem('lynkore-ambient-effect') as EffectId;
+    const savedAudio = localStorage.getItem('lynkore-ambient-audio') as AudioId;
     if (savedMode) setModeState(savedMode);
     if (savedSub) setSubStyleState(savedSub);
     if (savedEffect) setAmbientEffectState(savedEffect);
+    if (savedAudio) setAmbientAudioState(savedAudio);
   }, []);
 
   useEffect(() => {
@@ -275,6 +283,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const setAmbientEffect = (e: EffectId) => {
     setAmbientEffectState(e);
     localStorage.setItem('lynkore-ambient-effect', e);
+  };
+
+  const setAmbientAudio = (a: AudioId) => {
+    setAmbientAudioState(a);
+    localStorage.setItem('lynkore-ambient-audio', a);
   };
 
   const setAppTheme = (id: AppThemeId) => {
@@ -315,12 +328,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         mode,
         subStyle,
         ambientEffect,
+        ambientAudio,
         activeThemeId,
         themePreset: currentPreset,
         themeConfig: currentConfig,
         setMode,
         setSubStyle,
         setAmbientEffect,
+        setAmbientAudio,
         setAppTheme,
         theme: activeThemeId,
         setTheme

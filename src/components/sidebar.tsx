@@ -58,7 +58,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { mode, subStyle, ambientEffect, setMode, setSubStyle, setAmbientEffect, themeConfig } = useTheme();
+  const { mode, subStyle, ambientEffect, ambientAudio, setMode, setSubStyle, setAmbientEffect, setAmbientAudio, themeConfig } = useTheme();
 
   const isBooksActive = pathname === '/books' || pathname.startsWith('/course');
   const isSpeakingActive =
@@ -506,6 +506,40 @@ export default function Sidebar({
                             }`}
                           >
                             {ef.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Ambient Audio / Lofi Beats Section */}
+                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+                          Nhạc nền Lofi & Ambient
+                        </span>
+                        {ambientAudio !== 'none' && (
+                          <span className="text-[9px] font-bold text-emerald-500 animate-pulse flex items-center gap-0.5">
+                            <Volume2 className="w-2.5 h-2.5" /> Đang phát
+                          </span>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-4 gap-1">
+                        {[
+                          { id: 'none', label: 'Tắt 🔇' },
+                          { id: 'lofi', label: 'Lofi 🎵' },
+                          { id: 'rain', label: 'Mưa 🌧️' },
+                          { id: 'cafe', label: 'Cà phê ☕' }
+                        ].map((au) => (
+                          <button
+                            key={au.id}
+                            onClick={() => setAmbientAudio(au.id as any)}
+                            className={`py-1 px-1 rounded-lg text-[10px] font-semibold transition-all text-center ${
+                              ambientAudio === au.id
+                                ? 'bg-emerald-600 text-white shadow-2xs'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {au.label}
                           </button>
                         ))}
                       </div>
