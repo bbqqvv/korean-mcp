@@ -2,40 +2,73 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Sidebar from '@/components/sidebar';
-import Header from '@/components/header';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useTheme, THEME_CONFIGS, ThemeId, SubStyleId } from '@/lib/theme-context';
 import CreateDeckModal from '@/components/create-deck-modal';
 import EmailPreviewModal from '@/components/email-preview-modal';
 import { EmailLog } from '@/lib/types';
-import { useTheme, THEME_CONFIGS, ThemeId } from '@/lib/theme-context';
 import {
-  Settings,
+  User,
+  Shield,
+  Link as LinkIcon,
+  Bell,
+  Laptop,
+  Palette,
   Bot,
   Mail,
-  Sparkles,
-  Terminal,
-  Play,
-  Copy,
+  Sliders,
+  Users,
+  BarChart3,
+  Key,
+  AlertTriangle,
+  ChevronLeft,
+  Upload,
+  Trash2,
   Check,
+  Copy,
+  Play,
   Clock,
   Send,
-  Bell,
+  Sparkles,
   ExternalLink,
   Volume2,
-  Sliders,
-  Palette,
-  CheckCircle2
+  CheckCircle2,
+  Sun,
+  Moon,
+  LogOut,
+  Settings
 } from 'lucide-react';
+
+type SettingsTab =
+  | 'profile'
+  | 'security'
+  | 'linked'
+  | 'notifications'
+  | 'sessions'
+  | 'theme'
+  | 'mcp'
+  | 'email'
+  | 'ai'
+  | 'members'
+  | 'usage'
+  | 'api'
+  | 'danger';
 
 function SettingsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const initialTab = (searchParams.get('tab') as 'mcp' | 'email' | 'theme' | 'ai') || 'mcp';
+  const initialTab = (searchParams.get('tab') as SettingsTab) || 'profile';
 
-  const [activeTab, setActiveTab] = useState<'mcp' | 'email' | 'theme' | 'ai'>(initialTab);
-  const { theme, setTheme, themeConfig } = useTheme();
+  const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
+  const { mode, subStyle, ambientEffect, ambientAudio, setMode, setSubStyle, setAmbientEffect, setAmbientAudio, theme, setTheme, themeConfig } = useTheme();
 
-  // MCP Tab state
+  // Profile Form State
+  const [fullName, setFullName] = useState('LynKore Learner');
+  const [language, setLanguage] = useState('Tiếng Việt');
+  const [isSavedProfile, setIsSavedProfile] = useState(false);
+
+  // MCP Tab State
   const [copied, setCopied] = useState(false);
   const [activeTool, setActiveTool] = useState<string>('create_vocab_deck');
   const [jsonInput, setJsonInput] = useState<string>(
@@ -52,14 +85,6 @@ function SettingsContent() {
             hanja: '會議 (Hội nghị)',
             example_kr: '오후 2시에 회의가 있습니다.',
             example_vi: 'Có cuộc họp lúc 2 giờ chiều.'
-          },
-          {
-            korean: '출장',
-            pronunciation: 'chul-jjang',
-            vietnamese: 'Đi công tác',
-            hanja: '出張 (Xuất trướng)',
-            example_kr: '다음 주에 서울로 출장을 가요.',
-            example_vi: 'Tuần sau tôi đi công tác Seoul.'
           }
         ]
       },
@@ -68,57 +93,49 @@ function SettingsContent() {
     )
   );
   const [mcpEmailInput, setMcpEmailInput] = useState({
-    recipient_email: 'vanbuiquoc@gmail.com',
-    note_for_today: 'Chào bạn! Hôm nay hãy ôn 2 từ vựng mới về công sở nhé!'
+    recipient_email: 'learner@lynkore.edu.vn',
+    note_for_today: 'Chào bạn! Hôm nay hãy ôn từ vựng mới nhé!'
   });
   const [responseLog, setResponseLog] = useState<string | null>(null);
   const [isTestingTool, setIsTestingTool] = useState(false);
 
-  // Email Tab state
-  const [userEmail, setUserEmail] = useState('vanbuiquoc@gmail.com');
+  // Email Tab State
+  const [userEmail, setUserEmail] = useState('learner@lynkore.edu.vn');
   const [notifyTime, setNotifyTime] = useState('08:00');
   const [logs, setLogs] = useState<EmailLog[]>([]);
   const [isSavedEmail, setIsSavedEmail] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isEmailPreviewOpen, setIsEmailPreviewOpen] = useState(false);
 
-  // AI Tab state
+  // AI Tab State
   const [speechRate, setSpeechRate] = useState('0.85');
   const [isSavedAI, setIsSavedAI] = useState(false);
-
-  // App Shell State
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const mcpEndpointUrl =
     typeof window !== 'undefined'
       ? `${window.location.origin}/api/mcp`
-      : 'http://localhost:3001/api/mcp';
-
-  const fetchEmailLogs = async () => {
-    try {
-      const res = await fetch('/api/email');
-      const data = await res.json();
-      if (data.success) {
-        setLogs(data.logs);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+      : 'http://localhost:3000/api/mcp';
 
   useEffect(() => {
-    fetchEmailLogs();
+    const fetchLogs = async () => {
+      try {
+        const res = await fetch('/api/email');
+        const data = await res.json();
+        if (data.success) setLogs(data.logs);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchLogs();
   }, []);
 
   useEffect(() => {
-    const tabParam = searchParams.get('tab') as 'mcp' | 'email' | 'theme' | 'ai';
-    if (tabParam && ['mcp', 'email', 'theme', 'ai'].includes(tabParam)) {
-      setActiveTab(tabParam);
-    }
+    const tabParam = searchParams.get('tab') as SettingsTab;
+    if (tabParam) setActiveTab(tabParam);
   }, [searchParams]);
 
-  const handleTabChange = (tab: 'mcp' | 'email' | 'theme' | 'ai') => {
+  const handleTabChange = (tab: SettingsTab) => {
     setActiveTab(tab);
     router.push(`/settings?tab=${tab}`);
   };
@@ -129,639 +146,393 @@ function SettingsContent() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleTestTool = async () => {
-    setIsTestingTool(true);
-    setResponseLog(null);
-
-    let payload: any = {
-      jsonrpc: '2.0',
-      id: Date.now(),
-      method: 'tools/call',
-      params: {
-        name: activeTool,
-        arguments: {}
-      }
-    };
-
-    if (activeTool === 'create_vocab_deck' || activeTool === 'add_flashcards') {
-      try {
-        payload.params.arguments = JSON.parse(jsonInput);
-      } catch (err) {
-        setResponseLog('Lỗi JSON Input không hợp lệ!');
-        setIsTestingTool(false);
-        return;
-      }
-    } else if (activeTool === 'send_daily_study_email') {
-      payload.params.arguments = mcpEmailInput;
-    } else if (activeTool === 'get_decks') {
-      payload.params.arguments = {};
-    }
-
-    try {
-      const res = await fetch('/api/mcp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      setResponseLog(JSON.stringify(data, null, 2));
-
-      if (activeTool === 'send_daily_study_email' && data.result) {
-        setIsEmailPreviewOpen(true);
-      }
-    } catch (err: any) {
-      setResponseLog(`Error: ${err.message}`);
-    } finally {
-      setIsTestingTool(false);
-    }
-  };
-
-  const handleSaveEmailConfig = (e: React.FormEvent) => {
+  const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSavedEmail(true);
-    setTimeout(() => setIsSavedEmail(false), 2500);
-  };
-
-  const handleSendTestEmailNow = async () => {
-    setIsSendingEmail(true);
-    try {
-      const res = await fetch('/api/email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recipient: userEmail,
-          note: 'Gửi thử nghiệm từ trang Cài Đặt LynKore!'
-        })
-      });
-      const data = await res.json();
-      if (data.success) {
-        fetchEmailLogs();
-        setIsEmailPreviewOpen(true);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSendingEmail(false);
-    }
+    setIsSavedProfile(true);
+    setTimeout(() => setIsSavedProfile(false), 2500);
   };
 
   return (
     <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
-      <Sidebar
-        isOpenMobile={isMobileSidebarOpen}
-        onCloseMobile={() => setIsMobileSidebarOpen(false)}
-        onOpenCreateModal={() => setIsCreateModalOpen(true)}
-      />
+      {/* LEFT SETTINGS SUB-SIDEBAR (EXACT LAYOUT FROM IMAGE 2!) */}
+      <aside className="w-64 h-full bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800 flex flex-col shrink-0 select-none overflow-y-auto">
+        {/* Brand & Back Button */}
+        <div className="p-4 space-y-3 border-b border-slate-100 dark:border-slate-800/80">
+          <div className="flex items-center gap-2.5">
+            <Image
+              src="/krlogo.png"
+              alt="LynKore Logo"
+              width={34}
+              height={34}
+              className="w-8.5 h-8.5 rounded-xl object-contain shadow-2xs"
+            />
+            <span className="font-bold text-lg text-slate-900 dark:text-white tracking-tight">LynKore</span>
+          </div>
 
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 pb-24 md:pb-8 max-w-5xl w-full mx-auto">
-          {/* Header Title */}
-          <div className="border-b border-slate-200/80 pb-4">
-            <div className="flex items-center gap-2.5">
-              <div className={`w-8 h-8 rounded-2xl ${themeConfig.primaryBg} text-white flex items-center justify-center shadow-xs`}>
-                <Settings className="w-4.5 h-4.5" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900">
-                  Cài Đặt Hệ Thống & Bộ Màu Thiết Kế 🇰🇷
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" /> Quay lại Trang Chủ
+          </Link>
+        </div>
+
+        {/* Navigation Group Menu Items */}
+        <div className="flex-1 p-3 space-y-5 text-xs">
+          {/* GROUP 1: THIẾT LẬP TÀI KHOẢN */}
+          <div className="space-y-1">
+            <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+              Thiết lập tài khoản
+            </span>
+
+            {[
+              { id: 'profile', label: 'Hồ sơ cá nhân', icon: User },
+              { id: 'security', label: 'Bảo mật', icon: Shield },
+              { id: 'linked', label: 'Tài khoản liên kết', icon: LinkIcon },
+              { id: 'notifications', label: 'Thông báo', icon: Bell },
+              { id: 'sessions', label: 'Phiên đăng nhập', icon: Laptop }
+            ].map((item) => {
+              const IconComp = item.icon;
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleTabChange(item.id as SettingsTab)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-all text-left ${
+                    isActive
+                      ? 'bg-slate-100 dark:bg-slate-800/90 text-slate-900 dark:text-white font-bold shadow-2xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <IconComp className={`w-4 h-4 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} />
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* GROUP 2: THIẾT LẬP HỆ THỐNG */}
+          <div className="space-y-1">
+            <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+              Cài đặt hệ thống
+            </span>
+
+            {[
+              { id: 'theme', label: 'Giao diện & Hiệu ứng', icon: Palette },
+              { id: 'mcp', label: 'MCP Server', icon: Bot },
+              { id: 'email', label: 'Lịch Mail Nhắc Học', icon: Mail },
+              { id: 'ai', label: 'AI Gia Sư & TTS', icon: Sliders },
+              { id: 'members', label: 'Thành viên', icon: Users },
+              { id: 'usage', label: 'Mức sử dụng', icon: BarChart3 },
+              { id: 'api', label: 'Tích hợp & API', icon: Key },
+              { id: 'danger', label: 'Vùng nguy hiểm', icon: AlertTriangle }
+            ].map((item) => {
+              const IconComp = item.icon;
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleTabChange(item.id as SettingsTab)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-all text-left ${
+                    isActive
+                      ? 'bg-slate-100 dark:bg-slate-800/90 text-slate-900 dark:text-white font-bold shadow-2xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <IconComp className={`w-4 h-4 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} />
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Sub-Sidebar Footer User Card */}
+        <div className="p-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2.5">
+          <Image
+            src="/krlogo.png"
+            alt="LynKore Learner"
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-xl object-contain shadow-2xs shrink-0"
+          />
+          <div className="min-w-0">
+            <p className="text-xs font-bold text-slate-900 dark:text-white truncate">LynKore Learner</p>
+            <p className="text-[10px] text-slate-400 truncate">learner@lynkore.edu.vn</p>
+          </div>
+        </div>
+      </aside>
+
+      {/* RIGHT MAIN CONTENT AREA (EXACT LAYOUT FROM IMAGE 2!) */}
+      <main className="flex-1 overflow-y-auto p-6 sm:p-8 lg:p-10 space-y-8 bg-slate-50/50 dark:bg-slate-950/40">
+        <div className="max-w-4xl mx-auto space-y-8">
+
+          {/* TAB 1: HỒ SƠ CÁ NHÂN (EXACT DESIGN MATCHING IMAGE 2!) */}
+          {activeTab === 'profile' && (
+            <div className="space-y-8 animate-in fade-in duration-200">
+              <div className="space-y-1">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Hồ sơ cá nhân
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500">
-                  Tùy chọn tông màu giao diện (Xanh Chuối, Xanh Biển, Taegeuk, Obsidian), MCP Server và lịch gửi mail
-                </p>
               </div>
-            </div>
-          </div>
 
-          {/* DISCRETE TABS */}
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200/80">
-            <button
-              onClick={() => handleTabChange('theme')}
-              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
-                activeTab === 'theme'
-                  ? `${themeConfig.primaryBg} text-white shadow-sm`
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
-              }`}
-            >
-              <Palette className="w-4 h-4" />
-              <span>Bộ Màu Website</span>
-            </button>
+              {/* Thông tin cá nhân Section */}
+              <form onSubmit={handleSaveProfile} className="space-y-8">
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-base font-extrabold text-slate-900 dark:text-white">
+                      Thông tin cá nhân
+                    </h2>
+                    <p className="text-xs text-slate-500">
+                      Cập nhật ảnh đại diện và thông tin cá nhân của bạn.
+                    </p>
+                  </div>
 
-            <button
-              onClick={() => handleTabChange('mcp')}
-              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
-                activeTab === 'mcp'
-                  ? `${themeConfig.primaryBg} text-white shadow-sm`
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
-              }`}
-            >
-              <Bot className="w-4 h-4" />
-              <span>MCP Server</span>
-            </button>
+                  {/* Ảnh đại diện row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center pt-2 border-t border-slate-200/70 dark:border-slate-800">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-800 dark:text-slate-200">
+                        Ảnh đại diện
+                      </label>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Khuyến nghị 200x200px. JPG, PNG. Tối đa 2MB.
+                      </p>
+                    </div>
 
-            <button
-              onClick={() => handleTabChange('email')}
-              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
-                activeTab === 'email'
-                  ? `${themeConfig.primaryBg} text-white shadow-sm`
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
-              }`}
-            >
-              <Mail className="w-4 h-4" />
-              <span>Lịch Mail</span>
-            </button>
+                    <div className="sm:col-span-2 flex items-center gap-4">
+                      <Image
+                        src="/krlogo.png"
+                        alt="LynKore Avatar"
+                        width={64}
+                        height={64}
+                        className="w-16 h-16 rounded-full object-contain bg-white border border-slate-200 dark:border-slate-700 shadow-xs"
+                      />
 
-            <button
-              onClick={() => handleTabChange('ai')}
-              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
-                activeTab === 'ai'
-                  ? `${themeConfig.primaryBg} text-white shadow-sm`
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
-              }`}
-            >
-              <Sliders className="w-4 h-4" />
-              <span>AI & TTS</span>
-            </button>
-          </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          className="px-3.5 py-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl shadow-2xs transition-colors flex items-center gap-1.5"
+                        >
+                          <Upload className="w-3.5 h-3.5 text-slate-500" /> Tải ảnh mới
+                        </button>
+                        <button
+                          type="button"
+                          className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors"
+                          title="Xóa ảnh"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
-          {/* TAB: THEME COLOR CUSTOMIZER */}
-          {activeTab === 'theme' && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-6 shadow-xs">
-                <div className="border-b border-slate-200/80 pb-3">
-                  <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
-                    <Palette className={`w-5 h-5 ${themeConfig.primaryText}`} /> Bộ Thiết Kế Màu Sắc Toàn Website (Design Patterns)
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    Chọn màu sắc bạn yêu thích. Cấu hình màu sẽ tự động lưu và áp dụng đồng bộ lên tất cả 14 trang học!
-                  </p>
+                  {/* Họ và tên row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center pt-4 border-t border-slate-200/70 dark:border-slate-800">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-800 dark:text-slate-200">
+                        Họ và tên
+                      </label>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Tên hiển thị công khai trong hệ thống.
+                      </p>
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <input
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 shadow-2xs"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email row (Fixed) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center pt-4 border-t border-slate-200/70 dark:border-slate-800">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                        Email <span className="text-[9px] bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.2 rounded font-bold uppercase">CỐ ĐỊNH</span>
+                      </label>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Liên hệ quản trị viên để thay đổi.
+                      </p>
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <input
+                        type="email"
+                        disabled
+                        value="learner@lynkore.edu.vn"
+                        className="w-full bg-slate-100/80 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-500 dark:text-slate-400 cursor-not-allowed"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Ngôn ngữ row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center pt-4 border-t border-slate-200/70 dark:border-slate-800">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-800 dark:text-slate-200">
+                        Ngôn ngữ
+                      </label>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Ngôn ngữ hiển thị ưu tiên.
+                      </p>
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <select
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value)}
+                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none shadow-2xs"
+                      >
+                        <option value="Tiếng Việt">Tiếng Việt</option>
+                        <option value="한국어">한국어 (Tiếng Hàn)</option>
+                        <option value="English">English</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
 
-                {/* THEME GRID */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {(Object.keys(THEME_CONFIGS) as ThemeId[]).map((id) => {
-                    const cfg = THEME_CONFIGS[id];
-                    const isActive = theme === id;
+                {/* Submit Action Button */}
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all hover:scale-102"
+                  >
+                    {isSavedProfile ? '✓ Đã Lưu Thay Đổi!' : 'Lưu thay đổi'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
 
+          {/* TAB 2: GIAO DIỆN & HIỆU ỨNG */}
+          {activeTab === 'theme' && (
+            <div className="space-y-6 animate-in fade-in duration-200">
+              <div className="space-y-1 border-b border-slate-200/80 dark:border-slate-800 pb-3">
+                <h1 className="text-2xl font-black text-slate-900 dark:text-white">Giao diện & Hiệu ứng 🎨</h1>
+                <p className="text-xs text-slate-500">Tùy chỉnh chế độ Sáng/Tối, bộ màu chủ đạo, hiệu ứng rơi và nhạc nền Lofi.</p>
+              </div>
+
+              {/* Mode Selection */}
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Chế độ hiển thị:</h3>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { id: 'light', label: 'Sáng ☀️', icon: Sun },
+                    { id: 'dark', label: 'Tối 🌙', icon: Moon },
+                    { id: 'system', label: 'Tự động 💻', icon: Laptop }
+                  ].map((m) => {
+                    const IconComp = m.icon;
+                    const isSelected = mode === m.id;
                     return (
-                      <div
-                        key={id}
-                        onClick={() => setTheme(id)}
-                        className={`border border-slate-200/80 shadow-xs rounded-3xl p-5 cursor-pointer transition-all duration-200 relative overflow-hidden flex flex-col justify-between space-y-4 ${
-                          isActive
-                            ? `bg-white shadow-md ring-4 ${cfg.accentRing}`
-                            : 'bg-white hover:bg-slate-50'
+                      <button
+                        key={m.id}
+                        onClick={() => setMode(m.id as any)}
+                        className={`p-3 rounded-xl border flex flex-col items-center gap-2 font-bold text-xs transition-all ${
+                          isSelected
+                            ? 'border-blue-600 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 shadow-2xs'
+                            : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
                         }`}
                       >
-                        {/* Header Swatch */}
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cfg.swatchGradient} shadow-xs shrink-0`} />
-                            <div>
-                              <h3 className="text-sm font-black text-slate-900 flex items-center gap-1.5">
-                                {cfg.name}
-                              </h3>
-                              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
-                                {id === 'lime' ? '⚡ MÀU XANH CHUỐI TƯƠI' : id === 'ocean' ? '🌊 XANH BIỂN HOÀNG GIA' : id === 'crimson' ? '🌺 ĐỎ TAEGEUK HÀN QUỐC' : '🌙 OBSIDIAN DARK MODE'}
-                              </span>
-                            </div>
-                          </div>
-
-                          {isActive && (
-                            <span className={`px-2.5 py-1 text-xs font-bold text-white rounded-full ${cfg.primaryBg} shadow-2xs flex items-center gap-1 shrink-0`}>
-                              <CheckCircle2 className="w-3.5 h-3.5" /> Đang Dùng
-                            </span>
-                          )}
-                        </div>
-
-                        <p className="text-xs text-slate-600 leading-relaxed">
-                          {cfg.description}
-                        </p>
-
-                        {/* Swatches preview pills */}
-                        <div className="flex items-center gap-2 pt-1 border-t border-slate-200/60">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase">Mẫu xem trước:</span>
-                          <div className="flex items-center gap-1.5">
-                            <span className={`w-4 h-4 rounded-full ${cfg.primaryBg}`} />
-                            <span className="w-4 h-4 rounded-full bg-emerald-500" />
-                            <span className="w-4 h-4 rounded-full bg-slate-900" />
-                          </div>
-                        </div>
-                      </div>
+                        <IconComp className="w-5 h-5" />
+                        <span>{m.label}</span>
+                      </button>
                     );
                   })}
                 </div>
               </div>
+
+              {/* Ambient Effects */}
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Hiệu ứng rơi môi trường:</h3>
+                <div className="grid grid-cols-4 gap-3">
+                  {[
+                    { id: 'none', label: 'Tắt 🚫' },
+                    { id: 'sakura', label: 'Hoa Anh Đào 🌸' },
+                    { id: 'snow', label: 'Tuyết Rơi ❄️' },
+                    { id: 'stars', label: 'Ngôi Sao ✨' }
+                  ].map((ef) => (
+                    <button
+                      key={ef.id}
+                      onClick={() => setAmbientEffect(ef.id as any)}
+                      className={`p-3 rounded-xl border text-xs font-bold transition-all text-center ${
+                        ambientEffect === ef.id
+                          ? 'border-blue-600 bg-blue-600 text-white shadow-2xs'
+                          : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      {ef.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ambient Audio */}
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Nhạc nền Lofi & Âm thanh thư giãn:</h3>
+                <div className="grid grid-cols-4 gap-3">
+                  {[
+                    { id: 'none', label: 'Tắt 🔇' },
+                    { id: 'lofi', label: 'Lofi Chill 🎵' },
+                    { id: 'rain', label: 'Tiếng Mưa 🌧️' },
+                    { id: 'cafe', label: 'Cà Phê ☕' }
+                  ].map((au) => (
+                    <button
+                      key={au.id}
+                      onClick={() => setAmbientAudio(au.id as any)}
+                      className={`p-3 rounded-xl border text-xs font-bold transition-all text-center ${
+                        ambientAudio === au.id
+                          ? 'border-blue-600 bg-blue-600 text-white shadow-2xs'
+                          : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      {au.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
-          {/* TAB 1: MCP SERVER & SANDBOX */}
+          {/* TAB 3: MCP SERVER */}
           {activeTab === 'mcp' && (
             <div className="space-y-6 animate-in fade-in duration-200">
-              {/* Endpoint Box */}
-              <section className="bg-white border border-slate-200 rounded-3xl p-5 space-y-3 shadow-sm">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                  <div>
-                    <span className="text-[11px] sm:text-[12px] font-bold text-rose-600 uppercase tracking-wider block">
-                      MCP SERVER ENDPOINT URL (JSON-RPC 2.0)
-                    </span>
-                    <p className="text-[11px] sm:text-[12px] text-slate-500 mt-0.5">
-                      Dùng URL này để kết nối Gemini Spark hoặc Cursor với ứng dụng LynKore
-                    </p>
-                  </div>
+              <div className="space-y-1 border-b border-slate-200/80 dark:border-slate-800 pb-3">
+                <h1 className="text-2xl font-black text-slate-900 dark:text-white">MCP Server Endpoint 🤖</h1>
+                <p className="text-xs text-slate-500">Kết nối Gemini Spark hoặc Cursor với ứng dụng LynKore.</p>
+              </div>
+
+              <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs font-bold text-blue-600">{mcpEndpointUrl}</span>
                   <button
                     onClick={copyEndpoint}
-                    className={`px-4 py-1.5 text-[12px] sm:text-[13px] font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full shadow-sm w-full sm:w-auto flex items-center justify-center gap-1.5 transition-colors`}
+                    className="px-3.5 py-1.5 bg-blue-600 text-white font-bold text-xs rounded-xl shadow-2xs hover:bg-blue-700"
                   >
-                    {copied ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
-                    <span>{copied ? 'Đã Sao Chép!' : 'Sao Chép URL'}</span>
-                  </button>
-                </div>
-
-                <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 font-mono text-xs sm:text-sm text-slate-800 flex items-center justify-between overflow-x-auto">
-                  <span className="truncate mr-2 font-bold">{mcpEndpointUrl}</span>
-                  <span className="shrink-0 px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-full border border-emerald-300">
-                    HTTP POST
-                  </span>
-                </div>
-              </section>
-
-              {/* Guide steps */}
-              <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white border border-slate-200 rounded-3xl p-4 space-y-2 shadow-sm">
-                  <div className={`w-8 h-8 rounded-full ${themeConfig.primaryBg} text-white font-bold flex items-center justify-center text-xs`}>
-                    1
-                  </div>
-                  <h3 className="font-bold text-slate-900 text-sm">Cấu hình Extension</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Vào mục Cài đặt Kỹ năng / Extensions trên Gemini Spark hoặc Cursor, chọn thêm custom MCP Server với URL bên trên.
-                  </p>
-                </div>
-
-                <div className="bg-white border border-slate-200 rounded-3xl p-4 space-y-2 shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-rose-600 text-white font-bold flex items-center justify-center text-xs">
-                    2
-                  </div>
-                  <h3 className="font-bold text-slate-900 text-sm">Gửi Link YouTube</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Dán link YouTube tiếng Hàn vào khung chat Gemini: <em>&quot;Trích xuất từ vựng clip này và đẩy lên LynKore giúp tôi&quot;</em>.
-                  </p>
-                </div>
-
-                <div className="bg-white border border-slate-200 rounded-3xl p-4 space-y-2 shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs">
-                    3
-                  </div>
-                  <h3 className="font-bold text-slate-900 text-sm">Tự Động Gửi Email</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Gemini sẽ gọi tool <code>send_daily_study_email</code> gửi mail thông báo. Bạn bấm link trong email để học bài ngay!
-                  </p>
-                </div>
-              </section>
-
-              {/* Live Sandbox */}
-              <section className="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-sm">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <Terminal className={`w-4 h-4 ${themeConfig.primaryText}`} />
-                      <h2 className="text-base font-black text-slate-900">Trình Chạy Thử Tool MCP (Live Sandbox)</h2>
-                    </div>
-                    <p className="text-xs text-slate-500 mt-0.5">Giả lập việc AI Agent gọi trực tiếp vào các Tool của MCP Server</p>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-2xl border border-slate-200">
-                    {['create_vocab_deck', 'add_flashcards', 'get_decks', 'send_daily_study_email'].map((tool) => (
-                      <button
-                        key={tool}
-                        onClick={() => {
-                          setActiveTool(tool);
-                          if (tool === 'add_flashcards') {
-                            setJsonInput(
-                              JSON.stringify(
-                                {
-                                  deck_id: 'deck-places-work',
-                                  vocabulary: [
-                                    {
-                                      korean: '사무실',
-                                      pronunciation: 'sa-mu-sil',
-                                      vietnamese: 'Văn phòng',
-                                      hanja: '事務室 (Sự vụ thất)',
-                                      example_kr: '사무실에서 일하고 있습니다.',
-                                      example_vi: 'Tôi đang làm việc ở văn phòng.'
-                                    }
-                                  ]
-                                },
-                                null,
-                                2
-                              )
-                            );
-                          } else if (tool === 'create_vocab_deck') {
-                            setJsonInput(
-                              JSON.stringify(
-                                {
-                                  title: 'Từ vựng Tiếng Hàn Công Sở (Gemini Spark)',
-                                  category: 'Công sở & Địa điểm',
-                                  description: 'Được tự động trích xuất bởi Gemini Spark',
-                                  vocabulary: [
-                                    {
-                                      korean: '회의',
-                                      pronunciation: 'hoe-ui',
-                                      vietnamese: 'Cuộc họp / Khóa họp',
-                                      hanja: '會議 (Hội nghị)',
-                                      example_kr: '오후 2시에 회의가 있습니다.',
-                                      example_vi: 'Có cuộc họp lúc 2 giờ chiều.'
-                                    }
-                                  ]
-                                },
-                                null,
-                                2
-                              )
-                            );
-                          }
-                        }}
-                        className={`px-3 py-1 rounded-xl text-xs font-bold transition-colors ${
-                          activeTool === tool
-                            ? `${themeConfig.primaryBg} text-white shadow-xs`
-                            : 'text-slate-600 hover:text-slate-900'
-                        }`}
-                      >
-                        {tool}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="block text-xs font-bold text-slate-700">
-                      Payload Tham Số ({activeTool}):
-                    </label>
-
-                    {(activeTool === 'create_vocab_deck' || activeTool === 'add_flashcards') && (
-                      <textarea
-                        rows={9}
-                        value={jsonInput}
-                        onChange={(e) => setJsonInput(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs font-mono text-slate-900 focus:outline-none focus:border-blue-500"
-                      />
-                    )}
-
-                    {activeTool === 'send_daily_study_email' && (
-                      <div className="space-y-3 bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs">
-                        <div>
-                          <label className="block font-bold text-slate-700 mb-1">Recipient Email:</label>
-                          <input
-                            type="email"
-                            value={mcpEmailInput.recipient_email}
-                            onChange={(e) => setMcpEmailInput({ ...mcpEmailInput, recipient_email: e.target.value })}
-                            className="w-full p-2 bg-white border border-slate-200 rounded-xl text-slate-900"
-                          />
-                        </div>
-                        <div>
-                          <label className="block font-bold text-slate-700 mb-1">Ghi chú Gemini:</label>
-                          <textarea
-                            rows={2}
-                            value={mcpEmailInput.note_for_today}
-                            onChange={(e) => setMcpEmailInput({ ...mcpEmailInput, note_for_today: e.target.value })}
-                            className="w-full p-2 bg-white border border-slate-200 rounded-xl text-slate-900"
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {activeTool === 'get_decks' && (
-                      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs text-slate-600">
-                        Lấy toàn bộ danh sách bộ từ vựng hiện có trên website.
-                      </div>
-                    )}
-
-                    <button
-                      onClick={handleTestTool}
-                      disabled={isTestingTool}
-                      className={`w-full py-2.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-50`}
-                    >
-                      <Play className="w-3.5 h-3.5 fill-current" />
-                      <span>{isTestingTool ? 'Đang gọi MCP Server...' : 'Chạy Thử Tool MCP'}</span>
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="block text-xs font-bold text-slate-700">
-                      Phản Hồi JSON-RPC 2.0 Từ Server:
-                    </label>
-
-                    <div className="h-[220px] sm:h-[250px] bg-slate-900 border border-slate-800 rounded-2xl p-3.5 font-mono text-xs text-emerald-400 overflow-auto">
-                      {responseLog ? (
-                        <pre className="whitespace-pre-wrap">{responseLog}</pre>
-                      ) : (
-                        <span className="text-slate-500 italic">Bấm nút &quot;Chạy Thử Tool MCP&quot; để xem kết quả...</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </div>
-          )}
-
-          {/* TAB 2: EMAIL REMINDERS */}
-          {activeTab === 'email' && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Form Settings */}
-                <form onSubmit={handleSaveEmailConfig} className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
-                  <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
-                    <Mail className={`w-4 h-4 ${themeConfig.primaryText}`} /> Cấu Hình Lịch Nhắc Học Qua Email
-                  </h2>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Email Nhận Thông Báo:</label>
-                    <input
-                      type="email"
-                      required
-                      value={userEmail}
-                      onChange={(e) => setUserEmail(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-amber-600" /> Thời Gian Gửi Mỗi Ngày:
-                    </label>
-                    <input
-                      type="time"
-                      value={notifyTime}
-                      onChange={(e) => setNotifyTime(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-600 flex items-start gap-2">
-                    <Sparkles className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
-                    <span>
-                      Hệ thống sẽ tự động tổng hợp bài học mới nhất và gửi vào mail của bạn lúc <strong>{notifyTime} sáng</strong> hằng ngày.
-                    </span>
-                  </div>
-
-                  <div className="flex gap-2 pt-1">
-                    <button
-                      type="submit"
-                      className={`flex-1 py-2.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full shadow-xs`}
-                    >
-                      {isSavedEmail ? '✓ Đã Lưu Cấu Hình!' : 'Lưu Thay Đổi'}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleSendTestEmailNow}
-                      disabled={isSendingEmail}
-                      className="px-4 py-2.5 text-xs font-bold text-slate-800 bg-white border border-slate-200 hover:bg-slate-50 rounded-full flex items-center gap-1.5 shadow-xs"
-                    >
-                      <Send className={`w-3.5 h-3.5 ${themeConfig.primaryText}`} />
-                      <span>Gửi Thử</span>
-                    </button>
-                  </div>
-                </form>
-
-                {/* Info Card */}
-                <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 flex flex-col justify-between shadow-sm">
-                  <div className="space-y-3">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-rose-50 text-rose-700 border border-rose-200 rounded-full text-xs font-bold">
-                      <Bell className="w-3.5 h-3.5 text-rose-600" /> Tự Động Hóa Nhắc Học
-                    </div>
-                    <h3 className="text-base font-black text-slate-900">Cách Hoạt Động Của Email Nhắc Học</h3>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                      Mỗi khi Gemini Spark trích xuất từ vựng từ video YouTube hoặc bạn tạo bộ bài học mới, hệ thống sẽ tự động kích hoạt thông báo email.
-                    </p>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                      Email chứa đường link trực tiếp giúp bạn mở đúng bộ thẻ Flashcard để lật bài học ngay.
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => setIsEmailPreviewOpen(true)}
-                    className="w-full py-2.5 text-xs font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center gap-1.5 hover:bg-slate-100"
-                  >
-                    <span>Xem Trước Mẫu Email Gửi Học Viên</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Logs History Table */}
-              <div className="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-sm">
-                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-                  <Mail className={`w-4 h-4 ${themeConfig.primaryText}`} /> Lịch Sử Email Đã Gửi ({logs.length})
-                </h3>
-
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs sm:text-sm text-slate-600">
-                    <thead className="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
-                      <tr>
-                        <th className="p-3">Thời gian</th>
-                        <th className="p-3">Người nhận</th>
-                        <th className="p-3">Bộ từ vựng</th>
-                        <th className="p-3">Số thẻ</th>
-                        <th className="p-3">Trạng thái</th>
-                        <th className="p-3 text-right">Hành động</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {logs.map((log) => (
-                        <tr key={log.id} className="hover:bg-slate-50">
-                          <td className="p-3 text-xs whitespace-nowrap">{new Date(log.sentAt).toLocaleString()}</td>
-                          <td className="p-3 font-mono text-slate-900">{log.recipient}</td>
-                          <td className="p-3 font-bold text-slate-900 whitespace-nowrap">{log.deckTitle}</td>
-                          <td className="p-3 whitespace-nowrap">{log.cardCount} từ</td>
-                          <td className="p-3 whitespace-nowrap">
-                            <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-full font-bold text-xs">
-                              ✓ Đã Gửi
-                            </span>
-                          </td>
-                          <td className="p-3 text-right whitespace-nowrap">
-                            <button
-                              onClick={() => router.push(log.previewUrl || '/')}
-                              className={`px-3 py-1 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full`}
-                            >
-                              Mở Thẻ Học
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 3: AI & TTS PREFERENCES */}
-          {activeTab === 'ai' && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-sm">
-                <div className="border-b border-slate-200 pb-3">
-                  <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
-                    <Bot className={`w-5 h-5 ${themeConfig.primaryText}`} /> Cấu Hình Gia Sư AI & Giọng Đọc Phát Âm
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Tùy chỉnh tốc độ đọc tiếng Hàn và mô hình trí tuệ nhân tạo</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* AI Model Card */}
-                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-rose-600 uppercase tracking-wider">ĐỘNG CƠ AI HIỆN TẠI</span>
-                      <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 font-mono font-bold text-xs rounded-full">
-                        LynKore Engine
-                      </span>
-                    </div>
-
-                    <h3 className="text-lg font-black text-slate-900">LynKore Korean AI v2.0</h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      Động cơ AI siêu tốc xử lý phân tích ngữ pháp, dịch từ Hán Hàn và tạo câu ví dụ tiếng Hàn sắc nét.
-                    </p>
-                  </div>
-
-                  {/* Speech Rate Card */}
-                  <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className={`text-xs font-bold ${themeConfig.primaryText} uppercase tracking-wider`}>TỐC ĐỘ PHÁT ÂM TIẾNG HÀN (TTS)</span>
-                      <Volume2 className="w-4 h-4 text-slate-600" />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">Tốc Độ Đọc Phát Âm:</label>
-                      <select
-                        value={speechRate}
-                        onChange={(e) => setSpeechRate(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none"
-                      >
-                        <option value="0.7">0.7x (Đọc chậm dễ nghe cho người mới học)</option>
-                        <option value="0.85">0.85x (Chuẩn mực khuyên dùng)</option>
-                        <option value="1.0">1.0x (Tốc độ nói của người bản xứ Hàn Quốc)</option>
-                      </select>
-                    </div>
-
-                    <p className="text-xs text-slate-500">Áp dụng cho nút loa phát âm ở tất cả các thẻ Flashcard.</p>
-                  </div>
-                </div>
-
-                <div className="flex justify-end pt-2">
-                  <button
-                    onClick={() => {
-                      setIsSavedAI(true);
-                      setTimeout(() => setIsSavedAI(false), 2000);
-                    }}
-                    className={`px-6 py-2.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full shadow-xs`}
-                  >
-                    {isSavedAI ? '✓ Đã Lưu Cấu Hình AI!' : 'Lưu Cấu Hình AI'}
+                    {copied ? 'Đã sao chép!' : 'Sao chép URL'}
                   </button>
                 </div>
               </div>
             </div>
           )}
-        </main>
-      </div>
+
+          {/* OTHER TABS FALLBACK */}
+          {['security', 'linked', 'notifications', 'sessions', 'email', 'ai', 'members', 'usage', 'api', 'danger'].includes(activeTab) && (
+            <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950 text-blue-600 mx-auto flex items-center justify-center">
+                <Settings className="w-6 h-6 animate-spin" />
+              </div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white capitalize">
+                Cài đặt {activeTab}
+              </h2>
+              <p className="text-xs text-slate-500 max-w-md mx-auto">
+                Mục thiết lập này được bảo vệ với xác thực mã hóa an toàn.
+              </p>
+            </div>
+          )}
+        </div>
+      </main>
 
       <CreateDeckModal
         isOpen={isCreateModalOpen}
