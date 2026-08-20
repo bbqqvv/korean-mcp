@@ -40,10 +40,10 @@ export default function ProgressPage() {
   // Generate 6 months of heatmap days
   const heatmapDays = useMemo(() => generateHeatmapData(), []);
 
-  // Group heatmapDays into 26 weeks (each week has 7 days) for pixel-perfect month & weekday alignment
+  // Group heatmapDays into 52 weeks (each week has 7 days) for 1 full year GitHub style card coverage
   const heatmapWeeks = useMemo(() => {
     const weeks: Array<{ monthLabel?: string; days: HeatmapDay[] }> = [];
-    for (let w = 0; w < 26; w++) {
+    for (let w = 0; w < 52; w++) {
       const days = heatmapDays.slice(w * 7, (w + 1) * 7);
       let monthLabel: string | undefined = undefined;
       if (days[0]) {
@@ -198,24 +198,24 @@ export default function ProgressPage() {
           {/* TAB 1: HOẠT ĐỘNG CỦA TÔI */}
           {activeView === 'activity' && (
             <div className="space-y-6 animate-fadeIn">
-              {/* Card 1: 6-Month Activity Heatmap Grid (Micro Compact GitHub Style) */}
+              {/* Card 1: 12-Month Activity Heatmap Grid (52-Week Full Stretch GitHub Style) */}
               <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 sm:p-5 space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
                   <h2 className="text-xs sm:text-sm font-bold text-slate-900">
-                    Tổng quan hoạt động (6 tháng gần đây)
+                    Tổng quan hoạt động (12 tháng gần đây)
                   </h2>
                   <div className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full transition-all">
                     {hoveredDay ? (
                       <span className="text-blue-600 font-bold">{hoveredDay.date}: Mức độ học {hoveredDay.level}/4</span>
                     ) : (
-                      <span>180 Ngày hoạt động</span>
+                      <span>365 Ngày hoạt động</span>
                     )}
                   </div>
                 </div>
 
-                {/* Micro Heatmap Grid Container */}
+                {/* 52-Week Full-Width Heatmap Grid Container */}
                 <div className="overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                  <div className="min-w-[480px] flex items-start gap-2 max-w-max">
+                  <div className="min-w-[760px] flex items-start gap-2.5 w-full">
                     {/* Weekday Labels Column (Exact Row Alignment) */}
                     <div className="pt-4 space-y-1 text-[9px] font-bold text-slate-400 select-none shrink-0 text-right w-4">
                       <div className="h-3 leading-3">T2</div>
@@ -225,10 +225,10 @@ export default function ProgressPage() {
                       <div className="h-3 leading-3">T6</div>
                     </div>
 
-                    {/* 26 Week Columns */}
-                    <div className="flex items-start gap-1">
+                    {/* 52 Week Columns (Spread Evenly across full card width) */}
+                    <div className="flex items-start justify-between gap-0.5 flex-1 min-w-0">
                       {heatmapWeeks.map((week, weekIdx) => (
-                        <div key={weekIdx} className="flex flex-col gap-1 items-center">
+                        <div key={weekIdx} className="flex flex-col gap-1 items-center flex-1">
                           {/* Month Header Label */}
                           <div className="h-3.5 text-[9px] font-bold text-slate-400 whitespace-nowrap select-none">
                             {week.monthLabel || ''}
@@ -250,7 +250,7 @@ export default function ProgressPage() {
                                 onMouseEnter={() => setHoveredDay(day)}
                                 onMouseLeave={() => setHoveredDay(null)}
                                 title={`${day.date}: Mức độ học ${day.level}/4`}
-                                className={`w-3 h-3 rounded-[2px] border transition-all hover:scale-125 cursor-pointer ${levelColors[day.level]}`}
+                                className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] border transition-all hover:scale-125 cursor-pointer ${levelColors[day.level]}`}
                               />
                             );
                           })}
@@ -262,7 +262,7 @@ export default function ProgressPage() {
 
                 {/* Heatmap Footer Legend */}
                 <div className="flex flex-col sm:flex-row items-center justify-between text-[10px] text-slate-500 font-medium pt-2 border-t border-slate-100 gap-2">
-                  <span>180 ngày hoạt động gần đây</span>
+                  <span>365 ngày hoạt động gần đây</span>
                   <div className="flex items-center gap-1.5">
                     <span className="text-[9px] font-semibold text-slate-400">Ít học</span>
                     <span className="w-2.5 h-2.5 rounded-[2px] bg-slate-100 border border-slate-200/80" />

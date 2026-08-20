@@ -36,12 +36,12 @@ export const USER_STATS: UserProgressStats = {
   weeklyRank: 12
 };
 
-// Generate 6 months of mock activity heatmap data (180 days)
+// Generate 1 year of activity heatmap data (52 weeks = 364 days)
 export const generateHeatmapData = (): HeatmapDay[] => {
   const days: HeatmapDay[] = [];
   const fixedBaseDate = new Date('2026-08-20T00:00:00.000Z');
 
-  for (let i = 179; i >= 0; i--) {
+  for (let i = 363; i >= 0; i--) {
     const d = new Date(fixedBaseDate);
     d.setDate(fixedBaseDate.getDate() - i);
     const dateStr = d.toISOString().split('T')[0];
