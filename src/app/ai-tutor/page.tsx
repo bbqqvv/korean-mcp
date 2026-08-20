@@ -190,6 +190,11 @@ export default function AITutorPage() {
     });
   };
 
+  const getKoreanText = (str: string) => {
+    const matches = str.match(/[\u3131-\u318E\uAC00-\uD7A3]+/g);
+    return matches ? matches.join(' ') : '';
+  };
+
   const formatMarkdown = (content: string) => {
     // Sanitize and strip any raw reasoning <think>...</think> tags
     const sanitizedContent = (content || '')
@@ -204,6 +209,7 @@ export default function AITutorPage() {
     while (i < lines.length) {
       const line = lines[i];
       const trimmed = line.trim();
+      const koreanText = getKoreanText(trimmed);
 
       // Check for Markdown Table (lines starting with | and containing |)
       if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
@@ -236,11 +242,26 @@ export default function AITutorPage() {
                 <tbody className="divide-y divide-slate-100 dark:divide-zinc-800/60 bg-white dark:bg-[#121215]">
                   {dataRows.map((row, rIdx) => (
                     <tr key={rIdx} className="hover:bg-slate-50/80 dark:hover:bg-zinc-800/80 transition-colors">
-                      {row.map((cell, cIdx) => (
-                        <td key={cIdx} className="p-2.5 text-slate-700 dark:text-zinc-300 border-r last:border-r-0 border-slate-200 dark:border-zinc-800">
-                          {renderFormattedText(cell)}
-                        </td>
-                      ))}
+                      {row.map((cell, cIdx) => {
+                        const cellKorean = getKoreanText(cell);
+                        return (
+                          <td key={cIdx} className="p-2.5 text-slate-700 dark:text-zinc-300 border-r last:border-r-0 border-slate-200 dark:border-zinc-800">
+                            <div className="flex items-center justify-between gap-1">
+                              <span>{renderFormattedText(cell)}</span>
+                              {cellKorean && (
+                                <button
+                                  type="button"
+                                  onClick={() => speakText(cellKorean)}
+                                  className="p-1 rounded-md text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors cursor-pointer shrink-0"
+                                  title="Nghe phát âm ô này"
+                                >
+                                  <Volume2 className="w-3 h-3" />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })}
                     </tr>
                   ))}
                 </tbody>
@@ -254,23 +275,50 @@ export default function AITutorPage() {
       // Check for List Items (- or •)
       if (trimmed.startsWith('- ') || trimmed.startsWith('• ')) {
         const itemText = trimmed.slice(2);
+        const itemKorean = getKoreanText(itemText);
         elements.push(
-          <div key={`list-${i}`} className="flex items-start gap-2 my-1 pl-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0 mt-2" />
-            <div className="text-slate-800 dark:text-zinc-200 text-xs sm:text-sm leading-relaxed">
-              {renderFormattedText(itemText)}
+          <div key={`list-${i}`} className="flex items-start justify-between gap-2 my-1 pl-1 group">
+            <div className="flex items-start gap-2 min-w-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0 mt-2" />
+              <div className="text-slate-800 dark:text-zinc-200 text-xs sm:text-sm leading-relaxed">
+                {renderFormattedText(itemText)}
+              </div>
             </div>
+            {itemKorean && (
+              <button
+                type="button"
+                onClick={() => speakText(itemKorean)}
+                className="p-1 rounded-lg text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 hover:bg-blue-100 dark:hover:bg-blue-900 border border-blue-200/80 dark:border-blue-800/80 transition-all cursor-pointer flex items-center gap-1 text-[11px] font-bold shrink-0 shadow-3xs"
+                title="Bấm nghe phát âm câu này"
+              >
+                <Volume2 className="w-3 h-3" />
+                <span>Nghe</span>
+              </button>
+            )}
           </div>
         );
         i++;
         continue;
       }
 
-      // Check for Numbered List (1. 2.)
-      if (/^\d+\.\s/.test(trimmed)) {
+      // Check for Numbered List (1. 2. 1️⃣ 2️⃣ 3️⃣)
+      if (/^\d+\.\s/.test(trimmed) || /^[\u0030-\u0039]\uFE0F?\u20E3/.test(trimmed)) {
         elements.push(
-          <div key={`num-${i}`} className="font-extrabold text-slate-900 dark:text-zinc-100 text-xs sm:text-sm pt-2 pb-0.5">
-            {renderFormattedText(trimmed)}
+          <div key={`num-${i}`} className="font-extrabold text-slate-900 dark:text-zinc-100 text-xs sm:text-sm pt-2 pb-0.5 flex items-center justify-between gap-2 group">
+            <div className="min-w-0">
+              {renderFormattedText(trimmed)}
+            </div>
+            {koreanText && (
+              <button
+                type="button"
+                onClick={() => speakText(koreanText)}
+                className="p-1 rounded-lg text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 hover:bg-blue-100 dark:hover:bg-blue-900 border border-blue-200/80 dark:border-blue-800/80 transition-all cursor-pointer flex items-center gap-1 text-[11px] font-bold shrink-0 shadow-3xs"
+                title="Bấm nghe phát âm câu ví dụ này"
+              >
+                <Volume2 className="w-3.5 h-3.5" />
+                <span>Nghe</span>
+              </button>
+            )}
           </div>
         );
         i++;
@@ -286,9 +334,22 @@ export default function AITutorPage() {
 
       // Standard paragraph
       elements.push(
-        <p key={`p-${i}`} className="my-1 text-slate-800 dark:text-zinc-200 text-xs sm:text-sm leading-relaxed">
-          {renderFormattedText(trimmed)}
-        </p>
+        <div key={`p-${i}`} className="my-1 text-slate-800 dark:text-zinc-200 text-xs sm:text-sm leading-relaxed flex items-center justify-between gap-2 group">
+          <p className="min-w-0">
+            {renderFormattedText(trimmed)}
+          </p>
+          {koreanText && (
+            <button
+              type="button"
+              onClick={() => speakText(koreanText)}
+              className="p-1 rounded-lg text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 hover:bg-blue-100 dark:hover:bg-blue-900 border border-blue-200/80 dark:border-blue-800/80 transition-all cursor-pointer flex items-center gap-1 text-[11px] font-bold shrink-0 shadow-3xs"
+              title="Bấm nghe phát âm đoạn này"
+            >
+              <Volume2 className="w-3.5 h-3.5" />
+              <span>Nghe</span>
+            </button>
+          )}
+        </div>
       );
       i++;
     }
