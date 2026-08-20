@@ -217,9 +217,9 @@ export default function ProgressAnalytics({ showHeaderAndCards = false }: Progre
               </span>
             </div>
 
-            {/* Heatmap Matrix (52 Weeks x 7 Days Grid) */}
-            <div className="overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="min-w-[960px] space-y-1.5 select-none pt-1">
+            {/* Heatmap Matrix (52 Weeks x 7 Days Grid - PERFECTLY CENTERED!) */}
+            <div className="overflow-x-auto pb-2 flex justify-center [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="w-fit mx-auto space-y-1.5 select-none pt-1">
                 {/* Positioned Month Labels */}
                 <div className="relative h-4 text-[11px] font-bold text-slate-400">
                   {monthHeaderPositions.map((m, idx) => (
