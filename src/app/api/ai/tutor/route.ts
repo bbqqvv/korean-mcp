@@ -45,25 +45,38 @@ export async function POST(req: Request) {
 3. **Phân biệt với từ đồng nghĩa** (Ví dụ phân biệt với từ tương tự nếu có).
 4. **3 Câu ví dụ thực tế nhất** kèm dịch nghĩa tiếng Việt.`;
     } else if (action === 'dict_lookup') {
-      systemPrompt = 'Bạn là hệ thống từ điển Hàn-Việt chuẩn xác chuyên sâu. CHỈ xuất kết quả JSON Object chuẩn không kèm văn bản lập luận.';
-      userPrompt = `Hãy tra cứu nghĩa của từ hoặc cụm từ: "${word}".
-Yêu cầu phân biệt chuẩn xác sắc thái từ vựng:
-- Nếu từ mang sắc thái chính thức, hành chính, văn bản hoặc kỹ thuật (ví dụ: 항공기, 차량): Ghi nghĩa là "Máy bay / Tàu bay (chính thức/chuyên ngành)" và xếp cấp độ "Trung cấp" hoặc "Cao cấp".
-- Nếu từ thông dụng trong giao tiếp hằng ngày (ví dụ: 비행기, 차): Ghi nghĩa ngắn gọn "Máy bay", "Xe / Ô tô" và xếp cấp độ "Sơ cấp 1" hoặc "Sơ cấp 2".
-- Nếu từ kính ngữ (ví dụ: 댁, 성함): Chú thích "(kính ngữ)".
+      systemPrompt = `Bạn là hệ thống từ điển Hàn-Việt chuẩn xác chuyên sâu. CHỈ xuất kết quả JSON Object chuẩn không kèm văn bản lập luận.
+Tuân thủ nghiêm ngặt 10 QUY TẮC BẤT BIẾN (INVARIANT RULES):
+1. Không tự ý bịa đặt từ điển hay bịa từ Hán-Hàn.
+2. Phân biệt rõ ràng thực tế từ điển và suy luận ngữ cảnh.
+3. Nếu từ có nhiều nghĩa (ví dụ: 배 -> 1. Bụng, 2. Thuyền, 3. Quả lê; hoặc máy bay -> 비행기, 항공기), xuất danh sách ứng viên (candidates) kèm độ tin cậy confidence.
+4. Giữ nguyên chính tả tiếng Hàn và khoảng cách (spacing).
+5. Chuẩn hóa dạng chia động/tính từ về dạng nguyên thể (-다).
+6. Phân tích chính xác gốc Hán-Hàn khi có cơ sở tin cậy.
+7. KHÔNG tự ý dán nhãn "(chuyên ngành)" cho các danh từ phổ thông (như 우주선, 잠수함). Chỉ dán nhãn "(chính thức/chuyên ngành)" khi thực sự mang tính hành chính/luật pháp/kỹ thuật chuyên sâu (như 항공기, 차량).
+8. Nếu từ có gốc Hán-Hàn, xây dựng Mạng lưới Họ Từ Hán-Hàn (hanjaFamily) với 2-4 từ liên quan phổ biến (ví dụ: 항공 -> 항공사, 항공권, 항공편).
+9. Ưu tiên thói quen sử dụng tự nhiên của người bản xứ Hàn Quốc hơn dịch thô từng từ.
+10. Luôn trả về cấu trúc JSON duy nhất.`;
 
-Trả về dữ liệu dưới dạng JSON Object duy nhất với key "results" chứa danh sách từ 1 đến 3 kết quả từ điển:
+      userPrompt = `Hãy tra cứu từ hoặc cụm từ: "${word}".
+Trả về dữ liệu dưới dạng JSON Object duy nhất với key "results":
 {
   "results": [
     {
       "korean": "Từ tiếng Hàn",
       "hanja": "Gốc Hán nếu có hoặc rỗng",
-      "vietnamese": "Nghĩa tiếng Việt chuẩn (chú thích sắc thái nếu có)",
+      "hanjaExplanation": "Phân tích bóc tách từng chữ Hán (ví dụ: 宇宙 (Vũ trụ) + 船 (Thuyền/Tàu))",
+      "hanjaFamily": [
+        {"korean": "Từ họ hàng 1", "vietnamese": "Nghĩa 1"},
+        {"korean": "Từ họ hàng 2", "vietnamese": "Nghĩa 2"}
+      ],
+      "vietnamese": "Nghĩa tiếng Việt tự nhiên chuẩn xác",
       "type": "Danh từ / Động từ / Tính từ / Cụm từ",
       "level": "Sơ cấp 1 / Sơ cấp 2 / Trung cấp / Cao cấp",
       "pronunciation": "[phiên âm đọc]",
       "exampleKr": "Câu ví dụ tiếng Hàn thực tế",
-      "exampleVi": "Dịch câu ví dụ tiếng Việt"
+      "exampleVi": "Dịch câu ví dụ tiếng Việt",
+      "confidence": 0.95
     }
   ]
 }`;
