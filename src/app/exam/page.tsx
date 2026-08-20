@@ -120,43 +120,8 @@ export default function ExamPage() {
         <Header />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
-          {/* Header Banner */}
           {!selectedSuite && (
             <div className="space-y-6">
-              <div className="relative rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950 p-6 sm:p-8 text-white shadow-xl overflow-hidden border border-blue-500/20">
-                <div className="absolute -right-10 -bottom-10 opacity-15 pointer-events-none">
-                  <GraduationCap className="w-80 h-80 text-white" />
-                </div>
-
-                <div className="relative z-10 space-y-3 max-w-2xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-bold tracking-wide uppercase">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                    <span>Luyện Đề Thi Chuẩn NIIED Quốc Gia Hàn Quốc</span>
-                  </div>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
-                    Luyện Đề TOPIK I & TOPIK II
-                  </h1>
-                  <p className="text-sm sm:text-base text-blue-100 dark:text-slate-300 leading-relaxed font-medium">
-                    Ngân hàng đề thi mô phỏng thực tế kèm đồng hồ bấm giờ, chấm điểm tự động & giải thích ngữ pháp, từ vựng chi tiết từng câu.
-                  </p>
-
-                  <div className="flex flex-wrap gap-4 pt-2 text-xs font-semibold">
-                    <div className="flex items-center gap-1.5 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-white/10">
-                      <CheckSquare className="w-4 h-4 text-emerald-400" />
-                      <span>Đề Thi Mới Nhất 2026</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-white/10">
-                      <Clock className="w-4 h-4 text-amber-400" />
-                      <span>Mô phỏng áp lực thời gian</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 bg-black/20 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-white/10">
-                      <Award className="w-4 h-4 text-purple-300" />
-                      <span>Đánh giá cấp độ TOPIK</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               {/* Filtering & Mode Controls */}
               <div className="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-[#121215] p-4 rounded-2xl border border-slate-200/80 dark:border-[#222226] shadow-xs">
                 <div className="flex flex-wrap gap-2">
