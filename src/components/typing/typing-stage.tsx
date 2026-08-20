@@ -95,7 +95,7 @@ export default function TypingStage({
             const typedCount = activeTypedJamoSlice.length;
             const totalJamos = targetJamos.length;
             
-            // Structure-Aware SVG-Equivalent Clip-Mask Engine
+            // Structure-Aware SVG-Equivalent Clip-Mask Engine (L-Shaped Polygons)
             let clipMaskStyle: React.CSSProperties = {};
             if (typedCount === 0) {
               clipMaskStyle = { opacity: 0 };
@@ -108,26 +108,31 @@ export default function TypingStage({
 
               if (typedCount === 1) {
                 if (isCompound) {
-                  clipMaskStyle = { clipPath: 'polygon(0 0, 55% 0, 55% 50%, 0 50%)' };
+                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 65% 0, 65% 35%, 0 35%)' : 'polygon(0 0, 65% 0, 65% 50%, 0 50%)' };
                 } else if (isHorizontal) {
-                  clipMaskStyle = { clipPath: 'polygon(0 0, 100% 0, 100% 50%, 0 50%)' };
+                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 100% 0, 100% 35%, 0 35%)' : 'polygon(0 0, 100% 0, 100% 50%, 0 50%)' };
                 } else {
-                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 55% 0, 55% 65%, 0 65%)' : 'polygon(0 0, 55% 0, 55% 100%, 0 100%)' };
+                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 60% 0, 60% 65%, 0 65%)' : 'polygon(0 0, 60% 0, 60% 100%, 0 100%)' };
                 }
               } else if (typedCount === 2) {
                 if (isCompound) {
-                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 55% 0, 55% 65%, 0 65%)' : 'polygon(0 0, 55% 0, 55% 100%, 0 100%)' };
+                  // L-Shape: Covers Top-Left (ㅎ) + Bottom-Left (ㅗ), dodges Right (ㅣ) and Bottom Batchim
+                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 65% 0, 65% 35%, 85% 35%, 85% 65%, 0 65%)' : 'polygon(0 0, 65% 0, 65% 45%, 85% 45%, 85% 100%, 0 100%)' };
                 } else if (isHorizontal) {
-                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 100% 0, 100% 70%, 0 70%)' : 'inset(0)' };
+                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 100% 0, 100% 65%, 0 65%)' : 'inset(0)' };
                 } else {
                   clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 100% 0, 100% 65%, 0 65%)' : 'inset(0)' };
                 }
               } else if (typedCount === 3) {
                 if (isCompound) {
-                  clipMaskStyle = { clipPath: hasBatchim ? 'polygon(0 0, 100% 0, 100% 65%, 0 65%)' : 'inset(0)' };
+                  clipMaskStyle = { clipPath: 'polygon(0 0, 100% 0, 100% 65%, 0 65%)' };
                 } else {
-                  clipMaskStyle = { clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0 85%)' };
+                  // Double Batchim (e.g. 읽, ㅄ) -> Top 65% + Bottom-Left 50%
+                  clipMaskStyle = { clipPath: 'polygon(0 0, 100% 0, 100% 65%, 50% 65%, 50% 100%, 0 100%)' };
                 }
+              } else if (typedCount === 4) {
+                // Compound Vowel + Double Batchim (e.g. 왅) -> Top 65% + Bottom-Left 50%
+                clipMaskStyle = { clipPath: 'polygon(0 0, 100% 0, 100% 65%, 50% 65%, 50% 100%, 0 100%)' };
               }
             }
 
