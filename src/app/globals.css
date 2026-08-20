@@ -15,6 +15,10 @@
 }
 
 :root {
+  --bg-canvas: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --border-card: #e2e8f0;
   --color-ios-canvas: #faf8f5;
   --color-ios-card: #ffffff;
   --color-ios-card-back: #ffffff;
@@ -26,6 +30,99 @@
   --color-fg: #0f172a;
   --color-muted: #64748b;
   color-scheme: light;
+}
+
+/* THEME PRESETS OVERRIDES */
+[data-theme="light"] {
+  --bg-canvas: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --border-card: #e2e8f0;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg-canvas: #0f172a;
+  --bg-card: #1e293b;
+  --text-main: #f8fafc;
+  --border-card: #334155;
+  color-scheme: dark;
+}
+
+[data-theme="purple-light"] {
+  --bg-canvas: #faf5ff;
+  --bg-card: #ffffff;
+  --text-main: #3b0764;
+  --border-card: #f3e8ff;
+  color-scheme: light;
+}
+
+[data-theme="purple-dark"] {
+  --bg-canvas: #1a0927;
+  --bg-card: #2a123d;
+  --text-main: #faf5ff;
+  --border-card: #3e1d59;
+  color-scheme: dark;
+}
+
+[data-theme="pink-light"] {
+  --bg-canvas: #fff5f7;
+  --bg-card: #ffffff;
+  --text-main: #831843;
+  --border-card: #ffe4e6;
+  color-scheme: light;
+}
+
+[data-theme="pink-dark"] {
+  --bg-canvas: #240a15;
+  --bg-card: #3b1223;
+  --text-main: #fff5f7;
+  --border-card: #541a34;
+  color-scheme: dark;
+}
+
+[data-theme="blue-light"] {
+  --bg-canvas: #f0f9ff;
+  --bg-card: #ffffff;
+  --text-main: #0c4a6e;
+  --border-card: #e0f2fe;
+  color-scheme: light;
+}
+
+[data-theme="blue-dark"] {
+  --bg-canvas: #081c2e;
+  --bg-card: #0e2a47;
+  --text-main: #f0f9ff;
+  --border-card: #173d63;
+  color-scheme: dark;
+}
+
+/* AUTOMATIC DARK MODE COMPONENT OVERRIDES */
+html.dark body,
+html.dark main {
+  background-color: var(--bg-canvas) !important;
+  color: var(--text-main) !important;
+}
+
+html.dark .bg-white {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-slate-50\/70,
+html.dark .bg-slate-100 {
+  background-color: var(--bg-canvas) !important;
+}
+
+html.dark .text-slate-900 {
+  color: var(--text-main) !important;
+}
+
+html.dark .border-slate-200,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-100 {
+  border-color: var(--border-card) !important;
 }
 
 /* HIDE ALL BROWSER SCROLLBARS GLOBALLY */

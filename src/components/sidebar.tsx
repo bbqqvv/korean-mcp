@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { useTheme, DarkStyleId, LightStyleId } from '@/lib/theme-context';
+import { useTheme, THEME_PRESETS, AppThemeId } from '@/lib/theme-context';
 import {
   Award,
   Home,
@@ -58,7 +58,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { mode, darkStyle, lightStyle, setMode, setDarkStyle, setLightStyle, themeConfig } = useTheme();
+  const { activeThemeId, setAppTheme, themeConfig } = useTheme();
 
   const isBooksActive = pathname === '/books' || pathname.startsWith('/course');
   const isSpeakingActive =
@@ -420,90 +420,34 @@ export default function Sidebar({
                       </div>
                     </div>
 
-                    {/* Theme Mode Quick Switcher */}
-                    <div className="bg-slate-100 p-1 rounded-xl flex items-center justify-between text-[11px] font-medium text-slate-600">
-                      <button
-                        onClick={() => setMode('light')}
-                        className={`flex-1 py-1 px-1 rounded-lg font-semibold flex items-center justify-center gap-1 transition-all ${
-                          mode === 'light' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'
-                        }`}
-                      >
-                        <Sun className="w-3 h-3 text-amber-500" /> Sáng
-                      </button>
-                      <button
-                        onClick={() => setMode('dark')}
-                        className={`flex-1 py-1 px-1 rounded-lg font-semibold flex items-center justify-center gap-1 transition-all ${
-                          mode === 'dark' ? 'bg-slate-900 text-white shadow-2xs' : 'text-slate-500 hover:text-slate-800'
-                        }`}
-                      >
-                        <Moon className="w-3 h-3 text-blue-400" /> Tối
-                      </button>
-                      <button
-                        onClick={() => setMode('system')}
-                        className={`flex-1 py-1 px-1 rounded-lg font-semibold flex items-center justify-center gap-1 transition-all ${
-                          mode === 'system' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'
-                        }`}
-                      >
-                        <Laptop className="w-3 h-3 text-slate-400" /> Auto
-                      </button>
-                    </div>
+                    {/* Vertical Theme Selection List (Matching Reference Screenshot 2!) */}
+                    <div className="space-y-1 py-1 border-b border-slate-100 max-h-56 overflow-y-auto pr-0.5">
+                      {(Object.keys(THEME_PRESETS) as AppThemeId[]).map((themeId) => {
+                        const preset = THEME_PRESETS[themeId];
+                        const isSelected = activeThemeId === themeId;
+                        const Icon = preset.type === 'sun' ? Sun : Moon;
 
-                    {/* Sub-Style Selector Grid (4 Styles Matching Reference Image!) */}
-                    {mode === 'dark' ? (
-                      <div className="grid grid-cols-4 gap-1.5 pt-0.5">
-                        {(['dimmed', 'midnight', 'slate', 'oled'] as DarkStyleId[]).map((styleId) => {
-                          const isSelected = darkStyle === styleId;
-                          const swatches: Record<DarkStyleId, { color: string; label: string }> = {
-                            dimmed: { color: 'bg-[#22272e] border-[#30363d]', label: 'Dimmed' },
-                            midnight: { color: 'bg-[#0d1117] border-[#21262d]', label: 'Midnight' },
-                            slate: { color: 'bg-slate-800 border-slate-700', label: 'Slate' },
-                            oled: { color: 'bg-black border-zinc-800', label: 'OLED' }
-                          };
-                          const swatch = swatches[styleId];
-                          return (
-                            <button
-                              key={styleId}
-                              onClick={() => setDarkStyle(styleId)}
-                              className={`p-1.5 rounded-xl border flex flex-col items-center gap-1 transition-all ${
-                                isSelected
-                                  ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20 text-blue-600 font-bold'
-                                  : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
-                              }`}
-                            >
-                              <span className={`w-3.5 h-3.5 rounded-full border ${swatch.color} shadow-2xs`} />
-                              <span className="text-[9px] truncate w-full text-center leading-none">{swatch.label}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-4 gap-1.5 pt-0.5">
-                        {(['default', 'paper', 'indigo', 'pure'] as LightStyleId[]).map((styleId) => {
-                          const isSelected = lightStyle === styleId;
-                          const swatches: Record<LightStyleId, { color: string; label: string }> = {
-                            default: { color: 'bg-slate-100 border-slate-300', label: 'Default' },
-                            paper: { color: 'bg-[#faf8f5] border-[#e8e4df]', label: 'Paper' },
-                            indigo: { color: 'bg-[#f5f7fb] border-indigo-200', label: 'Indigo' },
-                            pure: { color: 'bg-white border-slate-200', label: 'Pure' }
-                          };
-                          const swatch = swatches[styleId];
-                          return (
-                            <button
-                              key={styleId}
-                              onClick={() => setLightStyle(styleId)}
-                              className={`p-1.5 rounded-xl border flex flex-col items-center gap-1 transition-all ${
-                                isSelected
-                                  ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20 text-blue-600 font-bold'
-                                  : 'border-slate-200 hover:border-slate-300 text-slate-600 font-medium'
-                              }`}
-                            >
-                              <span className={`w-3.5 h-3.5 rounded-full border ${swatch.color} shadow-2xs`} />
-                              <span className="text-[9px] truncate w-full text-center leading-none">{swatch.label}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+                        return (
+                          <button
+                            key={themeId}
+                            onClick={() => setAppTheme(themeId)}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                              isSelected
+                                ? 'bg-slate-900 text-white shadow-2xs'
+                                : 'text-slate-700 hover:bg-slate-100'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : preset.iconColor}`} />
+                              <span>{preset.name}</span>
+                            </div>
+                            {isSelected && (
+                              <span className="w-2 h-2 rounded-full bg-white shadow-2xs" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
 
                     {/* Settings Item */}
                     <div className="space-y-0.5 text-xs font-medium">

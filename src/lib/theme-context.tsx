@@ -2,12 +2,157 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export type ModeType = 'light' | 'dark' | 'system';
-export type DarkStyleId = 'dimmed' | 'midnight' | 'slate' | 'oled';
-export type LightStyleId = 'default' | 'paper' | 'indigo' | 'pure';
+export type AppThemeId =
+  | 'light'
+  | 'dark'
+  | 'purple-light'
+  | 'purple-dark'
+  | 'pink-light'
+  | 'pink-dark'
+  | 'blue-light'
+  | 'blue-dark';
 
 // Backward compatibility ThemeId
-export type ThemeId = 'ocean' | 'lime' | 'crimson' | 'dark';
+export type ThemeId = AppThemeId | 'ocean' | 'lime' | 'crimson';
+
+export interface ThemePreset {
+  id: AppThemeId;
+  name: string;
+  isDark: boolean;
+  type: 'sun' | 'moon';
+  iconColor: string;
+  badgeBg: string;
+  canvasBg: string;
+  canvasText: string;
+  cardBg: string;
+  cardBorder: string;
+  primaryBg: string;
+  primaryHover: string;
+  primaryText: string;
+}
+
+export const THEME_PRESETS: Record<AppThemeId, ThemePreset> = {
+  light: {
+    id: 'light',
+    name: 'Sáng',
+    isDark: false,
+    type: 'sun',
+    iconColor: 'text-amber-500',
+    badgeBg: 'bg-blue-50 text-blue-700 border-blue-200',
+    canvasBg: 'bg-slate-50',
+    canvasText: 'text-slate-900',
+    cardBg: 'bg-white',
+    cardBorder: 'border-slate-200/80',
+    primaryBg: 'bg-blue-600',
+    primaryHover: 'hover:bg-blue-700',
+    primaryText: 'text-blue-600'
+  },
+  dark: {
+    id: 'dark',
+    name: 'Tối',
+    isDark: true,
+    type: 'moon',
+    iconColor: 'text-slate-300',
+    badgeBg: 'bg-slate-800 text-blue-300 border-slate-700',
+    canvasBg: 'bg-slate-900',
+    canvasText: 'text-slate-100',
+    cardBg: 'bg-slate-800',
+    cardBorder: 'border-slate-700',
+    primaryBg: 'bg-blue-600',
+    primaryHover: 'hover:bg-blue-500',
+    primaryText: 'text-blue-400'
+  },
+  'purple-light': {
+    id: 'purple-light',
+    name: 'Tím Sáng',
+    isDark: false,
+    type: 'sun',
+    iconColor: 'text-purple-600',
+    badgeBg: 'bg-purple-50 text-purple-700 border-purple-200',
+    canvasBg: 'bg-[#faf5ff]',
+    canvasText: 'text-[#3b0764]',
+    cardBg: 'bg-white',
+    cardBorder: 'border-purple-100',
+    primaryBg: 'bg-purple-600',
+    primaryHover: 'hover:bg-purple-700',
+    primaryText: 'text-purple-600'
+  },
+  'purple-dark': {
+    id: 'purple-dark',
+    name: 'Tím Tối',
+    isDark: true,
+    type: 'moon',
+    iconColor: 'text-purple-400',
+    badgeBg: 'bg-[#2a123d] text-purple-300 border-[#3e1d59]',
+    canvasBg: 'bg-[#1a0927]',
+    canvasText: 'text-[#faf5ff]',
+    cardBg: 'bg-[#2a123d]',
+    cardBorder: 'border-[#3e1d59]',
+    primaryBg: 'bg-purple-600',
+    primaryHover: 'hover:bg-purple-500',
+    primaryText: 'text-purple-400'
+  },
+  'pink-light': {
+    id: 'pink-light',
+    name: 'Hồng Sáng',
+    isDark: false,
+    type: 'sun',
+    iconColor: 'text-pink-600',
+    badgeBg: 'bg-pink-50 text-pink-700 border-pink-200',
+    canvasBg: 'bg-[#fff5f7]',
+    canvasText: 'text-[#831843]',
+    cardBg: 'bg-white',
+    cardBorder: 'border-pink-100',
+    primaryBg: 'bg-pink-600',
+    primaryHover: 'hover:bg-pink-700',
+    primaryText: 'text-pink-600'
+  },
+  'pink-dark': {
+    id: 'pink-dark',
+    name: 'Hồng Tối',
+    isDark: true,
+    type: 'moon',
+    iconColor: 'text-pink-400',
+    badgeBg: 'bg-[#3b1223] text-pink-300 border-[#541a34]',
+    canvasBg: 'bg-[#240a15]',
+    canvasText: 'text-[#fff5f7]',
+    cardBg: 'bg-[#3b1223]',
+    cardBorder: 'border-[#541a34]',
+    primaryBg: 'bg-pink-600',
+    primaryHover: 'hover:bg-pink-500',
+    primaryText: 'text-pink-400'
+  },
+  'blue-light': {
+    id: 'blue-light',
+    name: 'Xanh Sáng',
+    isDark: false,
+    type: 'sun',
+    iconColor: 'text-sky-500',
+    badgeBg: 'bg-sky-50 text-sky-700 border-sky-200',
+    canvasBg: 'bg-[#f0f9ff]',
+    canvasText: 'text-[#0c4a6e]',
+    cardBg: 'bg-white',
+    cardBorder: 'border-sky-100',
+    primaryBg: 'bg-sky-600',
+    primaryHover: 'hover:bg-sky-700',
+    primaryText: 'text-sky-600'
+  },
+  'blue-dark': {
+    id: 'blue-dark',
+    name: 'Xanh Tối',
+    isDark: true,
+    type: 'moon',
+    iconColor: 'text-sky-400',
+    badgeBg: 'bg-[#0e2a47] text-sky-300 border-[#173d63]',
+    canvasBg: 'bg-[#081c2e]',
+    canvasText: 'text-[#f0f9ff]',
+    cardBg: 'bg-[#0e2a47]',
+    cardBorder: 'border-[#173d63]',
+    primaryBg: 'bg-sky-600',
+    primaryHover: 'hover:bg-sky-500',
+    primaryText: 'text-sky-400'
+  }
+};
 
 export interface ThemeConfig {
   id: string;
@@ -28,7 +173,7 @@ export interface ThemeConfig {
 export const THEME_CONFIGS: Record<string, ThemeConfig> = {
   ocean: {
     id: 'ocean',
-    name: 'Xanh Biển (Royal Ocean Blue)',
+    name: 'Xanh Biển',
     primaryBg: 'bg-blue-600',
     primaryHover: 'hover:bg-blue-700',
     primaryText: 'text-blue-600',
@@ -42,181 +187,84 @@ export const THEME_CONFIGS: Record<string, ThemeConfig> = {
   }
 };
 
-export const DARK_STYLES: Record<DarkStyleId, { name: string; canvasBg: string; cardBg: string; cardBorder: string; text: string; swatchBg: string }> = {
-  dimmed: {
-    name: 'Dimmed',
-    canvasBg: 'bg-[#1c2128]',
-    cardBg: 'bg-[#22272e]',
-    cardBorder: 'border-[#30363d]',
-    text: 'text-slate-100',
-    swatchBg: 'bg-[#22272e]'
-  },
-  midnight: {
-    name: 'Midnight',
-    canvasBg: 'bg-[#0d1117]',
-    cardBg: 'bg-[#161b22]',
-    cardBorder: 'border-[#21262d]',
-    text: 'text-slate-100',
-    swatchBg: 'bg-[#0d1117]'
-  },
-  slate: {
-    name: 'Slate',
-    canvasBg: 'bg-slate-900',
-    cardBg: 'bg-slate-800',
-    cardBorder: 'border-slate-700',
-    text: 'text-slate-100',
-    swatchBg: 'bg-slate-800'
-  },
-  oled: {
-    name: 'OLED',
-    canvasBg: 'bg-black',
-    cardBg: 'bg-zinc-950',
-    cardBorder: 'border-zinc-800',
-    text: 'text-slate-100',
-    swatchBg: 'bg-black'
-  }
-};
-
-export const LIGHT_STYLES: Record<LightStyleId, { name: string; canvasBg: string; cardBg: string; cardBorder: string; text: string; swatchBg: string }> = {
-  default: {
-    name: 'Default',
-    canvasBg: 'bg-slate-50',
-    cardBg: 'bg-white',
-    cardBorder: 'border-slate-200/80',
-    text: 'text-slate-900',
-    swatchBg: 'bg-slate-100'
-  },
-  paper: {
-    name: 'Paper',
-    canvasBg: 'bg-[#faf8f5]',
-    cardBg: 'bg-white',
-    cardBorder: 'border-[#e8e4df]',
-    text: 'text-slate-900',
-    swatchBg: 'bg-[#faf8f5]'
-  },
-  indigo: {
-    name: 'Indigo',
-    canvasBg: 'bg-[#f5f7fb]',
-    cardBg: 'bg-white',
-    cardBorder: 'border-indigo-100',
-    text: 'text-slate-900',
-    swatchBg: 'bg-[#f5f7fb]'
-  },
-  pure: {
-    name: 'Pure',
-    canvasBg: 'bg-white',
-    cardBg: 'bg-slate-50/80',
-    cardBorder: 'border-slate-200/80',
-    text: 'text-slate-900',
-    swatchBg: 'bg-white'
-  }
-};
-
 interface ThemeContextType {
-  mode: ModeType;
-  darkStyle: DarkStyleId;
-  lightStyle: LightStyleId;
-  theme: ThemeId;
+  activeThemeId: AppThemeId;
+  themePreset: ThemePreset;
   themeConfig: ThemeConfig;
-  setMode: (mode: ModeType) => void;
-  setDarkStyle: (style: DarkStyleId) => void;
-  setLightStyle: (style: LightStyleId) => void;
+  setAppTheme: (themeId: AppThemeId) => void;
+  // Backward compatibility
+  theme: ThemeId;
   setTheme: (theme: ThemeId) => void;
 }
 
-const DEFAULT_THEME_CONFIG: ThemeConfig = {
-  id: 'ocean',
-  name: 'Default Light',
-  primaryBg: 'bg-blue-600',
-  primaryHover: 'hover:bg-blue-700',
-  primaryText: 'text-blue-600',
-  badgeBg: 'bg-blue-50 text-blue-700 border-blue-200',
-  canvasBg: 'bg-slate-50',
-  canvasText: 'text-slate-900',
-  cardBg: 'bg-white',
-  cardBorder: 'border-slate-200/80',
-  accentRing: 'ring-blue-400/40 border-blue-600',
-  swatchGradient: 'from-blue-600 to-indigo-700'
-};
-
 const ThemeContext = createContext<ThemeContextType>({
-  mode: 'light',
-  darkStyle: 'dimmed',
-  lightStyle: 'default',
-  theme: 'ocean',
-  themeConfig: DEFAULT_THEME_CONFIG,
-  setMode: () => {},
-  setDarkStyle: () => {},
-  setLightStyle: () => {},
+  activeThemeId: 'light',
+  themePreset: THEME_PRESETS.light,
+  themeConfig: THEME_PRESETS.light as unknown as ThemeConfig,
+  setAppTheme: () => {},
+  theme: 'light',
   setTheme: () => {}
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setModeState] = useState<ModeType>('light');
-  const [darkStyle, setDarkStyleState] = useState<DarkStyleId>('dimmed');
-  const [lightStyle, setLightStyleState] = useState<LightStyleId>('default');
-  const [theme, setThemeState] = useState<ThemeId>('ocean');
+  const [activeThemeId, setActiveThemeId] = useState<AppThemeId>('light');
 
   useEffect(() => {
-    const savedMode = localStorage.getItem('lynkore-mode') as ModeType;
-    const savedDarkStyle = localStorage.getItem('lynkore-dark-style') as DarkStyleId;
-    const savedLightStyle = localStorage.getItem('lynkore-light-style') as LightStyleId;
-    const savedTheme = localStorage.getItem('lynkore-theme') as ThemeId;
-
-    if (savedMode) setModeState(savedMode);
-    if (savedDarkStyle && DARK_STYLES[savedDarkStyle]) setDarkStyleState(savedDarkStyle);
-    if (savedLightStyle && LIGHT_STYLES[savedLightStyle]) setLightStyleState(savedLightStyle);
-    if (savedTheme) setThemeState(savedTheme);
+    const saved = localStorage.getItem('lynkore-active-theme') as AppThemeId;
+    if (saved && THEME_PRESETS[saved]) {
+      setActiveThemeId(saved);
+      applyThemeDOM(saved);
+    }
   }, []);
 
-  const setMode = (newMode: ModeType) => {
-    setModeState(newMode);
-    localStorage.setItem('lynkore-mode', newMode);
+  const applyThemeDOM = (id: AppThemeId) => {
+    const preset = THEME_PRESETS[id];
+    if (typeof document !== 'undefined') {
+      document.documentElement.dataset.theme = id;
+      if (preset.isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
   };
 
-  const setDarkStyle = (newStyle: DarkStyleId) => {
-    setDarkStyleState(newStyle);
-    localStorage.setItem('lynkore-dark-style', newStyle);
+  const setAppTheme = (id: AppThemeId) => {
+    setActiveThemeId(id);
+    localStorage.setItem('lynkore-active-theme', id);
+    applyThemeDOM(id);
   };
 
-  const setLightStyle = (newStyle: LightStyleId) => {
-    setLightStyleState(newStyle);
-    localStorage.setItem('lynkore-light-style', newStyle);
+  const setTheme = (t: ThemeId) => {
+    if (THEME_PRESETS[t as AppThemeId]) {
+      setAppTheme(t as AppThemeId);
+    }
   };
 
-  const setTheme = (newTheme: ThemeId) => {
-    setThemeState(newTheme);
-    localStorage.setItem('lynkore-theme', newTheme);
-  };
-
-  // Compute active ThemeConfig based on mode, darkStyle & lightStyle
-  const isDarkActive = mode === 'dark' || (mode === 'system' && false); // default to light if system unless specified
-  const activeStyle = isDarkActive ? DARK_STYLES[darkStyle] : LIGHT_STYLES[lightStyle];
-
-  const computedThemeConfig: ThemeConfig = {
-    ...DEFAULT_THEME_CONFIG,
-    id: isDarkActive ? darkStyle : lightStyle,
-    name: activeStyle.name,
-    canvasBg: activeStyle.canvasBg,
-    canvasText: activeStyle.text,
-    cardBg: activeStyle.cardBg,
-    cardBorder: activeStyle.cardBorder,
-    badgeBg: isDarkActive
-      ? 'bg-slate-800 text-blue-300 border-slate-700'
-      : 'bg-blue-50 text-blue-700 border-blue-200'
+  const currentPreset = THEME_PRESETS[activeThemeId] || THEME_PRESETS.light;
+  const currentConfig: ThemeConfig = {
+    id: currentPreset.id,
+    name: currentPreset.name,
+    primaryBg: currentPreset.primaryBg,
+    primaryHover: currentPreset.primaryHover,
+    primaryText: currentPreset.primaryText,
+    badgeBg: currentPreset.badgeBg,
+    canvasBg: currentPreset.canvasBg,
+    canvasText: currentPreset.canvasText,
+    cardBg: currentPreset.cardBg,
+    cardBorder: currentPreset.cardBorder,
+    accentRing: 'ring-blue-400/40 border-blue-600',
+    swatchGradient: 'from-blue-600 to-indigo-700'
   };
 
   return (
     <ThemeContext.Provider
       value={{
-        mode,
-        darkStyle,
-        lightStyle,
-        theme,
-        themeConfig: computedThemeConfig,
-        setMode,
-        setDarkStyle,
-        setLightStyle,
+        activeThemeId,
+        themePreset: currentPreset,
+        themeConfig: currentConfig,
+        setAppTheme,
+        theme: activeThemeId,
         setTheme
       }}
     >
