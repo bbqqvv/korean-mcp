@@ -117,12 +117,12 @@ export default function Sidebar({
       } md:relative md:translate-x-0 transition-all duration-300 ease-in-out shrink-0`}
     >
       <div
-        className={`flex flex-col h-full bg-white border-r border-slate-200/80 text-slate-900 select-none transition-all duration-300 ${
+        className={`flex flex-col h-full bg-white shadow-xs text-slate-900 select-none transition-all duration-300 ${
           isCollapsed ? 'w-20' : 'w-64'
         }`}
       >
         {/* Brand Header & Collapse Toggle Button */}
-        <div className="p-3.5 border-b border-slate-100">
+        <div className="p-3.5">
           {isCollapsed ? (
             <div className="flex flex-col items-center justify-center gap-2">
               <Link href="/" title="Trang chủ LynKore">
@@ -362,7 +362,7 @@ export default function Sidebar({
         </div>
 
         {/* Footer Profile Component */}
-        <div className="p-2.5 border-t border-slate-200/80 bg-white relative">
+        <div className="p-2.5 bg-white relative">
           {isCollapsed ? (
             <button
               onClick={() => router.push('/settings')}

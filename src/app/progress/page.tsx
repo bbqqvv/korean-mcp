@@ -102,7 +102,7 @@ export default function ProgressPage() {
           {/* 5 Top Key Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {/* 1. Chuỗi dài nhất */}
-            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+            <div className="bg-white shadow-xs rounded-2xl p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-amber-100/80 flex items-center justify-center shrink-0">
                 <Flame className="w-5 h-5 text-amber-500 fill-current" />
               </div>
@@ -116,7 +116,7 @@ export default function ProgressPage() {
             </div>
 
             {/* 2. Từ đã lưu */}
-            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+            <div className="bg-white shadow-xs rounded-2xl p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-100/80 flex items-center justify-center shrink-0">
                 <BookOpen className="w-5 h-5 text-emerald-600" />
               </div>
@@ -130,7 +130,7 @@ export default function ProgressPage() {
             </div>
 
             {/* 3. Thời gian luyện tập */}
-            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+            <div className="bg-white shadow-xs rounded-2xl p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-100/80 flex items-center justify-center shrink-0">
                 <Clock className="w-5 h-5 text-blue-600" />
               </div>
@@ -143,7 +143,7 @@ export default function ProgressPage() {
             </div>
 
             {/* 4. Tổng XP */}
-            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+            <div className="bg-white shadow-xs rounded-2xl p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-indigo-100/80 flex items-center justify-center shrink-0">
                 <Target className="w-5 h-5 text-indigo-600" />
               </div>
@@ -157,7 +157,7 @@ export default function ProgressPage() {
             </div>
 
             {/* 5. Hạng của bạn */}
-            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 flex items-center gap-3 col-span-2 sm:col-span-1">
+            <div className="bg-white shadow-xs rounded-2xl p-4 flex items-center gap-3 col-span-2 sm:col-span-1">
               <div className="w-10 h-10 rounded-xl bg-amber-100/80 flex items-center justify-center shrink-0">
                 <Trophy className="w-5 h-5 text-amber-600" />
               </div>
@@ -172,7 +172,7 @@ export default function ProgressPage() {
           </div>
 
           {/* View Tab Switcher: Hoạt động của tôi vs Bảng xếp hạng */}
-          <div className="border-b border-slate-200 flex items-center gap-2 pt-2">
+          <div className="flex items-center gap-2 pt-2">
             <button
               onClick={() => setActiveView('activity')}
               className={`pb-2.5 px-3 text-xs sm:text-sm font-semibold transition-all border-b-2 ${
@@ -199,8 +199,8 @@ export default function ProgressPage() {
           {activeView === 'activity' && (
             <div className="space-y-6 animate-fadeIn">
               {/* Card 1: 12-Month Activity Heatmap Grid (52-Week Full Stretch GitHub Style) */}
-              <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 sm:p-5 space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div className="bg-white shadow-xs rounded-2xl p-4 sm:p-5 space-y-3">
+                <div className="flex items-center justify-between pb-2.5">
                   <h2 className="text-xs sm:text-sm font-semibold text-slate-900">
                     Tổng quan hoạt động (12 tháng gần đây)
                   </h2>
@@ -276,8 +276,8 @@ export default function ProgressPage() {
               </div>
 
               {/* Card 2: 30-Day Daily Practice Breakdown */}
-              <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div className="bg-white shadow-xs rounded-3xl p-5 sm:p-6 space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3">
                   <h2 className="text-xs sm:text-sm font-semibold text-slate-900">
                     Luyện tập hàng ngày (30 ngày gần đây)
                   </h2>
@@ -309,7 +309,7 @@ export default function ProgressPage() {
                 {/* 30-Day Practice Bar Visualizer */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Left Chart: Phút luyện tập */}
-                  <div className="space-y-3 bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4">
+                  <div className="space-y-3 bg-slate-50/70 rounded-2xl p-4">
                     <div className="flex items-center justify-between">
                       <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
                         PHÚT LUYỆN TẬP (30 NGÀY)
@@ -320,7 +320,7 @@ export default function ProgressPage() {
                     </div>
 
                     {/* Bar chart representation */}
-                    <div className="h-44 flex items-end justify-between gap-1 pt-4 border-b border-slate-200">
+                    <div className="h-44 flex items-end justify-between gap-1 pt-4">
                       {skillChartData.slice(0, 20).map((item, i) => (
                         <div key={i} className="flex-1 flex flex-col items-center gap-1 group relative">
                           <div
@@ -339,7 +339,7 @@ export default function ProgressPage() {
                   </div>
 
                   {/* Right Chart: Bài tập đã làm */}
-                  <div className="space-y-3 bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
+                  <div className="space-y-3 bg-slate-50 rounded-2xl p-4">
                     <div className="flex items-center justify-between">
                       <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
                         BÀI TẬP ĐÃ HOÀN THÀNH

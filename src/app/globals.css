@@ -97,6 +97,23 @@
   color-scheme: dark;
 }
 
+/* BORDERLESS CLEAN COMPONENT DESIGN SYSTEM (NO GRAY OUTLINE BORDERS) */
+.border-slate-200,
+.border-slate-100 {
+  border-color: transparent !important;
+}
+
+[class*="border-slate-200"],
+[class*="border-slate-100"] {
+  border-color: transparent !important;
+}
+
+/* Ensure clean subtle floating shadows on cards */
+.bg-white,
+[class*="bg-white"] {
+  border-color: transparent !important;
+}
+
 /* AUTOMATIC DARK MODE COMPONENT OVERRIDES */
 html.dark body,
 html.dark main {
@@ -117,12 +134,6 @@ html.dark .bg-slate-100 {
 
 html.dark .text-slate-900 {
   color: var(--text-main) !important;
-}
-
-html.dark .border-slate-200,
-html.dark .border-slate-200\/80,
-html.dark .border-slate-100 {
-  border-color: var(--border-card) !important;
 }
 
 /* HIDE ALL BROWSER SCROLLBARS GLOBALLY */
