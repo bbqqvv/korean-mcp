@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Sidebar from '@/components/sidebar';
 import CreateDeckModal from '@/components/create-deck-modal';
 import { useTheme } from '@/lib/theme-context';
-import { KoreaFlag } from '@/components/korea-flag';
 import {
   Bot,
   Send,
@@ -149,18 +148,15 @@ export default function AITutorPage() {
     }
   };
 
-  // Helper to parse inline markdown: **bold**, `code`, *italic*, <br>, and 🇰🇷 flag
+  // Helper to parse inline markdown: **bold**, `code`, *italic*, <br>
   const renderFormattedText = (text: string) => {
     // 1. Split by <br> or <br/> or <br />
     const brParts = text.split(/<br\s*\/?>/gi);
 
     return brParts.map((brPart, brIdx) => {
-      // 2. Tokenize by **bold**, `code`, *italic*, 🇰🇷 flag
-      const tokens = brPart.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*|🇰🇷)/g);
+      // 2. Tokenize by **bold**, `code`, *italic*
+      const tokens = brPart.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g);
       const renderedTokens = tokens.map((token, tokenIdx) => {
-        if (token === '🇰🇷') {
-          return <KoreaFlag key={tokenIdx} className="w-4 h-3 mx-1 inline-block" />;
-        }
         if (token.startsWith('**') && token.endsWith('**')) {
           return (
             <strong key={tokenIdx} className="font-extrabold text-slate-900 dark:text-white">
@@ -220,22 +216,22 @@ export default function AITutorPage() {
           );
 
           elements.push(
-            <div key={`table-${i}`} className="my-3 overflow-x-auto rounded-2xl border border-slate-200 shadow-2xs">
+            <div key={`table-${i}`} className="my-3 overflow-x-auto rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-2xs">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-slate-100/90 text-slate-900 border-b border-slate-200">
+                  <tr className="bg-slate-100/90 dark:bg-zinc-800 text-slate-900 dark:text-zinc-100 border-b border-slate-200 dark:border-zinc-800">
                     {headerRow.map((cell, cIdx) => (
-                      <th key={cIdx} className="p-2.5 font-extrabold border-r last:border-r-0 border-slate-200">
+                      <th key={cIdx} className="p-2.5 font-extrabold border-r last:border-r-0 border-slate-200 dark:border-zinc-800">
                         {renderFormattedText(cell)}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 bg-white">
+                <tbody className="divide-y divide-slate-100 dark:divide-zinc-800/60 bg-white dark:bg-[#121215]">
                   {dataRows.map((row, rIdx) => (
-                    <tr key={rIdx} className="hover:bg-slate-50/80 transition-colors">
+                    <tr key={rIdx} className="hover:bg-slate-50/80 dark:hover:bg-zinc-800/80 transition-colors">
                       {row.map((cell, cIdx) => (
-                        <td key={cIdx} className="p-2.5 text-slate-700 border-r last:border-r-0 border-slate-200">
+                        <td key={cIdx} className="p-2.5 text-slate-700 dark:text-zinc-300 border-r last:border-r-0 border-slate-200 dark:border-zinc-800">
                           {renderFormattedText(cell)}
                         </td>
                       ))}
@@ -255,7 +251,7 @@ export default function AITutorPage() {
         elements.push(
           <div key={`list-${i}`} className="flex items-start gap-2 my-1 pl-1">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0 mt-2" />
-            <div className="text-slate-800 text-xs sm:text-sm leading-relaxed">
+            <div className="text-slate-800 dark:text-zinc-200 text-xs sm:text-sm leading-relaxed">
               {renderFormattedText(itemText)}
             </div>
           </div>
@@ -267,7 +263,7 @@ export default function AITutorPage() {
       // Check for Numbered List (1. 2.)
       if (/^\d+\.\s/.test(trimmed)) {
         elements.push(
-          <div key={`num-${i}`} className="font-extrabold text-slate-900 text-xs sm:text-sm pt-2 pb-0.5">
+          <div key={`num-${i}`} className="font-extrabold text-slate-900 dark:text-zinc-100 text-xs sm:text-sm pt-2 pb-0.5">
             {renderFormattedText(trimmed)}
           </div>
         );
@@ -284,7 +280,7 @@ export default function AITutorPage() {
 
       // Standard paragraph
       elements.push(
-        <p key={`p-${i}`} className="my-1 text-slate-800 text-xs sm:text-sm leading-relaxed">
+        <p key={`p-${i}`} className="my-1 text-slate-800 dark:text-zinc-200 text-xs sm:text-sm leading-relaxed">
           {renderFormattedText(trimmed)}
         </p>
       );
@@ -318,17 +314,17 @@ export default function AITutorPage() {
                     alt="LynKore AI Logo"
                     width={32}
                     height={32}
-                    className="w-8 h-8 rounded-2xl object-cover border border-slate-200/80 shadow-xs shadow-xs shrink-0 mt-1"
+                    className="w-8 h-8 rounded-2xl object-cover border border-slate-200/80 dark:border-zinc-800 shadow-xs shrink-0 mt-1"
                   />
                 )}
 
                 <div className={`max-w-[85%] sm:max-w-2xl space-y-2`}>
                   {/* Bubble Container */}
                   <div
-                    className={`p-4 sm:p-5 text-xs sm:text-sm leading-relaxed border border-slate-200/80 shadow-xs shadow-xs ${
+                    className={`p-4 sm:p-5 text-xs sm:text-sm leading-relaxed border border-slate-200/80 dark:border-zinc-800/80 shadow-xs ${
                       msg.role === 'user'
                         ? 'bg-blue-600 text-white rounded-3xl rounded-br-xs font-semibold'
-                        : 'bg-white text-slate-900 rounded-3xl rounded-bl-xs'
+                        : 'bg-white dark:bg-[#121215] text-slate-900 dark:text-zinc-100 rounded-3xl rounded-bl-xs'
                     }`}
                   >
                     <div className="space-y-1">
@@ -337,7 +333,7 @@ export default function AITutorPage() {
 
                     <div
                       className={`flex items-center justify-between text-[10px] pt-2 border-t mt-3 ${
-                        msg.role === 'user' ? 'border-blue-500 text-blue-200' : 'border-slate-100 text-slate-400'
+                        msg.role === 'user' ? 'border-blue-500 text-blue-200' : 'border-slate-100 dark:border-zinc-800 text-slate-400 dark:text-zinc-500'
                       }`}
                     >
                       <span>{msg.timestamp}</span>
@@ -345,7 +341,7 @@ export default function AITutorPage() {
                       {msg.role === 'assistant' && (
                         <button
                           onClick={() => speakText(msg.content)}
-                          className="flex items-center gap-1 text-slate-600 hover:text-blue-600 font-bold bg-slate-100 px-2 py-0.5 rounded-full transition-colors"
+                          className="flex items-center gap-1 text-slate-600 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 font-bold bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded-full transition-colors cursor-pointer"
                           title="Đọc mẫu câu tiếng Hàn"
                         >
                           <Volume2 className="w-3 h-3" /> Đọc phát âm
@@ -363,7 +359,7 @@ export default function AITutorPage() {
                           onClick={() => handleSendMessage(chip)}
                           className="px-3 py-1.5 bg-white dark:bg-[#121215] border border-slate-200/80 dark:border-zinc-800 shadow-xs rounded-2xl text-slate-800 dark:text-zinc-200 font-bold text-xs shadow-2xs hover:bg-blue-50 dark:hover:bg-zinc-800 hover:border-blue-600 transition-all flex items-center gap-1.5 cursor-pointer"
                         >
-                          <span className="flex items-center gap-1">{renderFormattedText(chip)}</span>
+                          <span>{chip}</span>
                           <ArrowRight className="w-3 h-3 text-slate-400 shrink-0" />
                         </button>
                       ))}
@@ -380,9 +376,9 @@ export default function AITutorPage() {
                   alt="LynKore AI Logo"
                   width={32}
                   height={32}
-                  className="w-8 h-8 rounded-2xl object-cover border border-slate-200/80 shadow-xs shadow-xs shrink-0 animate-bounce"
+                  className="w-8 h-8 rounded-2xl object-cover border border-slate-200/80 dark:border-zinc-800 shrink-0 animate-bounce"
                 />
-                <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl px-4 py-3 shadow-xs text-xs font-bold text-slate-600 flex items-center gap-2">
+                <div className="bg-white dark:bg-[#121215] border border-slate-200/80 dark:border-zinc-800 shadow-xs rounded-2xl px-4 py-3 text-xs font-bold text-slate-600 dark:text-zinc-300 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-500 animate-spin" />
                   <span>LynKore AI đang suy nghĩ câu trả lời...</span>
                 </div>
@@ -399,20 +395,20 @@ export default function AITutorPage() {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-3 sm:p-4 shadow-md flex items-center gap-2 sm:gap-3"
+              className="bg-white dark:bg-[#121215] border border-slate-200/80 dark:border-zinc-800 shadow-xs rounded-3xl p-3 sm:p-4 shadow-md flex items-center gap-2 sm:gap-3"
             >
               <input
                 type="text"
                 value={inputPrompt}
                 onChange={(e) => setInputPrompt(e.target.value)}
                 placeholder="Nhắn cho Trợ lý AI Tiếng Hàn hoặc yêu cầu bài tập..."
-                className="flex-1 bg-transparent text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none px-2"
+                className="flex-1 bg-transparent text-xs sm:text-sm font-medium text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none px-2"
               />
 
               <button
                 type="button"
                 onClick={() => speakText(inputPrompt || '안녕하세요!')}
-                className="p-2 text-slate-400 hover:text-slate-700 rounded-xl transition-colors"
+                className="p-2 text-slate-400 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-200 rounded-xl transition-colors cursor-pointer"
                 title="Nghe thử"
               >
                 <Mic className="w-4 h-4" />
@@ -421,7 +417,7 @@ export default function AITutorPage() {
               <button
                 type="submit"
                 disabled={!inputPrompt.trim() || isLoading}
-                className={`px-5 py-2.5 ${themeConfig.primaryBg} ${themeConfig.primaryHover} disabled:opacity-50 text-white font-bold text-xs sm:text-sm rounded-2xl border border-slate-200/80 shadow-xs shadow-xs flex items-center gap-2 transition-all shrink-0`}
+                className={`px-5 py-2.5 ${themeConfig.primaryBg} ${themeConfig.primaryHover} disabled:opacity-50 text-white font-bold text-xs sm:text-sm rounded-2xl border border-slate-200/80 dark:border-zinc-800 flex items-center gap-2 transition-all shrink-0 cursor-pointer`}
               >
                 <span>Gửi</span>
                 <Send className="w-4 h-4" />

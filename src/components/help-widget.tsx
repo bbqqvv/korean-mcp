@@ -21,8 +21,6 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/lib/theme-context';
 
-import { KoreaFlag } from '@/components/korea-flag';
-
 type ChatMessage = {
   id: string;
   role: 'user' | 'assistant';
@@ -298,9 +296,8 @@ export function HelpWidget() {
                         <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-slate-200 dark:border-zinc-700 bg-blue-600">
                           <img src="/krlogo.png" alt="LynKore AI Tutor" className="w-full h-full object-cover" />
                         </div>
-                        <span className="text-[12px] font-bold text-slate-900 dark:text-zinc-100 tracking-tight flex items-center gap-1">
-                          <span>LynKore AI Tutor</span>
-                          <KoreaFlag className="w-4 h-3" />
+                        <span className="text-[12px] font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
+                          LynKore AI Tutor 🇰🇷
                         </span>
                       </div>
                     )}
