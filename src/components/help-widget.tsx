@@ -293,8 +293,8 @@ export function HelpWidget() {
                   >
                     {msg.role === 'assistant' && (
                       <div className="flex items-center gap-2 mb-0.5">
-                        <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-slate-200 dark:border-zinc-700">
-                          <img src="/helpcenter.png" alt="LynKore AI Tutor" className="w-full h-full object-cover" />
+                        <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-slate-200 dark:border-zinc-700 bg-blue-600">
+                          <img src="/krlogo.png" alt="LynKore AI Tutor" className="w-full h-full object-cover" />
                         </div>
                         <span className="text-[12px] font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
                           LynKore AI Tutor 🇰🇷
