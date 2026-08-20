@@ -2,6 +2,9 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+export type ModeType = 'light' | 'dark' | 'system';
+export type SubStyleId = 'default' | 'purple' | 'pink' | 'blue';
+
 export type AppThemeId =
   | 'light'
   | 'dark'
@@ -188,9 +191,13 @@ export const THEME_CONFIGS: Record<string, ThemeConfig> = {
 };
 
 interface ThemeContextType {
+  mode: ModeType;
+  subStyle: SubStyleId;
   activeThemeId: AppThemeId;
   themePreset: ThemePreset;
   themeConfig: ThemeConfig;
+  setMode: (mode: ModeType) => void;
+  setSubStyle: (sub: SubStyleId) => void;
   setAppTheme: (themeId: AppThemeId) => void;
   // Backward compatibility
   theme: ThemeId;
@@ -198,24 +205,42 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
+  mode: 'light',
+  subStyle: 'default',
   activeThemeId: 'light',
   themePreset: THEME_PRESETS.light,
   themeConfig: THEME_PRESETS.light as unknown as ThemeConfig,
+  setMode: () => {},
+  setSubStyle: () => {},
   setAppTheme: () => {},
   theme: 'light',
   setTheme: () => {}
 });
 
+function resolveThemeId(mode: ModeType, subStyle: SubStyleId): AppThemeId {
+  const isDark = mode === 'dark';
+  if (subStyle === 'purple') return isDark ? 'purple-dark' : 'purple-light';
+  if (subStyle === 'pink') return isDark ? 'pink-dark' : 'pink-light';
+  if (subStyle === 'blue') return isDark ? 'blue-dark' : 'blue-light';
+  return isDark ? 'dark' : 'light';
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [activeThemeId, setActiveThemeId] = useState<AppThemeId>('light');
+  const [mode, setModeState] = useState<ModeType>('light');
+  const [subStyle, setSubStyleState] = useState<SubStyleId>('default');
+
+  const activeThemeId = resolveThemeId(mode, subStyle);
 
   useEffect(() => {
-    const saved = localStorage.getItem('lynkore-active-theme') as AppThemeId;
-    if (saved && THEME_PRESETS[saved]) {
-      setActiveThemeId(saved);
-      applyThemeDOM(saved);
-    }
+    const savedMode = localStorage.getItem('lynkore-mode') as ModeType;
+    const savedSub = localStorage.getItem('lynkore-sub-style') as SubStyleId;
+    if (savedMode) setModeState(savedMode);
+    if (savedSub) setSubStyleState(savedSub);
   }, []);
+
+  useEffect(() => {
+    applyThemeDOM(activeThemeId);
+  }, [activeThemeId]);
 
   const applyThemeDOM = (id: AppThemeId) => {
     const preset = THEME_PRESETS[id];
@@ -229,10 +254,24 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const setMode = (m: ModeType) => {
+    setModeState(m);
+    localStorage.setItem('lynkore-mode', m);
+  };
+
+  const setSubStyle = (s: SubStyleId) => {
+    setSubStyleState(s);
+    localStorage.setItem('lynkore-sub-style', s);
+  };
+
   const setAppTheme = (id: AppThemeId) => {
-    setActiveThemeId(id);
-    localStorage.setItem('lynkore-active-theme', id);
-    applyThemeDOM(id);
+    if (id.includes('dark')) setModeState('dark');
+    else setModeState('light');
+
+    if (id.includes('purple')) setSubStyleState('purple');
+    else if (id.includes('pink')) setSubStyleState('pink');
+    else if (id.includes('blue')) setSubStyleState('blue');
+    else setSubStyleState('default');
   };
 
   const setTheme = (t: ThemeId) => {
@@ -260,9 +299,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
     <ThemeContext.Provider
       value={{
+        mode,
+        subStyle,
         activeThemeId,
         themePreset: currentPreset,
         themeConfig: currentConfig,
+        setMode,
+        setSubStyle,
         setAppTheme,
         theme: activeThemeId,
         setTheme
