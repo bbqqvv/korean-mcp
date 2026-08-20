@@ -190,7 +190,7 @@ export function HelpWidget() {
         className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-lg transition-all duration-300 cursor-pointer bg-white dark:bg-[#121215] ${
           isOpen
             ? 'border-blue-500 text-blue-600 dark:text-blue-400 shadow-blue-500/20'
-            : 'border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-500'
+            : 'border-slate-200 dark:border-[#222226] text-slate-700 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-500'
         } ${isOpen && isChatting ? 'opacity-0 scale-50 pointer-events-none' : 'opacity-100 scale-100'}`}
         title="Trợ giúp & Hỏi đáp LynKore AI Tutor"
       >
@@ -269,7 +269,7 @@ export function HelpWidget() {
               </div>
             </div>
           ) : (
-            <div className="bg-slate-900 text-white p-3.5 flex items-center justify-between shrink-0 border-b border-slate-800">
+            <div className="bg-slate-900 dark:bg-[#070709] text-white p-3.5 flex items-center justify-between shrink-0 border-b border-slate-800 dark:border-zinc-800">
               <span className="text-xs font-bold">Trợ Giúp Học Tiếng Hàn & TOPIK</span>
               <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white cursor-pointer">
                 <X className="h-4 w-4" />
@@ -278,7 +278,7 @@ export function HelpWidget() {
           )}
 
           {/* Main Content Area */}
-          <div className="flex flex-col flex-1 bg-slate-50/50 dark:bg-[#070709]/50 relative overflow-hidden">
+          <div className="flex flex-col flex-1 bg-white dark:bg-[#121215] relative overflow-hidden">
             {/* Chat History Area (when chatting) */}
             <div
               className={`overflow-hidden transition-all duration-300 flex flex-col shrink ${
@@ -296,7 +296,7 @@ export function HelpWidget() {
                         <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-slate-200 dark:border-zinc-700">
                           <img src="/helpcenter.png" alt="LynKore AI Tutor" className="w-full h-full object-cover" />
                         </div>
-                        <span className="text-[12px] font-bold text-slate-900 dark:text-white tracking-tight">
+                        <span className="text-[12px] font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
                           LynKore AI Tutor 🇰🇷
                         </span>
                       </div>
@@ -305,8 +305,8 @@ export function HelpWidget() {
                     <div
                       className={`text-xs leading-relaxed ${
                         msg.role === 'user'
-                          ? 'p-3 bg-blue-600 text-white rounded-2xl rounded-tr-none shadow-xs max-w-[85%]'
-                          : 'p-3 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 rounded-2xl rounded-tl-none border border-slate-200/80 dark:border-zinc-800/80 w-full'
+                          ? 'p-3 bg-blue-600 text-white rounded-2xl rounded-tr-none shadow-xs max-w-[85%] font-medium'
+                          : 'p-3 bg-slate-50 dark:bg-[#070709] text-slate-900 dark:text-zinc-100 font-medium rounded-2xl rounded-tl-none border border-slate-200/80 dark:border-zinc-800/80 w-full'
                       }`}
                     >
                       {msg.isTyping ? (
@@ -329,7 +329,7 @@ export function HelpWidget() {
             <div className="p-3 bg-white dark:bg-[#121215] border-b border-slate-200/80 dark:border-zinc-800/80 shrink-0">
               <div className="border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#070709] rounded-xl p-3 flex flex-col gap-2 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500/20 transition-all shadow-3xs">
                 <form onSubmit={handleSearchSubmit} className="relative flex items-start">
-                  <Search className="h-3.5 w-3.5 text-slate-400 mt-0.5 mr-2 shrink-0" strokeWidth={2} />
+                  <Search className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-400 mt-0.5 mr-2 shrink-0" strokeWidth={2} />
                   <textarea
                     value={searchQuery}
                     onFocus={() => setIsChatting(true)}
@@ -342,11 +342,11 @@ export function HelpWidget() {
                     }}
                     placeholder="Hỏi AI về từ vựng, đề thi TOPIK hoặc phương pháp học..."
                     rows={2}
-                    className="w-full text-xs bg-transparent border-none text-slate-800 dark:text-zinc-200 placeholder-slate-400 focus:outline-none resize-none p-0 leading-normal"
+                    className="w-full text-xs bg-transparent border-none text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none resize-none p-0 leading-normal font-medium"
                   />
                 </form>
 
-                <div className="flex items-center justify-between pt-1 border-t border-slate-200/40 dark:border-zinc-800/40">
+                <div className="flex items-center justify-between pt-1 border-t border-slate-200/60 dark:border-zinc-800/60">
                   <div className="flex items-center gap-1">
                     {isChatting && (
                       <button
@@ -374,7 +374,7 @@ export function HelpWidget() {
                     className={`flex h-6 w-6 items-center justify-center rounded-lg transition-all cursor-pointer border-none ${
                       searchQuery.trim()
                         ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-95'
-                        : 'bg-slate-200 dark:bg-zinc-800 text-slate-400 cursor-not-allowed'
+                        : 'bg-slate-200 dark:bg-zinc-800 text-slate-400 dark:text-zinc-500 cursor-not-allowed'
                     }`}
                     title="Gửi câu hỏi"
                   >
@@ -393,7 +393,7 @@ export function HelpWidget() {
               <div className="flex-1 overflow-y-auto p-3.5 space-y-4">
                 {showShortcuts ? (
                   <div className="space-y-3 animate-in fade-in duration-200">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-zinc-300">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-zinc-200">
                       <span>Danh sách phím tắt học Flashcard</span>
                       <button
                         onClick={() => setShowShortcuts(false)}
@@ -402,24 +402,24 @@ export function HelpWidget() {
                         Quay lại
                       </button>
                     </div>
-                    <div className="space-y-2 bg-white dark:bg-[#121215] p-3 rounded-xl border border-slate-200/80 dark:border-zinc-800/80 text-xs">
+                    <div className="space-y-2 bg-slate-50 dark:bg-[#070709] p-3 rounded-xl border border-slate-200/80 dark:border-zinc-800/80 text-xs font-medium">
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-600 dark:text-zinc-400">Lật thẻ Flashcard (Flip)</span>
-                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">Space</kbd>
+                        <span className="text-slate-700 dark:text-zinc-300">Lật thẻ Flashcard (Flip)</span>
+                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-bold text-slate-900 dark:text-zinc-100">Space</kbd>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-600 dark:text-zinc-400">Chuyển thẻ Kế tiếp / Trước</span>
-                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">← / →</kbd>
+                        <span className="text-slate-700 dark:text-zinc-300">Chuyển thẻ Kế tiếp / Trước</span>
+                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-bold text-slate-900 dark:text-zinc-100">← / →</kbd>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-600 dark:text-zinc-400">Mở bảng tìm kiếm từ vựng</span>
-                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">Ctrl + K</kbd>
+                        <span className="text-slate-700 dark:text-zinc-300">Mở bảng tìm kiếm từ vựng</span>
+                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-bold text-slate-900 dark:text-zinc-100">Ctrl + K</kbd>
                       </div>
                     </div>
                   </div>
                 ) : showFeedback ? (
                   <form onSubmit={handleSendFeedback} className="space-y-3 animate-in fade-in duration-200">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-zinc-300">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-zinc-200">
                       <span>Góp ý bài học & Đề thi TOPIK</span>
                       <button
                         type="button"
@@ -436,7 +436,7 @@ export function HelpWidget() {
                       value={feedbackText}
                       onChange={(e) => setFeedbackText(e.target.value)}
                       placeholder="Ý kiến của bạn giúp LynKore cải tiến chất lượng đề thi và từ vựng..."
-                      className="w-full text-xs p-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 outline-none h-20 resize-none leading-relaxed"
+                      className="w-full text-xs p-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-[#070709] text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:ring-2 focus:ring-blue-500 outline-none h-20 resize-none leading-relaxed font-medium"
                       required
                       autoFocus
                     />
@@ -451,96 +451,96 @@ export function HelpWidget() {
                   <div className="space-y-3.5">
                     {/* FAQs Tailored 100% to LynKore */}
                     <div className="space-y-2">
-                      <span className="text-[11px] font-bold text-slate-500 dark:text-zinc-400 tracking-tight">
+                      <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-zinc-200">
                         CÂU HỎI THƯỜNG GẶP
                       </span>
                       <div className="space-y-1.5">
                         <button
                           onClick={() => handleQuestionClick('Luyện thi TOPIK I & TOPIK II như thế nào hiệu quả nhất?')}
-                          className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-normal rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
+                          className="w-full border border-slate-200 dark:border-zinc-800/80 bg-slate-50 dark:bg-[#070709] text-slate-900 dark:text-zinc-100 text-xs font-semibold rounded-xl py-2.5 px-3.5 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-all shadow-2xs hover:border-blue-500 cursor-pointer"
                         >
                           Luyện thi TOPIK I & TOPIK II như thế nào hiệu quả nhất?
                         </button>
                         <button
                           onClick={() => handleQuestionClick('Phương pháp ôn từ vựng Flashcard Spaced Repetition hoạt động ra sao?')}
-                          className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-normal rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
+                          className="w-full border border-slate-200 dark:border-zinc-800/80 bg-slate-50 dark:bg-[#070709] text-slate-900 dark:text-zinc-100 text-xs font-semibold rounded-xl py-2.5 px-3.5 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-all shadow-2xs hover:border-blue-500 cursor-pointer"
                         >
                           Phương pháp ôn từ vựng Flashcard Spaced Repetition hoạt động ra sao?
                         </button>
                         <button
                           onClick={() => handleQuestionClick('Làm thế nào để sử dụng AI Tutor thực hành nói & phát âm tiếng Hàn?')}
-                          className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-normal rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
+                          className="w-full border border-slate-200 dark:border-zinc-800/80 bg-slate-50 dark:bg-[#070709] text-slate-900 dark:text-zinc-100 text-xs font-semibold rounded-xl py-2.5 px-3.5 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-all shadow-2xs hover:border-blue-500 cursor-pointer"
                         >
                           Làm thế nào để sử dụng AI Tutor thực hành nói & phát âm tiếng Hàn?
                         </button>
                       </div>
                     </div>
 
-                    <div className="h-px bg-slate-200/60 dark:bg-zinc-800/60" />
+                    <div className="h-px bg-slate-200 dark:bg-zinc-800/80" />
 
                     {/* Quick Help Options Tailored 100% to LynKore */}
                     <div className="space-y-1.5">
-                      <span className="text-[11px] font-bold text-slate-500 dark:text-zinc-400 tracking-tight">
+                      <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-zinc-200">
                         TÙY CHỌN TRỢ GIÚP NHANH
                       </span>
-                      <div className="space-y-1">
+                      <div className="space-y-1.5">
                         <button
                           onClick={handleResetChecklist}
-                          className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer group"
+                          className="w-full flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-[#070709] border border-slate-200/60 dark:border-zinc-800/80 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all text-left cursor-pointer group"
                         >
                           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
                             <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.5} />
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
-                            <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            <span className="text-xs font-bold text-slate-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                               Hướng Dẫn Học Cho Người Mới
                             </span>
-                            <span className="text-[10px] text-slate-400">Khôi phục lộ trình học tiếng Hàn từ sơ cấp</span>
+                            <span className="text-[10.5px] text-slate-500 dark:text-zinc-400 font-medium">Khôi phục lộ trình học tiếng Hàn từ sơ cấp</span>
                           </div>
                         </button>
 
                         <button
                           onClick={() => setShowShortcuts(true)}
-                          className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer group"
+                          className="w-full flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-[#070709] border border-slate-200/60 dark:border-zinc-800/80 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all text-left cursor-pointer group"
                         >
                           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold">
                             <Keyboard className="h-3.5 w-3.5" strokeWidth={1.5} />
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
-                            <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            <span className="text-xs font-bold text-slate-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                               Danh Sách Phím Tắt Lật Thẻ
                             </span>
-                            <span className="text-[10px] text-slate-400">Phím tắt thao tác nhanh ôn Flashcard</span>
+                            <span className="text-[10.5px] text-slate-500 dark:text-zinc-400 font-medium">Phím tắt thao tác nhanh ôn Flashcard</span>
                           </div>
                         </button>
 
                         <button
                           onClick={() => setShowFeedback(true)}
-                          className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer group"
+                          className="w-full flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-[#070709] border border-slate-200/60 dark:border-zinc-800/80 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all text-left cursor-pointer group"
                         >
                           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-pink-500/10 text-pink-600 dark:text-pink-400 font-bold">
                             <MessageSquare className="h-3.5 w-3.5" strokeWidth={1.5} />
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
-                            <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            <span className="text-xs font-bold text-slate-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                               Góp Ý Cải Tiến Bài Học
                             </span>
-                            <span className="text-[10px] text-slate-400">Góp ý nội dung cho đội ngũ LynKore</span>
+                            <span className="text-[10.5px] text-slate-500 dark:text-zinc-400 font-medium">Góp ý nội dung cho đội ngũ LynKore</span>
                           </div>
                         </button>
 
                         <button
                           onClick={handleReportBug}
-                          className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer group"
+                          className="w-full flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-[#070709] border border-slate-200/60 dark:border-zinc-800/80 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all text-left cursor-pointer group"
                         >
                           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold">
                             <Bug className="h-3.5 w-3.5" strokeWidth={1.5} />
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
-                            <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            <span className="text-xs font-bold text-slate-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                               Báo Cáo Lỗi Bài Thi / Kỹ Thuật
                             </span>
-                            <span className="text-[10px] text-slate-400">Báo sự cố hiển thị hoặc đáp án</span>
+                            <span className="text-[10.5px] text-slate-500 dark:text-zinc-400 font-medium">Báo sự cố hiển thị hoặc đáp án</span>
                           </div>
                         </button>
                       </div>
@@ -552,7 +552,7 @@ export function HelpWidget() {
 
             {/* Live Chat Footer Button & Powered by LynKore */}
             <div
-              className={`overflow-hidden transition-all duration-300 shrink-0 flex flex-col border-t border-slate-200/60 dark:border-zinc-800/60 ${
+              className={`overflow-hidden transition-all duration-300 shrink-0 flex flex-col border-t border-slate-200/80 dark:border-zinc-800/80 ${
                 isChatting ? 'h-0 opacity-0' : 'h-[75px] opacity-100 p-3 justify-between'
               }`}
             >
@@ -562,19 +562,19 @@ export function HelpWidget() {
                     showToast('Đang kết nối Giảng viên & Bộ phận hỗ trợ trực tiếp...');
                     setIsOpen(false);
                   }}
-                  className="p-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:bg-slate-50 dark:hover:bg-zinc-800 cursor-pointer flex items-center justify-between text-xs font-medium transition-all text-slate-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-3xs group"
+                  className="p-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#070709] hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer flex items-center justify-between text-xs font-bold transition-all text-slate-900 dark:text-zinc-100 hover:text-blue-600 dark:hover:text-blue-400 shadow-2xs group"
                 >
                   <div className="flex items-center gap-2">
-                    <ArrowRightCircle className="h-4 w-4 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" strokeWidth={1.8} />
-                    <span className="text-slate-600 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-white">
+                    <ArrowRightCircle className="h-4 w-4 text-slate-400 dark:text-zinc-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" strokeWidth={1.8} />
+                    <span className="text-slate-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       Liên hệ trực tiếp Giảng viên (Live Chat)
                     </span>
                   </div>
-                  <ExternalLink className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" strokeWidth={1.8} />
+                  <ExternalLink className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" strokeWidth={1.8} />
                 </button>
               )}
 
-              <div className="text-center text-[10.5px] text-slate-400 dark:text-zinc-500 font-semibold select-none">
+              <div className="text-center text-[10.5px] text-slate-500 dark:text-zinc-400 font-bold select-none">
                 Powered by LynKore K-Learning AI
               </div>
             </div>
