@@ -1,0 +1,32 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Tự động chạy 3 ngày 1 lần vào lúc 00:00 UTC
+    - cron: '0 0 */3 * *'
+  workflow_dispatch: # Cho phép bấm nút "Run workflow" thủ công trên GitHub UI bất kỳ lúc nào
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API & Database
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://zntidmzvnndpxklopakm.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpudGlkbXp2bm5kcHhrbG9wYWttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkwNjA4ODIsImV4cCI6MjA3NDYzNjg4Mn0.P08Vq_giL-98Xhn0jAAFba7vbiUu8HpY8E5htJqudno' }}
+        run: |
+          echo "Pinging Supabase at $SUPABASE_URL..."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "$SUPABASE_URL/rest/v1/decks?select=id&limit=1")
+          
+          echo "Supabase HTTP Response Code: $RESPONSE"
+          if [ "$RESPONSE" -ge 200 ] && [ "$RESPONSE" -lt 400 ]; then
+            echo "Successfully pinged Supabase! Project is ACTIVE."
+          else
+            echo "Ping warning (HTTP $RESPONSE), retrying root API endpoint..."
+            curl -f -s "$SUPABASE_URL/rest/v1/" \
+              -H "apikey: $SUPABASE_ANON_KEY" \
+              -H "Authorization: Bearer $SUPABASE_ANON_KEY"
+          fi
