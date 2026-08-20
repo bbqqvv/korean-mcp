@@ -328,12 +328,12 @@ function SettingsContent() {
       <main className="flex-1 overflow-y-auto p-6 sm:p-8 lg:p-10 space-y-8 bg-slate-50/50 dark:bg-slate-950/40">
         <div className="max-w-4xl mx-auto space-y-8">
 
-          {/* TAB 1: HỒ SƠ & TRÌNH ĐỘ TOPIK */}
+          {/* TAB 1: HỒ SƠ CÁ NHÂN */}
           {activeTab === 'profile' && (
             <div className="space-y-8 animate-in fade-in duration-200">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                  Hồ sơ & Trình độ Học viên 🇰🇷
+                <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Hồ sơ cá nhân
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">
                   Cập nhật ảnh đại diện, trình độ TOPIK và mục tiêu từ vựng mỗi ngày của bạn.
@@ -489,12 +489,12 @@ function SettingsContent() {
             </div>
           )}
 
-          {/* TAB 2: GIA SƯ AI & GIỌNG ĐỌC TTS */}
+          {/* TAB 2: GIA SƯ AI & GIỌNG ĐỌC */}
           {activeTab === 'ai' && (
             <div className="space-y-8 animate-in fade-in duration-200">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                  <Bot className="w-7 h-7 text-blue-600" /> Gia Sư AI & Giọng Đọc Phát Âm (TTS) 🤖
+                <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Gia sư AI & Giọng đọc
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">
                   Tùy chỉnh giọng đọc chuẩn Hàn Quốc, tốc độ phát âm và mô hình trí tuệ nhân tạo LynKore AI.
@@ -610,8 +610,8 @@ function SettingsContent() {
           {activeTab === 'theme' && (
             <div className="space-y-8 animate-in fade-in duration-200">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                  <Palette className="w-7 h-7 text-purple-600" /> Giao Diện & Hiệu Ứng Rơi 🎨
+                <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Giao diện & Hiệu ứng
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">
                   Tùy chỉnh Chế độ Sáng/Tối, bộ màu chủ đạo, hiệu ứng rơi môi trường và nhạc nền Lofi.
@@ -699,12 +699,12 @@ function SettingsContent() {
             </div>
           )}
 
-          {/* TAB 4: LỊCH MAIL ÔN BÀI */}
+          {/* TAB 4: LỊCH MAIL */}
           {activeTab === 'email' && (
             <div className="space-y-8 animate-in fade-in duration-200">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                  <Mail className="w-7 h-7 text-rose-600" /> Lịch Gửi Mail Ôn Bài Tự Động ✉️
+                <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Lịch mail
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">
                   Cấu hình thời gian nhận email nhắc nhở từ vựng và xem lại lịch sử các bài học đã gửi.
@@ -774,8 +774,8 @@ function SettingsContent() {
           {activeTab === 'mcp' && (
             <div className="space-y-8 animate-in fade-in duration-200">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                  <Sliders className="w-7 h-7 text-emerald-600" /> Kết Nối Gemini MCP Server 🤖
+                <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Kết nối Gemini MCP
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">
                   URL kết nối JSON-RPC 2.0 giúp Gemini Spark trích xuất từ vựng từ YouTube tự động.
@@ -956,8 +956,8 @@ function SettingsContent() {
           {activeTab === 'notifications' && (
             <div className="space-y-8 animate-in fade-in duration-200">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                  <Bell className="w-7 h-7 text-amber-500" /> Thông Báo & Nhắc Học 🔔
+                <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Thông báo
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-1">Cài đặt thông báo chuỗi học Streak và âm thanh.</p>
               </div>
