@@ -151,7 +151,7 @@ export default function TypingKeyboard3D({
                     'bg-rose-600 text-white border-rose-600 border-b-2 border-b-rose-800 translate-y-1 shadow-sm scale-95 transition-transform duration-75';
                 } else {
                   keyCapStyle =
-                    'bg-emerald-600 text-white border-emerald-600 border-b-2 border-b-emerald-800 translate-y-1 shadow-sm scale-95 transition-transform duration-75';
+                    'bg-blue-600 text-white border-blue-600 border-b-2 border-b-blue-800 translate-y-1 shadow-sm scale-95 transition-transform duration-75';
                 }
               }
 
