@@ -406,8 +406,10 @@ export default function ProgressAnalytics({ showHeaderAndCards = false }: Progre
                 {LEADERBOARD_USERS.map((usr) => (
                   <tr
                     key={usr.rank}
-                    className={`hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors ${
-                      usr.isCurrentUser ? 'bg-blue-50/50 dark:bg-blue-950/30 font-bold' : ''
+                    className={`transition-all ${
+                      usr.isCurrentUser
+                        ? 'bg-blue-50/70 dark:bg-slate-800/80 border-l-4 border-l-blue-600 dark:border-l-blue-400 font-bold'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
                     }`}
                   >
                     <td className="py-3 px-3">
@@ -416,10 +418,10 @@ export default function ProgressAnalytics({ showHeaderAndCards = false }: Progre
                           usr.rank === 1
                             ? 'bg-amber-400 text-white'
                             : usr.rank === 2
-                            ? 'bg-slate-300 text-slate-800'
+                            ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200'
                             : usr.rank === 3
                             ? 'bg-amber-600 text-white'
-                            : 'text-slate-500'
+                            : 'text-slate-500 dark:text-slate-400'
                         }`}
                       >
                         {usr.rank}
@@ -427,11 +429,15 @@ export default function ProgressAnalytics({ showHeaderAndCards = false }: Progre
                     </td>
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center">
-                          {usr.avatar}
+                        <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700 shadow-2xs bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                          <img
+                            src={usr.avatar || '/krlogo.png'}
+                            alt={usr.name}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                         <div>
-                          <p className="font-semibold text-slate-900 dark:text-white flex items-center gap-1">
+                          <p className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
                             {usr.name}
                             {usr.isCurrentUser && (
                               <span className="text-[9px] bg-blue-600 text-white px-1.5 py-0.2 rounded-full font-bold">

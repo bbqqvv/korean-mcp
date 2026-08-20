@@ -99,7 +99,7 @@ export const LEADERBOARD_USERS: LeaderboardUser[] = [
   {
     rank: 1,
     name: 'Min-jun Kim 🇰🇷',
-    avatar: '👨‍🎓',
+    avatar: '/krlogo.png',
     xp: 12450,
     streak: 45,
     badge: '🥇 Quán Quân Tuần'
@@ -107,7 +107,7 @@ export const LEADERBOARD_USERS: LeaderboardUser[] = [
   {
     rank: 2,
     name: 'Phương Anh 🇻🇳',
-    avatar: '👩‍💻',
+    avatar: '/krlogo.png',
     xp: 9820,
     streak: 32,
     badge: '🥈 Á Quân Tuần'
@@ -115,7 +115,7 @@ export const LEADERBOARD_USERS: LeaderboardUser[] = [
   {
     rank: 3,
     name: 'Ji-won Park 🇰🇷',
-    avatar: '👨‍🎨',
+    avatar: '/krlogo.png',
     xp: 8750,
     streak: 28,
     badge: '🥉 Hạng Ba Tuần'
@@ -123,7 +123,7 @@ export const LEADERBOARD_USERS: LeaderboardUser[] = [
   {
     rank: 4,
     name: 'Trần Văn Hoàng',
-    avatar: '👨‍🚀',
+    avatar: '/krlogo.png',
     xp: 7640,
     streak: 21,
     badge: 'Chuyên Gia Tiếng Hàn'
@@ -131,7 +131,7 @@ export const LEADERBOARD_USERS: LeaderboardUser[] = [
   {
     rank: 5,
     name: 'Soo-jin Lee',
-    avatar: '👩‍🎤',
+    avatar: '/krlogo.png',
     xp: 6900,
     streak: 19,
     badge: 'Thần Gõ Phím Hangul'
@@ -139,7 +139,7 @@ export const LEADERBOARD_USERS: LeaderboardUser[] = [
   {
     rank: 12,
     name: 'Bạn (LynKore Learner)',
-    avatar: '⭐',
+    avatar: '/krlogo.png',
     xp: 3450,
     streak: 12,
     badge: 'Tân Binh Siêng Năng',
