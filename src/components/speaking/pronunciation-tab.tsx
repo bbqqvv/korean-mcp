@@ -43,7 +43,7 @@ export default function PronunciationTab() {
   return (
     <div className="space-y-6">
       {/* Intro Banner */}
-      <div className="bg-gradient-to-r from-indigo-900 via-blue-900 to-slate-900 text-white rounded-3xl p-6 border-2 border-slate-900 shadow-xs space-y-2">
+      <div className="bg-gradient-to-r from-indigo-900 via-blue-900 to-slate-900 text-white rounded-3xl p-6 border border-slate-200/80 shadow-xs shadow-xs space-y-2">
         <div className="flex items-center gap-2 text-xs font-extrabold text-blue-300 uppercase tracking-wide">
           <Sparkles className="w-4 h-4 text-amber-400" /> Bí Kíp Phát Âm Chuẩn Giọng Seoul
         </div>
@@ -80,7 +80,7 @@ export default function PronunciationTab() {
       </div>
 
       {/* Group Description */}
-      <div className="bg-white border-2 border-slate-900 rounded-3xl p-5 shadow-xs space-y-4">
+      <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 shadow-xs space-y-4">
         <div>
           <h3 className="text-base font-black text-slate-900">{selectedGroup.title}</h3>
           <p className="text-xs text-slate-500 font-medium">{selectedGroup.description}</p>
@@ -152,7 +152,7 @@ export default function PronunciationTab() {
       </div>
 
       {/* Selected Sound Detailed Mouth Practice Studio */}
-      <div className="bg-white border-2 border-slate-900 rounded-3xl p-6 shadow-xs space-y-4">
+      <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-6 shadow-xs space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2">
             <span className="text-xl font-black text-slate-900 font-noto">

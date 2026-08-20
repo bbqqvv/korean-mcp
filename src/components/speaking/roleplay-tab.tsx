@@ -131,7 +131,7 @@ export default function RoleplayTab() {
       </div>
 
       {/* Main Roleplay Chat Simulator */}
-      <div className="bg-white border-2 border-slate-900 rounded-3xl p-6 shadow-xs space-y-6">
+      <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-6 shadow-xs space-y-6">
         {/* Scenario Header Bar */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
           <div className="space-y-0.5">

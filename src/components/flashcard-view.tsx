@@ -221,7 +221,7 @@ export default function FlashcardView({ cards, deckTitle, onFinish }: FlashcardV
             data-flipped={flipped ? 'true' : 'false'}
           >
             {/* FRONT */}
-            <div className="flashcard-face ios-flashcard-face absolute inset-0 flex w-full flex-col items-start justify-between p-6 sm:p-8 text-left bg-white border-2 border-slate-900 rounded-3xl shadow-xs">
+            <div className="flashcard-face ios-flashcard-face absolute inset-0 flex w-full flex-col items-start justify-between p-6 sm:p-8 text-left bg-white border border-slate-200/80 shadow-xs rounded-3xl shadow-xs">
               <div className="flex justify-between items-center w-full">
                 <span className="text-[11px] font-bold tracking-wider text-rose-600 uppercase">
                   TIẾNG HÀN (MẶT TRƯỚC)
@@ -257,7 +257,7 @@ export default function FlashcardView({ cards, deckTitle, onFinish }: FlashcardV
             </div>
 
             {/* BACK */}
-            <div className="flashcard-face flashcard-face--back ios-flashcard-face--back absolute inset-0 flex w-full flex-col items-start justify-between p-6 sm:p-8 text-left bg-slate-50 border-2 border-slate-900 rounded-3xl shadow-xs">
+            <div className="flashcard-face flashcard-face--back ios-flashcard-face--back absolute inset-0 flex w-full flex-col items-start justify-between p-6 sm:p-8 text-left bg-slate-50 border border-slate-200/80 shadow-xs rounded-3xl shadow-xs">
               <div className="flex justify-between items-center w-full">
                 <span className="text-[11px] font-bold tracking-wider text-indigo-600 uppercase">
                   NGHĨA TIẾNG VIỆT (MẶT SAU)

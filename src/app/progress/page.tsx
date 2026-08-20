@@ -74,7 +74,7 @@ export default function ProgressPage() {
           {/* 5 Top Key Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {/* 1. Chuỗi dài nhất */}
-            <div className="bg-white border-2 border-slate-900 rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
                 <Flame className="w-5 h-5 text-amber-500 fill-current" />
               </div>
@@ -88,7 +88,7 @@ export default function ProgressPage() {
             </div>
 
             {/* 2. Từ đã lưu */}
-            <div className="bg-white border-2 border-slate-900 rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
                 <BookOpen className="w-5 h-5 text-emerald-600" />
               </div>
@@ -102,7 +102,7 @@ export default function ProgressPage() {
             </div>
 
             {/* 3. Thời gian luyện tập */}
-            <div className="bg-white border-2 border-slate-900 rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
                 <Clock className="w-5 h-5 text-blue-600" />
               </div>
@@ -115,7 +115,7 @@ export default function ProgressPage() {
             </div>
 
             {/* 4. Tổng XP */}
-            <div className="bg-white border-2 border-slate-900 rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center shrink-0">
                 <Target className="w-5 h-5 text-indigo-600" />
               </div>
@@ -129,7 +129,7 @@ export default function ProgressPage() {
             </div>
 
             {/* 5. Hạng của bạn */}
-            <div className="bg-white border-2 border-slate-900 rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 col-span-2 sm:col-span-1">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 col-span-2 sm:col-span-1">
               <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
                 <Trophy className="w-5 h-5 text-amber-600" />
               </div>
@@ -171,7 +171,7 @@ export default function ProgressPage() {
           {activeView === 'activity' && (
             <div className="space-y-6 animate-fadeIn">
               {/* Card 1: 6-Month Activity Heatmap Grid */}
-              <div className="bg-white border-2 border-slate-900 rounded-3xl p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-blue-600" />
@@ -221,7 +221,7 @@ export default function ProgressPage() {
               </div>
 
               {/* Card 2: 30-Day Daily Practice Breakdown */}
-              <div className="bg-white border-2 border-slate-900 rounded-3xl p-5 sm:p-6 shadow-xs space-y-5">
+              <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                   <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
                     <BarChart3 className="w-4 h-4 text-blue-600" />
@@ -320,7 +320,7 @@ export default function ProgressPage() {
 
           {/* TAB 2: BẢNG XẾP HẠNG LEADERBOARD */}
           {activeView === 'leaderboard' && (
-            <div className="bg-white border-2 border-slate-900 rounded-3xl p-5 sm:p-6 shadow-xs space-y-4 animate-fadeIn">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-4 animate-fadeIn">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div>
                   <h2 className="text-base font-black text-slate-900 flex items-center gap-2">

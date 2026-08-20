@@ -306,7 +306,7 @@ function SettingsContent() {
                       <div
                         key={id}
                         onClick={() => setTheme(id)}
-                        className={`border-2 border-slate-900 rounded-3xl p-5 cursor-pointer transition-all duration-200 relative overflow-hidden flex flex-col justify-between space-y-4 ${
+                        className={`border border-slate-200/80 shadow-xs rounded-3xl p-5 cursor-pointer transition-all duration-200 relative overflow-hidden flex flex-col justify-between space-y-4 ${
                           isActive
                             ? `bg-white shadow-md ring-4 ${cfg.accentRing}`
                             : 'bg-white hover:bg-slate-50'

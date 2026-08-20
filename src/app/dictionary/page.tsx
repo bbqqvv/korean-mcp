@@ -402,14 +402,14 @@ export default function DictionaryPage() {
                   placeholder="Tra tiếng Hàn hoặc tiếng Việt... (vd: tạm biệt, 시간, thời gian)"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white border-2 border-slate-900 rounded-2xl pl-10 pr-4 py-3 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs"
+                  className="w-full bg-white border border-slate-200/80 shadow-xs rounded-2xl pl-10 pr-4 py-3 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSearchingAI}
-                className={`px-6 py-3 ${themeConfig.primaryBg} ${themeConfig.primaryHover} text-white font-bold text-xs sm:text-sm rounded-2xl border-2 border-slate-900 shadow-xs transition-all shrink-0 flex items-center gap-1.5 disabled:opacity-50`}
+                className={`px-6 py-3 ${themeConfig.primaryBg} ${themeConfig.primaryHover} text-white font-bold text-xs sm:text-sm rounded-2xl border border-slate-200/80 shadow-xs shadow-xs transition-all shrink-0 flex items-center gap-1.5 disabled:opacity-50`}
               >
                 {isSearchingAI ? (
                   <>
@@ -462,7 +462,7 @@ export default function DictionaryPage() {
             )}
 
             {!submittedQuery.trim() && !isSearchingAI && (
-              <div className="bg-white border-2 border-slate-900 rounded-3xl p-10 text-center space-y-3 shadow-xs my-4">
+              <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-10 text-center space-y-3 shadow-xs my-4">
                 <BookOpen className="w-10 h-10 text-blue-600 mx-auto" />
                 <h3 className="text-base font-black text-slate-900">
                   Nhập từ vựng và bấm Tra từ
@@ -474,7 +474,7 @@ export default function DictionaryPage() {
             )}
 
             {isSearchingAI && (
-              <div className="bg-white border-2 border-slate-900 rounded-3xl p-8 text-center space-y-3 shadow-xs">
+              <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-8 text-center space-y-3 shadow-xs">
                 <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
                 <p className="text-sm font-bold text-slate-900">
                   Đang truy vấn từ điển cho &quot;{submittedQuery}&quot;...
@@ -486,7 +486,7 @@ export default function DictionaryPage() {
             )}
 
             {!isSearchingAI && searchedResults.length === 0 && submittedQuery.trim() && (
-              <div className="bg-white border-2 border-slate-900 rounded-3xl p-8 text-center space-y-2 shadow-xs">
+              <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-8 text-center space-y-2 shadow-xs">
                 <p className="text-sm font-black text-slate-900">
                   Không tìm thấy kết quả phù hợp cho &quot;{submittedQuery}&quot;
                 </p>
@@ -501,7 +501,7 @@ export default function DictionaryPage() {
                 {searchedResults.map((item, index) => (
                   <div
                     key={index}
-                    className="bg-white border-2 border-slate-900 rounded-3xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4"
+                    className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4"
                   >
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">

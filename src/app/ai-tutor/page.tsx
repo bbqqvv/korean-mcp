@@ -314,14 +314,14 @@ export default function AITutorPage() {
                     alt="LynKore AI Logo"
                     width={32}
                     height={32}
-                    className="w-8 h-8 rounded-2xl object-cover border-2 border-slate-900 shadow-xs shrink-0 mt-1"
+                    className="w-8 h-8 rounded-2xl object-cover border border-slate-200/80 shadow-xs shadow-xs shrink-0 mt-1"
                   />
                 )}
 
                 <div className={`max-w-[85%] sm:max-w-2xl space-y-2`}>
                   {/* Bubble Container */}
                   <div
-                    className={`p-4 sm:p-5 text-xs sm:text-sm leading-relaxed border-2 border-slate-900 shadow-xs ${
+                    className={`p-4 sm:p-5 text-xs sm:text-sm leading-relaxed border border-slate-200/80 shadow-xs shadow-xs ${
                       msg.role === 'user'
                         ? 'bg-blue-600 text-white rounded-3xl rounded-br-xs font-semibold'
                         : 'bg-white text-slate-900 rounded-3xl rounded-bl-xs'
@@ -357,7 +357,7 @@ export default function AITutorPage() {
                         <button
                           key={idx}
                           onClick={() => handleSendMessage(chip)}
-                          className="px-3 py-1.5 bg-white border-2 border-slate-900 rounded-2xl text-slate-800 font-bold text-xs shadow-2xs hover:bg-blue-50 hover:border-blue-600 transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-white border border-slate-200/80 shadow-xs rounded-2xl text-slate-800 font-bold text-xs shadow-2xs hover:bg-blue-50 hover:border-blue-600 transition-all flex items-center gap-1.5"
                         >
                           <span>{chip}</span>
                           <ArrowRight className="w-3 h-3 text-slate-400" />
@@ -376,9 +376,9 @@ export default function AITutorPage() {
                   alt="LynKore AI Logo"
                   width={32}
                   height={32}
-                  className="w-8 h-8 rounded-2xl object-cover border-2 border-slate-900 shadow-xs shrink-0 animate-bounce"
+                  className="w-8 h-8 rounded-2xl object-cover border border-slate-200/80 shadow-xs shadow-xs shrink-0 animate-bounce"
                 />
-                <div className="bg-white border-2 border-slate-900 rounded-2xl px-4 py-3 shadow-xs text-xs font-bold text-slate-600 flex items-center gap-2">
+                <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl px-4 py-3 shadow-xs text-xs font-bold text-slate-600 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-500 animate-spin" />
                   <span>LynKore AI đang suy nghĩ câu trả lời...</span>
                 </div>
@@ -395,7 +395,7 @@ export default function AITutorPage() {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="bg-white border-2 border-slate-900 rounded-3xl p-3 sm:p-4 shadow-md flex items-center gap-2 sm:gap-3"
+              className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-3 sm:p-4 shadow-md flex items-center gap-2 sm:gap-3"
             >
               <input
                 type="text"
@@ -417,7 +417,7 @@ export default function AITutorPage() {
               <button
                 type="submit"
                 disabled={!inputPrompt.trim() || isLoading}
-                className={`px-5 py-2.5 ${themeConfig.primaryBg} ${themeConfig.primaryHover} disabled:opacity-50 text-white font-bold text-xs sm:text-sm rounded-2xl border-2 border-slate-900 shadow-xs flex items-center gap-2 transition-all shrink-0`}
+                className={`px-5 py-2.5 ${themeConfig.primaryBg} ${themeConfig.primaryHover} disabled:opacity-50 text-white font-bold text-xs sm:text-sm rounded-2xl border border-slate-200/80 shadow-xs shadow-xs flex items-center gap-2 transition-all shrink-0`}
               >
                 <span>Gửi</span>
                 <Send className="w-4 h-4" />

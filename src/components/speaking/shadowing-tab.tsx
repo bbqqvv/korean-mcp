@@ -226,7 +226,7 @@ export default function ShadowingTab() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Side: Real-time YouTube Player Studio */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="bg-white border-2 border-slate-900 rounded-3xl p-5 shadow-xs space-y-4">
+          <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 shadow-xs space-y-4">
             {/* Header info */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="space-y-0.5">
@@ -243,7 +243,7 @@ export default function ShadowingTab() {
             </div>
 
             {/* YouTube Player Container with Real-time API */}
-            <div className="relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-slate-900 bg-black shadow-md">
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-slate-200/80 shadow-xs bg-black shadow-md">
               <div id={`yt-player-${selectedVideo.id}`} className="w-full h-full" />
             </div>
 
@@ -307,7 +307,7 @@ export default function ShadowingTab() {
             </div>
 
             {/* Active Karaoke Subtitle Highlight Card */}
-            <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white rounded-2xl p-5 space-y-2.5 border-2 border-slate-900 shadow-sm relative overflow-hidden">
+            <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white rounded-2xl p-5 space-y-2.5 border border-slate-200/80 shadow-xs shadow-sm relative overflow-hidden">
               <div className="flex items-center justify-between text-[10px] font-extrabold text-blue-300 uppercase tracking-wide">
                 <span className="flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
@@ -332,7 +332,7 @@ export default function ShadowingTab() {
 
         {/* Right Side: Synchronized Karaoke Timeline */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-white border-2 border-slate-900 rounded-3xl p-5 shadow-xs space-y-3">
+          <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 shadow-xs space-y-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
               <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
                 <ListVideo className={`w-4 h-4 ${themeConfig.primaryText}`} />
@@ -384,7 +384,7 @@ export default function ShadowingTab() {
           </div>
 
           {/* Curated Video Playlist */}
-          <div className="bg-white border-2 border-slate-900 rounded-3xl p-5 shadow-xs space-y-3">
+          <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 shadow-xs space-y-3">
             <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
               THƯ VIỆN VIDEO CHỌN LỌC

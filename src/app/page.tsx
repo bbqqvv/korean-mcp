@@ -103,7 +103,7 @@ function DashboardContent() {
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <main className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 pb-20 md:pb-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-w-6xl w-full mx-auto">
           {/* Welcome & Progress Overview Banner */}
-          <div className="bg-white border-2 border-slate-900 rounded-3xl p-5 sm:p-6 shadow-xs space-y-3.5">
+          <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-3.5">
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
                 <span className={`text-[11px] ${themeConfig.primaryText} font-extrabold tracking-wide uppercase`}>
@@ -156,14 +156,14 @@ function DashboardContent() {
 
           {/* RECOMMENDED DECK OF THE DAY */}
           {isLoading ? (
-            <div className="bg-white border-2 border-slate-900 rounded-3xl p-5 shadow-xs space-y-3">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 shadow-xs space-y-3">
               <Skeleton className="w-32 h-4 rounded-full" />
               <Skeleton className="w-1/2 h-6 rounded-xl" />
               <Skeleton className="w-3/4 h-4 rounded-lg" />
             </div>
           ) : (
             recommendedDeck && (
-              <section className="bg-white border-2 border-slate-900 rounded-3xl p-5 shadow-xs space-y-2.5">
+              <section className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 shadow-xs space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <Sparkles className={`w-3.5 h-3.5 ${themeConfig.primaryText}`} />
@@ -231,7 +231,7 @@ function DashboardContent() {
                 {displayedDecks.map((deck) => (
                   <div
                     key={deck.id}
-                    className="bg-white border-2 border-slate-900 rounded-3xl p-5 hover:shadow-md transition-all flex flex-col justify-between space-y-3"
+                    className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 hover:shadow-md transition-all flex flex-col justify-between space-y-3"
                   >
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
