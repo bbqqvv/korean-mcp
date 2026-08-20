@@ -4,6 +4,7 @@ import './globals.css';
 import { ThemeProvider } from '@/lib/theme-context';
 import AmbientEffects from '@/components/ambient-effects';
 import AmbientAudio from '@/components/ambient-audio';
+import { HelpWidget } from '@/components/help-widget';
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ['latin', 'vietnamese'],
@@ -41,6 +42,7 @@ export default function RootLayout({
           <AmbientEffects />
           <AmbientAudio />
           {children}
+          <HelpWidget />
         </ThemeProvider>
       </body>
     </html>
