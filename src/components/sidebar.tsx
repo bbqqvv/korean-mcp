@@ -147,10 +147,10 @@ export default function Sidebar({
                   className="w-8.5 h-8.5 rounded-xl object-contain group-hover:scale-105 transition-transform shadow-xs shrink-0"
                 />
                 <div>
-                  <span className="font-black text-lg tracking-tight text-slate-900 block leading-none">
+                  <span className="font-bold text-lg tracking-tight text-slate-900 block leading-none">
                     LynKore
                   </span>
-                  <span className="text-[10px] text-slate-400 font-bold tracking-wider uppercase block mt-1">
+                  <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase block mt-1">
                     Korean Learning
                   </span>
                 </div>
@@ -180,9 +180,9 @@ export default function Sidebar({
         {/* Main Navigation & Category List */}
         <div className="flex-1 overflow-y-auto p-2.5 space-y-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {/* Main Routes */}
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             {!isCollapsed && (
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-3 block mb-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-3 block mb-1.5">
                 ĐIỀU HƯỚNG BÀI HỌC
               </span>
             )}
@@ -226,9 +226,9 @@ export default function Sidebar({
                 return (
                   <div key={link.href} className="space-y-1">
                     <div
-                      className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                      className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
                         isActive
-                          ? `${themeConfig.badgeBg} font-bold`
+                          ? `${themeConfig.badgeBg} ${themeConfig.primaryText} font-semibold`
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                       }`}
                       onClick={() => {
@@ -257,9 +257,9 @@ export default function Sidebar({
                               key={sub.label}
                               href={sub.href}
                               onClick={onCloseMobile}
-                              className={`flex items-center gap-2 py-2 px-2.5 text-[11px] font-semibold rounded-xl transition-all ${
+                              className={`flex items-center gap-2 py-1.5 px-2.5 text-[11px] font-medium rounded-xl transition-all ${
                                 isSubActive
-                                  ? 'bg-slate-900 text-white font-bold shadow-2xs'
+                                  ? 'bg-slate-900 text-white font-semibold shadow-2xs'
                                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                               }`}
                             >
@@ -328,9 +328,9 @@ export default function Sidebar({
                   key={link.href}
                   href={link.href}
                   onClick={onCloseMobile}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
+                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                     isActive
-                      ? `${themeConfig.badgeBg} font-bold`
+                      ? `${themeConfig.badgeBg} ${themeConfig.primaryText} font-semibold`
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >

@@ -87,7 +87,7 @@ export default function ProgressPage() {
           {/* Header Title */}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className={`text-[11px] ${themeConfig.primaryText} font-semibold tracking-wide uppercase`}>
+              <span className={`text-[11px] ${themeConfig.primaryText} font-semibold tracking-wider uppercase`}>
                 LYNKORE ANALYTICS &amp; DASHBOARD
               </span>
             </div>
@@ -102,71 +102,71 @@ export default function ProgressPage() {
           {/* 5 Top Key Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {/* 1. Chuỗi dài nhất */}
-            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-100/80 flex items-center justify-center shrink-0">
                 <Flame className="w-5 h-5 text-amber-500 fill-current" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-bold text-slate-900 leading-tight">
+                <p className="text-lg font-semibold text-slate-900 leading-tight">
                   {USER_STATS.longestStreak}
-                  <span className="ml-1 text-xs font-semibold text-slate-500">ngày</span>
+                  <span className="ml-1 text-xs font-normal text-slate-500">ngày</span>
                 </p>
-                <p className="truncate text-[11px] text-slate-500 font-medium">Chuỗi dài nhất</p>
+                <p className="truncate text-[11px] text-slate-500 font-normal">Chuỗi dài nhất</p>
               </div>
             </div>
 
             {/* 2. Từ đã lưu */}
-            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100/80 flex items-center justify-center shrink-0">
                 <BookOpen className="w-5 h-5 text-emerald-600" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-bold text-slate-900 leading-tight">
+                <p className="text-lg font-semibold text-slate-900 leading-tight">
                   {USER_STATS.savedWords}
-                  <span className="ml-1 text-xs font-semibold text-slate-500">từ</span>
+                  <span className="ml-1 text-xs font-normal text-slate-500">từ</span>
                 </p>
-                <p className="truncate text-[11px] text-slate-500 font-medium">Từ đã lưu</p>
+                <p className="truncate text-[11px] text-slate-500 font-normal">Từ đã lưu</p>
               </div>
             </div>
 
             {/* 3. Thời gian luyện tập */}
-            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-100/80 flex items-center justify-center shrink-0">
                 <Clock className="w-5 h-5 text-blue-600" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-bold text-slate-900 leading-tight">
+                <p className="text-lg font-semibold text-slate-900 leading-tight">
                   {USER_STATS.practiceTimeMinutes}m
                 </p>
-                <p className="truncate text-[11px] text-slate-500 font-medium">Thời gian luyện tập</p>
+                <p className="truncate text-[11px] text-slate-500 font-normal">Thời gian luyện tập</p>
               </div>
             </div>
 
             {/* 4. Tổng XP */}
-            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center shrink-0">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-100/80 flex items-center justify-center shrink-0">
                 <Target className="w-5 h-5 text-indigo-600" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-bold text-slate-900 leading-tight">
+                <p className="text-lg font-semibold text-slate-900 leading-tight">
                   {USER_STATS.totalXp}
-                  <span className="ml-1 text-xs font-semibold text-slate-500">XP</span>
+                  <span className="ml-1 text-xs font-normal text-slate-500">XP</span>
                 </p>
-                <p className="truncate text-[11px] text-slate-500 font-medium">Tổng XP</p>
+                <p className="truncate text-[11px] text-slate-500 font-normal">Tổng XP</p>
               </div>
             </div>
 
             {/* 5. Hạng của bạn */}
-            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 col-span-2 sm:col-span-1">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+            <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 flex items-center gap-3 col-span-2 sm:col-span-1">
+              <div className="w-10 h-10 rounded-xl bg-amber-100/80 flex items-center justify-center shrink-0">
                 <Trophy className="w-5 h-5 text-amber-600" />
               </div>
               <div className="min-w-0">
-                <p className="text-lg font-bold text-slate-900 leading-tight">
+                <p className="text-lg font-semibold text-slate-900 leading-tight">
                   #{USER_STATS.weeklyRank}
-                  <span className="ml-1 text-xs font-semibold text-slate-500">Tuần</span>
+                  <span className="ml-1 text-xs font-normal text-slate-500">Tuần</span>
                 </p>
-                <p className="truncate text-[11px] text-slate-500 font-medium">Hạng của bạn</p>
+                <p className="truncate text-[11px] text-slate-500 font-normal">Hạng của bạn</p>
               </div>
             </div>
           </div>
@@ -175,20 +175,20 @@ export default function ProgressPage() {
           <div className="border-b border-slate-200 flex items-center gap-2 pt-2">
             <button
               onClick={() => setActiveView('activity')}
-              className={`pb-2.5 px-3 text-xs sm:text-sm font-extrabold transition-all border-b-2 ${
+              className={`pb-2.5 px-3 text-xs sm:text-sm font-semibold transition-all border-b-2 ${
                 activeView === 'activity'
                   ? `border-slate-900 text-slate-900`
-                  : 'border-transparent text-slate-400 hover:text-slate-700'
+                  : 'border-transparent text-slate-500 hover:text-slate-800'
               }`}
             >
               Hoạt động của tôi
             </button>
             <button
               onClick={() => setActiveView('leaderboard')}
-              className={`pb-2.5 px-3 text-xs sm:text-sm font-extrabold transition-all border-b-2 ${
+              className={`pb-2.5 px-3 text-xs sm:text-sm font-semibold transition-all border-b-2 ${
                 activeView === 'leaderboard'
                   ? `border-slate-900 text-slate-900`
-                  : 'border-transparent text-slate-400 hover:text-slate-700'
+                  : 'border-transparent text-slate-500 hover:text-slate-800'
               }`}
             >
               Bảng xếp hạng
@@ -201,12 +201,12 @@ export default function ProgressPage() {
               {/* Card 1: 12-Month Activity Heatmap Grid (52-Week Full Stretch GitHub Style) */}
               <div className="bg-white border border-slate-200/80 shadow-xs rounded-2xl p-4 sm:p-5 space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                  <h2 className="text-xs sm:text-sm font-bold text-slate-900">
+                  <h2 className="text-xs sm:text-sm font-semibold text-slate-900">
                     Tổng quan hoạt động (12 tháng gần đây)
                   </h2>
-                  <div className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full transition-all">
+                  <div className="text-[10px] font-medium text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full transition-all">
                     {hoveredDay ? (
-                      <span className="text-blue-600 font-bold">{hoveredDay.date}: Mức độ học {hoveredDay.level}/4</span>
+                      <span className="text-blue-600 font-semibold">{hoveredDay.date}: Mức độ học {hoveredDay.level}/4</span>
                     ) : (
                       <span>365 Ngày hoạt động</span>
                     )}
@@ -217,7 +217,7 @@ export default function ProgressPage() {
                 <div className="overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   <div className="min-w-[760px] flex items-start gap-2.5 w-full">
                     {/* Weekday Labels Column (Exact Row Alignment) */}
-                    <div className="pt-4 space-y-1 text-[9px] font-bold text-slate-400 select-none shrink-0 text-right w-4">
+                    <div className="pt-4 space-y-1 text-[9px] font-medium text-slate-400 select-none shrink-0 text-right w-4">
                       <div className="h-3 leading-3">T2</div>
                       <div className="h-3 leading-3 opacity-0">T3</div>
                       <div className="h-3 leading-3">T4</div>
@@ -230,7 +230,7 @@ export default function ProgressPage() {
                       {heatmapWeeks.map((week, weekIdx) => (
                         <div key={weekIdx} className="flex flex-col gap-1 items-center flex-1">
                           {/* Month Header Label */}
-                          <div className="h-3.5 text-[9px] font-bold text-slate-400 whitespace-nowrap select-none">
+                          <div className="h-3.5 text-[9px] font-medium text-slate-400 whitespace-nowrap select-none">
                             {week.monthLabel || ''}
                           </div>
 
@@ -278,7 +278,7 @@ export default function ProgressPage() {
               {/* Card 2: 30-Day Daily Practice Breakdown */}
               <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                  <h2 className="text-sm sm:text-base font-bold text-slate-900">
+                  <h2 className="text-xs sm:text-sm font-semibold text-slate-900">
                     Luyện tập hàng ngày (30 ngày gần đây)
                   </h2>
 
@@ -294,10 +294,10 @@ export default function ProgressPage() {
                       <button
                         key={tab.id}
                         onClick={() => setActiveSkill(tab.id as SkillTab)}
-                        className={`px-3 py-1 rounded-xl text-xs font-extrabold transition-all shrink-0 ${
+                        className={`px-3 py-1 rounded-xl text-xs transition-all shrink-0 ${
                           activeSkill === tab.id
-                            ? `${themeConfig.primaryBg} text-white shadow-2xs`
-                            : 'text-slate-600 hover:text-slate-900'
+                            ? `${themeConfig.primaryBg} text-white font-semibold shadow-2xs`
+                            : 'text-slate-600 hover:text-slate-900 font-medium'
                         }`}
                       >
                         {tab.label}
@@ -309,12 +309,12 @@ export default function ProgressPage() {
                 {/* 30-Day Practice Bar Visualizer */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Left Chart: Phút luyện tập */}
-                  <div className="space-y-3 bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
+                  <div className="space-y-3 bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                      <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
                         PHÚT LUYỆN TẬP (30 NGÀY)
                       </p>
-                      <span className="text-xs font-bold text-blue-600">
+                      <span className="text-xs font-semibold text-blue-600">
                         Tổng: {totalMinutesSkill} phút
                       </span>
                     </div>
