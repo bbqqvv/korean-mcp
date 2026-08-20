@@ -32,10 +32,35 @@ interface ProgressAnalyticsProps {
 }
 
 export default function ProgressAnalytics({ showHeaderAndCards = false }: ProgressAnalyticsProps) {
-  const { themeConfig } = useTheme();
+  const { themeConfig, subStyle } = useTheme();
   const [activeView, setActiveView] = useState<ViewTab>('activity');
   const [activeSkill, setActiveSkill] = useState<SkillTab>('dictation');
   const [hoveredDay, setHoveredDay] = useState<{ date: string; level: number } | null>(null);
+
+  // Dynamic Heatmap Level Colors matching user theme (subStyle: default/purple/pink/blue) with high contrast
+  const getHeatmapLevelClasses = (level: number) => {
+    if (level === 0) return 'bg-slate-100 dark:bg-zinc-800/80';
+
+    if (subStyle === 'purple') {
+      if (level === 1) return 'bg-purple-200 dark:bg-purple-950/80 border border-purple-300/40 dark:border-purple-800/60';
+      if (level === 2) return 'bg-purple-400 dark:bg-purple-800';
+      if (level === 3) return 'bg-purple-600 dark:bg-purple-600';
+      return 'bg-purple-800 dark:bg-purple-400';
+    }
+
+    if (subStyle === 'pink') {
+      if (level === 1) return 'bg-pink-200 dark:bg-pink-950/80 border border-pink-300/40 dark:border-pink-800/60';
+      if (level === 2) return 'bg-pink-400 dark:bg-pink-800';
+      if (level === 3) return 'bg-pink-600 dark:bg-pink-600';
+      return 'bg-pink-800 dark:bg-pink-400';
+    }
+
+    // Default / Blue
+    if (level === 1) return 'bg-blue-200 dark:bg-blue-950/80 border border-blue-300/40 dark:border-blue-800/60';
+    if (level === 2) return 'bg-blue-400 dark:bg-blue-800';
+    if (level === 3) return 'bg-blue-600 dark:bg-blue-600';
+    return 'bg-blue-800 dark:bg-blue-400';
+  };
 
   // Generate 6 months of heatmap days
   const heatmapDays = useMemo(() => generateHeatmapData(), []);
@@ -250,11 +275,7 @@ export default function ProgressAnalytics({ showHeaderAndCards = false }: Progre
                     {heatmapWeeks.map((week, wIdx) => (
                       <div key={wIdx} className="flex flex-col gap-1">
                         {week.days.map((day, dIdx) => {
-                          let levelClass = 'bg-slate-100 dark:bg-slate-800/60';
-                          if (day.level === 1) levelClass = 'bg-emerald-200 dark:bg-emerald-900/60';
-                          if (day.level === 2) levelClass = 'bg-emerald-400 dark:bg-emerald-700';
-                          if (day.level === 3) levelClass = 'bg-emerald-600 dark:bg-emerald-500';
-                          if (day.level === 4) levelClass = 'bg-emerald-800 dark:bg-emerald-400';
+                          const levelClass = getHeatmapLevelClasses(day.level);
 
                           return (
                             <div
@@ -271,17 +292,17 @@ export default function ProgressAnalytics({ showHeaderAndCards = false }: Progre
                   </div>
                 </div>
 
-                {/* Footer Legend */}
-                <div className="flex items-center justify-between text-[11px] text-slate-400 pt-3">
+                {/* Footer Legend (Theme-Synced with High Contrast) */}
+                <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium pt-3">
                   <span>365 ngày hoạt động gần đây</span>
                   <div className="flex items-center gap-1.5">
                     <span>Ít học</span>
                     <div className="flex gap-1">
-                      <span className="w-3 h-3 rounded-xs bg-slate-100 dark:bg-slate-800" />
-                      <span className="w-3 h-3 rounded-xs bg-emerald-200 dark:bg-emerald-900/60" />
-                      <span className="w-3 h-3 rounded-xs bg-emerald-400 dark:bg-emerald-700" />
-                      <span className="w-3 h-3 rounded-xs bg-emerald-600 dark:bg-emerald-500" />
-                      <span className="w-3 h-3 rounded-xs bg-emerald-800 dark:bg-emerald-400" />
+                      <span className={`w-3 h-3 rounded-xs ${getHeatmapLevelClasses(0)}`} />
+                      <span className={`w-3 h-3 rounded-xs ${getHeatmapLevelClasses(1)}`} />
+                      <span className={`w-3 h-3 rounded-xs ${getHeatmapLevelClasses(2)}`} />
+                      <span className={`w-3 h-3 rounded-xs ${getHeatmapLevelClasses(3)}`} />
+                      <span className={`w-3 h-3 rounded-xs ${getHeatmapLevelClasses(4)}`} />
                     </div>
                     <span>Chăm học</span>
                   </div>
