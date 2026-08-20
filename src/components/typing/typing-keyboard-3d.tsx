@@ -139,19 +139,19 @@ export default function TypingKeyboard3D({
               const batteryLevel = stat ? stat.masteryLevel : 0;
 
               let keyCapStyle =
-                'bg-white border border-slate-200/90 border-b-4 border-b-slate-300 text-slate-900 shadow-md hover:bg-slate-50';
+                'bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 border-b-4 border-b-slate-300 dark:border-b-slate-700 text-slate-900 dark:text-white shadow-md hover:bg-slate-50 dark:hover:bg-slate-800';
 
               if (isTarget) {
-                keyCapStyle = `${themeConfig.primaryBg} border-blue-600 border-b-4 border-b-blue-800 text-white font-black ring-4 ${themeConfig.accentRing} shadow-xl scale-105 animate-pulse`;
+                keyCapStyle = `${themeConfig.primaryBg} border-b-4 text-white font-black ring-4 ${themeConfig.accentRing} shadow-xl scale-105 animate-pulse`;
               }
 
               if (isActive) {
                 if (keyFeedback === 'wrong') {
                   keyCapStyle =
-                    'bg-rose-600 text-white border-rose-600 border-b-2 border-b-rose-800 translate-y-1 shadow-sm scale-95 transition-transform duration-75';
+                    'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-300 border-b-2 border-b-rose-400 translate-y-1 shadow-sm scale-95 transition-transform duration-75 font-black';
                 } else {
                   keyCapStyle =
-                    'bg-blue-600 text-white border-blue-600 border-b-2 border-b-blue-800 translate-y-1 shadow-sm scale-95 transition-transform duration-75';
+                    `${themeConfig.badgeBg} border-b-2 translate-y-1 shadow-sm scale-95 transition-transform duration-75 font-black`;
                 }
               }
 
@@ -173,7 +173,7 @@ export default function TypingKeyboard3D({
                   {/* Top Hanguel Character (Dynamic Shift Support) */}
                   <span
                     className={`text-sm sm:text-lg font-black leading-none text-left z-10 ${
-                      isTarget || isActive ? 'text-white' : 'text-slate-900'
+                      isTarget ? 'text-white' : isActive ? themeConfig.primaryText : 'text-slate-900 dark:text-white'
                     }`}
                   >
                     {displayedHangul}
@@ -182,7 +182,7 @@ export default function TypingKeyboard3D({
                   {/* Bottom Native QWERTY Character */}
                   <span
                     className={`text-[10px] font-mono font-bold uppercase text-right leading-none z-10 ${
-                      isTarget || isActive ? 'text-blue-100' : 'text-slate-400'
+                      isTarget ? 'text-white/80' : isActive ? themeConfig.primaryText : 'text-slate-400'
                     }`}
                   >
                     {item.native}
@@ -192,7 +192,7 @@ export default function TypingKeyboard3D({
                   {item.isHomeFinger && (
                     <span
                       className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full z-10 ${
-                        isTarget || isActive ? 'bg-white' : 'bg-slate-400'
+                        isTarget ? 'bg-white' : isActive ? themeConfig.primaryText : 'bg-slate-400'
                       }`}
                     />
                   )}
@@ -206,17 +206,17 @@ export default function TypingKeyboard3D({
         <div className="flex justify-center gap-2 pt-0.5">
           <div className="w-12 sm:w-16 h-11 sm:h-13" />
           <div
-            className={`w-72 sm:w-[26rem] h-11 sm:h-13 rounded-xl border border-slate-200/90 border-b-4 border-b-slate-300 flex items-center justify-center text-xs font-bold transition-all shadow-md ${
+            className={`w-72 sm:w-[26rem] h-11 sm:h-13 rounded-xl border border-slate-200/90 dark:border-slate-800 border-b-4 border-b-slate-300 dark:border-b-slate-700 flex items-center justify-center text-xs font-bold transition-all shadow-md ${
               nextQwertyKey === 'space'
-                ? `${themeConfig.primaryBg} border-blue-600 border-b-blue-800 text-white ring-4 ${themeConfig.accentRing} animate-pulse`
+                ? `${themeConfig.primaryBg} text-white ring-4 ${themeConfig.accentRing} animate-pulse`
                 : activeKey === 'space'
-                ? `${themeConfig.primaryBg} text-white border-b-2 translate-y-1 shadow-sm`
-                : 'bg-white text-slate-500'
+                ? `${themeConfig.badgeBg} border-b-2 translate-y-1 shadow-sm font-black`
+                : 'bg-white dark:bg-slate-900 text-slate-500'
             }`}
           >
             <span
               className={`text-xs font-mono font-black ${
-                activeKey === 'space' || nextQwertyKey === 'space' ? 'text-white' : 'text-slate-600'
+                activeKey === 'space' ? themeConfig.primaryText : nextQwertyKey === 'space' ? 'text-white' : 'text-slate-600 dark:text-slate-400'
               }`}
             >
               SPACEBAR

@@ -84,7 +84,7 @@ export default function TypingStage({
 
           if (isCompleted) {
             return (
-              <span key={index} className="text-blue-600 font-black px-0.5 sm:px-1">
+              <span key={index} className={`${themeConfig.primaryText} font-black px-0.5 sm:px-1`}>
                 {originalChar === ' ' ? '␣' : originalChar}
               </span>
             );
@@ -207,8 +207,8 @@ export default function TypingStage({
       {/* Clean Subtext */}
       <div className="text-xs sm:text-sm font-bold text-slate-400 tracking-wide">
         {isLessonComplete ? (
-          <span className="text-blue-600 font-bold flex items-center gap-1.5 justify-center">
-            <CheckCircle2 className="w-4 h-4 text-blue-600" /> Hoàn thành bài tập! Bấm phím tiếp theo (Enter ↵)
+          <span className={`${themeConfig.primaryText} font-bold flex items-center gap-1.5 justify-center`}>
+            <CheckCircle2 className="w-4 h-4" /> Hoàn thành bài tập! Bấm phím tiếp theo (Enter ↵)
           </span>
         ) : targetMeaning ? (
           <span className="text-slate-500 font-medium text-sm sm:text-base">{targetMeaning}</span>
