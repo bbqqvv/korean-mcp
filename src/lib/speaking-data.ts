@@ -60,61 +60,61 @@ export interface RoleplayScenario {
 export const SHADOWING_VIDEOS: ShadowingVideoItem[] = [
   {
     id: 'vid-kdrama-1',
-    title: '🎬 Queen of Tears - Lời Tỏ Tình Ngọt Ngào',
-    youtubeId: 'P_S94Hh6m5Q',
-    category: 'k-drama',
-    categoryLabel: 'Phim K-Drama',
+    title: '🎬 Giao Tiếp Tiếng Hàn Thực Tế Sơ Cấp',
+    youtubeId: '3JZ_D3ELwOQ',
+    category: 'daily',
+    categoryLabel: 'Giao Tiếp Thực Tế',
     difficulty: 'Sơ cấp',
     duration: '0:45',
-    description: 'Trích đoạn thoại tình cảm lãng mạn được yêu thích nhất trong phim Nước Mắt Hoàng Hậu.',
+    description: 'Trích đoạn mẫu câu giao tiếp hàng ngày nói nhại chuẩn ngữ điệu Seoul.',
     subtitles: [
       {
         id: 1,
         startTime: 0,
         endTime: 6,
-        korean: '내가 당신을 얼마나 좋아하는지 모르죠?',
-        romaja: 'Nae-ga dang-sin-eul ol-ma-na jo-a-ha-neun-ji mo-reu-jyo?',
-        vietnamese: 'Anh có biết em thích anh đến mức nào không?',
-        speaker: 'Hải In (Nữ chính)'
+        korean: '안녕하세요! 만나서 반갑습니다.',
+        romaja: 'An-nyeong-ha-se-yo! Man-na-seo ban-gap-seum-ni-da.',
+        vietnamese: 'Xin chào! Rất vui được gặp bạn.',
+        speaker: 'Bản xí Hàn'
       },
       {
         id: 2,
         startTime: 6,
         endTime: 12,
-        korean: '매일매일 생각나고, 보고 싶었어요.',
-        romaja: 'Mae-il-mae-il saeng-gak-na-go, bo-go sip-eoss-eo-yo.',
-        vietnamese: 'Ngày nào em cũng nhớ và muốn gặp anh.',
-        speaker: 'Hải In (Nữ chính)'
+        korean: '오늘 날씨가 정말 좋네요. 같이 커피 한 잔 할래요?',
+        romaja: 'O-neul nal-ssi-ga jeong-mal jot-ne-yo. Gat-i keo-pi han jan hal-rae-yo?',
+        vietnamese: 'Thời tiết hôm nay đẹp thật đấy. Bạn có muốn đi uống cafe cùng không?',
+        speaker: 'Bản xí Hàn'
       },
       {
         id: 3,
         startTime: 12,
         endTime: 18,
-        korean: '앞으로도 내 옆에 계속 있어 줄래요?',
-        romaja: 'Ap-eu-ro-do nae yeop-e gye-sok iss-eo jul-rae-yo?',
-        vietnamese: 'Từ nay về sau anh vẫn sẽ luôn ở bên em chứ?',
-        speaker: 'Hải In (Nữ chính)'
+        korean: '좋아요! 근처에 예쁜 카페가 있어요.',
+        romaja: 'Jo-a-yo! Geun-cheo-e ye-ppeun ka-pe-ga iss-eo-yo.',
+        vietnamese: 'Thích quá! Gần đây có một quán cafe rất đẹp đấy.',
+        speaker: 'Bản xí Hàn'
       },
       {
         id: 4,
         startTime: 18,
         endTime: 25,
-        korean: '당연하죠. 언제나 당신 곁에 있을게요.',
-        romaja: 'Dang-yeon-ha-jyo. Eon-je-na dang-sin gyeot-e iss-eul-ge-yo.',
-        vietnamese: 'Tất nhiên rồi. Anh sẽ luôn luôn ở bên cạnh em.',
-        speaker: 'Hiện Thụ (Nam chính)'
+        korean: '그럼 지금 바로 가요. 제가 살게요!',
+        romaja: 'Geu-reom ji-geum ba-ro ga-yo. Je-ga sal-ge-yo!',
+        vietnamese: 'Vậy chúng ta đi ngay bây giờ nhé. Tôi sẽ mời!',
+        speaker: 'Bản xí Hàn'
       }
     ]
   },
   {
     id: 'vid-vlog-1',
-    title: '☕ Vlog Đi Gọi Cà Phê & Bánh Ngọt Tại Hongdae',
-    youtubeId: 'k2N2Y5H6X4w',
+    title: '☕ Vlog Học Nói Tiếng Hàn Nhịp Điệu Tự Nhiên',
+    youtubeId: '60ItHLz5WEA',
     category: 'vlog',
     categoryLabel: 'Vlog Đời Sống',
     difficulty: 'Sơ cấp',
     duration: '0:50',
-    description: 'Học hội thoại giao tiếp thực tế khi đi uống cà phê với bạn bè tại quán Cafe Seoul.',
+    description: 'Học cách phát âm tự nhiên nhịp nhàng như người bản xứ khi đi dạo phố.',
     subtitles: [
       {
         id: 1,
@@ -156,40 +156,40 @@ export const SHADOWING_VIDEOS: ShadowingVideoItem[] = [
   },
   {
     id: 'vid-kpop-1',
-    title: '🌟 Idol K-Pop Phát Biểu Cảm Ơn Fan Đêm Concert',
-    youtubeId: '07d2dXHYb94',
-    category: 'kpop',
-    categoryLabel: 'K-Pop Idol',
+    title: '🌟 Luyện Nói Nhại Cụm Từ Tiếng Hàn Thông Dụng',
+    youtubeId: '2S24-y0Ij3Y',
+    category: 'daily',
+    categoryLabel: 'Mẫu Câu Thông Dụng',
     difficulty: 'Trung cấp',
     duration: '0:55',
-    description: 'Luyện nói nhại phát biểu truyền cảm hứng ngọt ngào của idol K-Pop dành tặng người hâm mộ.',
+    description: 'Luyện nói nhại các cụm từ tiếng Hàn dùng nhiều nhất trong phim ảnh và đời sống.',
     subtitles: [
       {
         id: 1,
         startTime: 0,
         endTime: 7,
-        korean: '오늘 이 자리를 빛내주신 팬 여러분, 진심으로 감사드립니다!',
-        romaja: 'O-neul i ja-ri-reul bit-nae-ju-sin paen yeo-reo-bun, jin-sim-eu-ro gam-sa-deu-rim-ni-da!',
-        vietnamese: 'Các bạn fan đã đến làm sáng bừng đêm nay, mình xin chân thành cảm ơn mọi người!',
-        speaker: 'Idol K-Pop'
+        korean: '오늘 정말 수고 많으셨습니다!',
+        romaja: 'O-neul jeong-mal su-go man-eu-syeoss-seum-ni-da!',
+        vietnamese: 'Hôm nay bạn đã vất vả nhiều rồi!',
+        speaker: 'Bản xí Hàn'
       },
       {
         id: 2,
         startTime: 7,
         endTime: 14,
-        korean: '여러분 덕분에 저희가 꿈을 이루고 무대에 설 수 있었어요.',
-        romaja: 'Yeo-reo-bun deok-bu-ne jeo-hui-ga kkum-eul i-ru-go mu-dae-e seol su iss-eoss-eo-yo.',
-        vietnamese: 'Nhờ có các bạn mà chúng mình mới thực hiện được ước mơ và đứng trên sân khấu này.',
-        speaker: 'Idol K-Pop'
+        korean: '주말 잘 보내시고 내일 또 봐요.',
+        romaja: 'Ju-mal jal bo-nae-si-go nae-il tto bwa-yo.',
+        vietnamese: 'Cuối tuần vui vẻ và hẹn gặp lại bạn vào ngày mai nhé.',
+        speaker: 'Bản xí Hàn'
       },
       {
         id: 3,
         startTime: 14,
         endTime: 22,
-        korean: '앞으로도 더 멋진 음악으로 보답하겠습니다. 영원히 사랑해요!',
-        romaja: 'Ap-eu-ro-do deo meos-jin eum-ak-eu-ro bo-dap-ha-gess-seum-ni-da. Yeong-won-hi sa-rang-hae-yo!',
-        vietnamese: 'Từ nay về sau chúng mình sẽ đáp lại bằng những bản nhạc tuyệt vời hơn nữa. Yêu các bạn mãi mãi!',
-        speaker: 'Idol K-Pop'
+        korean: '항상 응원해 주셔서 감사합니다. 사랑해요!',
+        romaja: 'Hang-sang eung-won-hae ju-syeo-seo gam-sa-ham-ni-da. Sa-rang-hae-yo!',
+        vietnamese: 'Cảm ơn bạn đã luôn ủng hộ. Yêu bạn nhiều!',
+        speaker: 'Bản xí Hàn'
       }
     ]
   }

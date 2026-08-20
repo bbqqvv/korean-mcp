@@ -5,21 +5,17 @@ import { SHADOWING_VIDEOS, ShadowingVideoItem, SubtitleSegment } from '@/lib/spe
 import { useTheme } from '@/lib/theme-context';
 import {
   Volume2,
-  Mic,
-  MicOff,
   Play,
   RotateCcw,
   Sparkles,
-  Award,
-  CheckCircle2,
   Film,
   Zap,
   Repeat,
-  ChevronRight,
-  Flame,
-  ArrowRight,
   Clock,
-  PlayCircle
+  PlayCircle,
+  Link2,
+  Plus,
+  ArrowRight
 } from 'lucide-react';
 
 export default function ShadowingTab() {
@@ -29,17 +25,51 @@ export default function ShadowingTab() {
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const [isLoopingSegment, setIsLoopingSegment] = useState<boolean>(false);
-  const [isPlayingVideo, setIsPlayingVideo] = useState<boolean>(false);
+  const [customYoutubeInput, setCustomYoutubeInput] = useState<string>('');
 
-  // Voice recording state
-  const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [score, setScore] = useState<number | null>(null);
-  const [userTranscript, setUserTranscript] = useState<string>('');
+  // Extract YouTube ID from full URL or return plain ID
+  const extractYoutubeId = (urlOrId: string): string => {
+    const trimmed = urlOrId.trim();
+    if (!trimmed) return '';
+    const match = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+    return match ? match[1] : trimmed;
+  };
 
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  // Handle adding custom YouTube link
+  const handleLoadCustomVideo = (e: React.FormEvent) => {
+    e.preventDefault();
+    const ytId = extractYoutubeId(customYoutubeInput);
+    if (!ytId) {
+      alert('Vui lòng nhập Link YouTube hợp lệ (Ví dụ: https://www.youtube.com/watch?v=3JZ_D3ELwOQ)');
+      return;
+    }
+
+    const newCustomVideo: ShadowingVideoItem = {
+      id: `custom-${Date.now()}`,
+      title: '🎥 Video YouTube Tùy Chỉnh Của Bạn',
+      youtubeId: ytId,
+      category: 'daily',
+      categoryLabel: 'Video Tùy Chỉnh',
+      difficulty: 'Sơ cấp',
+      duration: 'Tự chọn',
+      description: 'Video do bạn nhập link trực tiếp.',
+      subtitles: [
+        {
+          id: 1,
+          startTime: 0,
+          endTime: 10,
+          korean: '동영상을 보면서 자막에 맞춰 말하기를 연습하세요!',
+          romaja: 'Dong-yeong-sang-eul bo-myeon-seo ja-mak-e mat-chwa mal-ha-gi-reul yeon-seup-ha-se-yo!',
+          vietnamese: 'Vừa xem video vừa thực hành đọc nhại theo từng câu nhé!',
+          speaker: 'Bản xí Hàn'
+        }
+      ]
+    };
+
+    setSelectedVideo(newCustomVideo);
+    setActiveSegment(newCustomVideo.subtitles[0]);
+    setCustomYoutubeInput('');
+  };
 
   // Filter video clips
   const filteredVideos = filterCategory === 'all'
@@ -50,22 +80,15 @@ export default function ShadowingTab() {
   useEffect(() => {
     if (selectedVideo.subtitles.length > 0) {
       setActiveSegment(selectedVideo.subtitles[0]);
-      setScore(null);
-      setAudioUrl(null);
-      setUserTranscript('');
     }
   }, [selectedVideo]);
 
   // Jump YouTube player to specific start time
   const handleJumpToTimestamp = (segment: SubtitleSegment) => {
     setActiveSegment(segment);
-    setScore(null);
-    setAudioUrl(null);
-    setUserTranscript('');
-    setIsPlayingVideo(true);
   };
 
-  // Play Korean TTS fallback if needed
+  // Play Korean TTS fallback
   const playKoreanTTS = (text: string) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
@@ -75,55 +98,34 @@ export default function ShadowingTab() {
     window.speechSynthesis.speak(utterance);
   };
 
-  // Start Mic Voice Recording
-  const startRecording = async () => {
-    setUserTranscript('');
-    setScore(null);
-    setAudioUrl(null);
-    audioChunksRef.current = [];
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        const url = URL.createObjectURL(audioBlob);
-        setAudioUrl(url);
-
-        // Generate simulated score
-        const randomScore = Math.floor(Math.random() * 18) + 82; // 82-99%
-        setScore(randomScore);
-      };
-
-      mediaRecorder.start();
-      setIsRecording(true);
-    } catch (err) {
-      alert('Vui lòng cho phép ứng dụng truy cập Microphone để thực hành thu âm.');
-    }
-  };
-
-  // Stop Recording
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
-    }
-    setIsRecording(false);
-  };
-
   // Build embed URL for YouTube segment
-  const embedUrl = `https://www.youtube.com/embed/${selectedVideo.youtubeId}?enablejsapi=1&autoplay=${isPlayingVideo ? 1 : 0}&start=${Math.floor(activeSegment.startTime)}&end=${Math.ceil(activeSegment.endTime)}`;
+  const embedUrl = `https://www.youtube.com/embed/${selectedVideo.youtubeId}?autoplay=1&start=${Math.floor(activeSegment.startTime)}&end=${Math.ceil(activeSegment.endTime)}&rel=0`;
 
   return (
     <div className="space-y-6">
+      {/* Top Custom YouTube Link Bar */}
+      <div className="bg-white border-2 border-slate-900 rounded-3xl p-4 shadow-xs">
+        <form onSubmit={handleLoadCustomVideo} className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="flex-1 flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl px-3 py-2 w-full">
+            <Link2 className="w-4 h-4 text-slate-400 shrink-0" />
+            <input
+              type="text"
+              value={customYoutubeInput}
+              onChange={(e) => setCustomYoutubeInput(e.target.value)}
+              placeholder="Dán Link YouTube bất kỳ (Ví dụ: https://www.youtube.com/watch?v=...)"
+              className="w-full text-xs bg-transparent border-none outline-none font-medium text-slate-900 placeholder:text-slate-400"
+            />
+          </div>
+          <button
+            type="submit"
+            className={`w-full sm:w-auto px-5 py-2.5 ${themeConfig.primaryBg} ${themeConfig.primaryHover} text-white font-bold text-xs rounded-2xl shadow-xs flex items-center justify-center gap-1.5 transition-all shrink-0`}
+          >
+            <Plus className="w-4 h-4" />
+            <span>Tải Video Này</span>
+          </button>
+        </form>
+      </div>
+
       {/* Category Pills Filter */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <button
@@ -137,14 +139,14 @@ export default function ShadowingTab() {
           Tất cả Video ({SHADOWING_VIDEOS.length})
         </button>
         <button
-          onClick={() => setFilterCategory('k-drama')}
+          onClick={() => setFilterCategory('daily')}
           className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 ${
-            filterCategory === 'k-drama'
+            filterCategory === 'daily'
               ? `${themeConfig.primaryBg} text-white shadow-xs`
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
           }`}
         >
-          🎬 Phim K-Drama
+          ☕ Giao Tiếp Thực Tế
         </button>
         <button
           onClick={() => setFilterCategory('vlog')}
@@ -155,16 +157,6 @@ export default function ShadowingTab() {
           }`}
         >
           ☕ Vlog Đời Sống
-        </button>
-        <button
-          onClick={() => setFilterCategory('kpop')}
-          className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 ${
-            filterCategory === 'kpop'
-              ? `${themeConfig.primaryBg} text-white shadow-xs`
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-          }`}
-        >
-          🌟 K-Pop Idol
         </button>
       </div>
 
@@ -190,7 +182,6 @@ export default function ShadowingTab() {
             {/* Embedded YouTube Video Container */}
             <div className="relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-slate-900 bg-black shadow-md">
               <iframe
-                ref={iframeRef}
                 key={`${selectedVideo.id}-${activeSegment.id}`}
                 src={embedUrl}
                 title={selectedVideo.title}
@@ -205,7 +196,7 @@ export default function ShadowingTab() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsLoopingSegment(!isLoopingSegment)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all ${
                     isLoopingSegment
                       ? 'bg-blue-600 text-white shadow-2xs'
                       : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -217,11 +208,11 @@ export default function ShadowingTab() {
 
                 <button
                   onClick={() => playKoreanTTS(activeSegment.korean)}
-                  className="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold rounded-xl border border-slate-200 flex items-center gap-1 transition-colors"
+                  className="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-800 text-xs font-extrabold rounded-xl border border-slate-200 flex items-center gap-1 transition-colors"
                   title="Nghe phát âm chuẩn TTS"
                 >
                   <Volume2 className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Nghe Chậm</span>
+                  <span>Nghe Đọc Mẫu</span>
                 </button>
               </div>
 
@@ -245,72 +236,23 @@ export default function ShadowingTab() {
             </div>
 
             {/* Active Subtitle Focus Box */}
-            <div className="bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-2xl p-5 space-y-2 border-2 border-slate-900 shadow-sm relative overflow-hidden">
+            <div className="bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-2xl p-5 space-y-2.5 border-2 border-slate-900 shadow-sm relative overflow-hidden">
               <div className="flex items-center justify-between text-[10px] font-extrabold text-blue-300 uppercase tracking-wide">
                 <span>CÂU THOẠI ĐANG SHADOWING ({activeSegment.speaker || 'Nhân vật'})</span>
                 <span className="bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-black">
-                  {activeSegment.startTime}s - {activeSegment.endTime}s
+                  Mốc {activeSegment.startTime}s - {activeSegment.endTime}s
                 </span>
               </div>
 
-              <div className="text-lg sm:text-xl font-black font-noto tracking-tight text-white leading-snug">
+              <div className="text-xl sm:text-2xl font-black font-noto tracking-tight text-white leading-snug">
                 {activeSegment.korean}
               </div>
 
-              <div className="space-y-0.5 pt-1 border-t border-slate-700/80 text-xs">
-                <p className="text-blue-300 font-medium">🗣️ {activeSegment.romaja}</p>
-                <p className="text-slate-300 font-medium">🇻🇳 {activeSegment.vietnamese}</p>
+              <div className="space-y-1 pt-2 border-t border-slate-700/80 text-xs">
+                <p className="text-blue-300 font-semibold">🗣️ Phiên âm: {activeSegment.romaja}</p>
+                <p className="text-slate-300 font-medium">🇻🇳 Nghĩa: {activeSegment.vietnamese}</p>
               </div>
             </div>
-
-            {/* Voice Recording Control Studio */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-              {!isRecording ? (
-                <button
-                  onClick={startRecording}
-                  className={`w-full sm:w-auto flex-1 py-3 ${themeConfig.primaryBg} ${themeConfig.primaryHover} text-white font-bold text-xs rounded-2xl shadow-xs flex items-center justify-center gap-2 transition-all transform hover:scale-[1.01]`}
-                >
-                  <Mic className="w-4 h-4 text-white" />
-                  <span>Bật Mic Thu Âm Nói Nhại Theo Video</span>
-                </button>
-              ) : (
-                <button
-                  onClick={stopRecording}
-                  className="w-full sm:w-auto flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-2xl shadow-md flex items-center justify-center gap-2 animate-pulse transition-all"
-                >
-                  <MicOff className="w-4 h-4 text-white" />
-                  <span>Dừng Thu Âm &amp; So Sánh Giọng Nói</span>
-                </button>
-              )}
-            </div>
-
-            {/* Score & Playback Comparison Card */}
-            {score !== null && !isRecording && (
-              <div className="bg-emerald-50 border-2 border-emerald-500 rounded-2xl p-5 space-y-3 animate-fadeIn">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Award className="w-5 h-5 text-emerald-600" />
-                    <h4 className="text-sm font-black text-emerald-950">Kết Quả Shadowing Video</h4>
-                  </div>
-                  <span className="text-base font-black text-emerald-700 bg-white px-3 py-1 rounded-xl border border-emerald-200">
-                    {score}% Độ Khớp Giọng Bản Xứ
-                  </span>
-                </div>
-
-                <p className="text-xs text-emerald-900 font-medium">
-                  {score >= 85
-                    ? '🎉 Ngữ điệu & khẩu hình của bạn rất tuyệt! Nhịp nói rất giống nhân vật trong clip!'
-                    : '👍 Tốt lắm! Bấm nghe lại giọng bạn dưới đây để so sánh với phát âm trong video nhé!'}
-                </p>
-
-                {audioUrl && (
-                  <div className="flex items-center justify-between pt-2 border-t border-emerald-200">
-                    <span className="text-xs font-bold text-slate-700">Nghe lại giọng vừa thu:</span>
-                    <audio controls src={audioUrl} className="h-8 max-w-xs" />
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
 
@@ -321,7 +263,7 @@ export default function ShadowingTab() {
             <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
               <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
                 <Film className={`w-4 h-4 ${themeConfig.primaryText}`} />
-                DANH SÁCH CÂU THOẠI (TIMELINE)
+                DANH SÁCH CÂU THOẠI (BẤM ĐỂ NÓI NHẠI)
               </h3>
               <span className="text-[10px] font-bold text-slate-400">
                 {selectedVideo.subtitles.length} câu
@@ -348,7 +290,7 @@ export default function ShadowingTab() {
                       {isActive && <span className="bg-blue-600 text-white px-2 py-0.5 rounded-md">ĐANG NÓI NHẠI</span>}
                     </div>
 
-                    <p className={`text-xs font-black font-noto ${isActive ? 'text-white' : 'text-slate-900'}`}>
+                    <p className={`text-xs sm:text-sm font-black font-noto ${isActive ? 'text-white' : 'text-slate-900'}`}>
                       {sub.korean}
                     </p>
                     <p className={`text-[11px] ${isActive ? 'text-blue-200' : 'text-slate-500'}`}>
@@ -364,7 +306,7 @@ export default function ShadowingTab() {
           <div className="bg-white border-2 border-slate-900 rounded-3xl p-5 shadow-xs space-y-3">
             <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              CHỌN CLIP VIDEO SHADOWING KHÁC
+              CHỌN CLIP VIDEO SHADOWING MẪU
             </h4>
 
             <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
