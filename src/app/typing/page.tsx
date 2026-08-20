@@ -9,7 +9,6 @@ import { Deck } from '@/lib/types';
 
 function TypingContent() {
   const [decks, setDecks] = useState<Deck[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   // App Shell State
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -24,24 +23,11 @@ function TypingContent() {
           setDecks(data.decks);
         }
       } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
+        console.error('Failed to fetch custom decks for typing:', err);
       }
     }
     fetchDecks();
   }, []);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#faf8f5] text-slate-900 flex items-center justify-center font-sans">
-        <div className="text-center space-y-2">
-          <div className="w-8 h-8 border-4 border-rose-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-slate-500 font-bold">Đang tải bàn phím gõ tiếng Hàn...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans">
