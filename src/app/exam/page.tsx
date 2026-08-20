@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
-import AmbientAudioPlayer from '@/components/ambient-audio-player';
+import AmbientAudio from '@/components/ambient-audio';
 import { useTheme } from '@/lib/theme-context';
 import { TOPIK_EXAM_SUITES, TopikExamSuite, ExamQuestion } from '@/lib/exam-data';
 import {
@@ -520,7 +520,7 @@ export default function ExamPage() {
         </main>
       </div>
 
-      <AmbientAudioPlayer />
+      <AmbientAudio />
     </div>
   );
 }
