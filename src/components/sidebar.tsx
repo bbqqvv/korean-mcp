@@ -79,24 +79,16 @@ export default function Sidebar({
     { href: '/', label: 'Trang Chủ', icon: Home },
     { href: '/ai-tutor', label: 'Trợ Lý AI', icon: Bot },
     { href: '/speaking', label: 'Luyện Nói', icon: Mic, isSpeaking: true },
-    { href: '/books', label: 'Sách & Giáo Trình', icon: BookOpen, isBooks: true },
+    { href: '/books', label: 'Sách & Giáo Trình', icon: BookOpen },
     { href: '/dictionary', label: 'Tra Từ Điển', icon: Search },
     { href: '/typing', label: 'Luyện Gõ Phím', icon: Keyboard },
     { href: '/quiz', label: 'Ôn Luyện Quiz', icon: Award }
   ];
 
   const speakingSubMenu = [
-    { label: 'Shadowing Video', href: '/shadowing', icon: Film, color: 'text-blue-600' },
-    { label: 'Phân Biệt Âm', href: '/pronunciation', icon: Volume2, color: 'text-emerald-600' },
-    { label: 'Đóng Vai Roleplay', href: '/roleplay', icon: MessageSquare, color: 'text-amber-600' }
-  ];
-
-  const bookSubMenu = [
-    { label: 'TOPIK Xanh Lá', color: 'bg-blue-600' },
-    { label: 'Seoul Màu Sắc', color: 'bg-emerald-600' },
-    { label: 'Sejong Màu Vàng', color: 'bg-amber-600' },
-    { label: 'Yonsei Đại Học', color: 'bg-rose-600' },
-    { label: 'Hội Nhập KIIP', color: 'bg-indigo-600' }
+    { label: 'Shadowing Video', href: '/shadowing', icon: Film },
+    { label: 'Phân Biệt Âm', href: '/pronunciation', icon: Volume2 },
+    { label: 'Đóng Vai Roleplay', href: '/roleplay', icon: MessageSquare }
   ];
 
   const handleCategoryClick = (catName: string) => {
@@ -194,7 +186,7 @@ export default function Sidebar({
               const Icon = link.icon;
               const isActive = link.isSpeaking
                 ? isSpeakingActive
-                : link.isBooks
+                : link.href === '/books'
                 ? isBooksActive
                 : pathname === link.href;
 
@@ -262,55 +254,11 @@ export default function Sidebar({
                                   : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                               }`}
                             >
-                              <SubIcon className={`w-3.5 h-3.5 shrink-0 ${isSubActive ? 'text-white' : sub.color}`} />
+                              <SubIcon className={`w-3.5 h-3.5 shrink-0 ${isSubActive ? 'text-white' : 'text-slate-400'}`} />
                               <span className="truncate">{sub.label}</span>
                             </Link>
                           );
                         })}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-
-              if (link.isBooks) {
-                return (
-                  <div key={link.href} className="space-y-1">
-                    <div
-                      className={`flex items-center px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
-                        isActive
-                          ? `${themeConfig.badgeBg} font-bold`
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                      }`}
-                      onClick={() => {
-                        if (!isActive) {
-                          router.push(link.href);
-                          if (onCloseMobile) onCloseMobile();
-                        } else {
-                          setIsBooksExpanded(!isBooksExpanded);
-                        }
-                      }}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Icon className={`w-4 h-4 ${isActive ? themeConfig.primaryText : 'text-slate-400'}`} />
-                        <span>{link.label}</span>
-                      </div>
-                    </div>
-
-                    {/* Submenu for Books */}
-                    {isActive && isBooksExpanded && (
-                      <div className="pl-8 space-y-1 pt-0.5">
-                        {bookSubMenu.map((sub) => (
-                          <Link
-                            key={sub.label}
-                            href="/books"
-                            onClick={onCloseMobile}
-                            className="flex items-center gap-2 py-1.5 px-2 text-[11px] font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors"
-                          >
-                            <span className={`w-1.5 h-1.5 rounded-full ${sub.color}`} />
-                            <span>{sub.label}</span>
-                          </Link>
-                        ))}
                       </div>
                     )}
                   </div>

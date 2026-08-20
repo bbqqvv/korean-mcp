@@ -75,7 +75,7 @@ export default function ShadowingTab() {
           width: '100%',
           videoId: selectedVideo.youtubeId,
           playerVars: {
-            autoplay: 1,
+            autoplay: 0,
             controls: 1,
             modestbranding: 1,
             rel: 0

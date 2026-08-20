@@ -35,11 +35,6 @@ export default function RoleplayTab() {
     const firstLine = scenario.dialogue[0];
     setDialogueHistory(firstLine ? [firstLine] : []);
     setIsCompleted(false);
-
-    // Speak initial system line
-    if (firstLine && firstLine.speaker === 'system') {
-      playTTS(firstLine.korean);
-    }
   };
 
   const playTTS = (text: string) => {
