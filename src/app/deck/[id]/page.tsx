@@ -7,6 +7,7 @@ import FlashcardView from '@/components/flashcard-view';
 import CreateDeckModal from '@/components/create-deck-modal';
 import { Deck } from '@/lib/types';
 import { useTheme } from '@/lib/theme-context';
+import { DeckDetailSkeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Play } from 'lucide-react';
 import Link from 'next/link';
 
@@ -43,44 +44,6 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
     fetchDeck();
   }, [id]);
 
-  if (isLoading) {
-    return (
-      <div className={`min-h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} flex items-center justify-center font-sans`}>
-        <div className="text-center space-y-2">
-          <div className={`w-8 h-8 border-4 border-t-transparent ${themeConfig.primaryText} rounded-full animate-spin mx-auto`} />
-          <p className="text-xs text-slate-500 font-bold">Đang tải bộ thẻ từ vựng tiếng Hàn...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!deck) {
-    return (
-      <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
-        <Sidebar
-          isOpenMobile={isMobileSidebarOpen}
-          onCloseMobile={() => setIsMobileSidebarOpen(false)}
-          onOpenCreateModal={() => setIsCreateModalOpen(true)}
-        />
-        <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-          <Header onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)} />
-          <div className="flex-1 flex items-center justify-center p-6 text-center">
-            <div className="space-y-4">
-              <h2 className="text-xl font-black">Không Tìm Thấy Bộ Từ Vựng</h2>
-              <p className="text-slate-500 text-sm">Bộ từ vựng này không tồn tại hoặc đã bị xóa.</p>
-              <Link
-                href="/"
-                className={`px-4 py-2 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full inline-flex items-center gap-1.5 shadow-xs`}
-              >
-                <ArrowLeft className="w-4 h-4" /> Quay Về Trang Chủ
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
       <Sidebar
@@ -96,42 +59,61 @@ export default function DeckStudyPage({ params }: { params: Promise<{ id: string
         />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 pb-20 md:pb-6 max-w-4xl w-full mx-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {/* Top Navigation Row */}
-          <div className="flex items-center justify-between">
-            <Link
-              href="/"
-              className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-200/80 rounded-full hover:bg-slate-50 flex items-center gap-1.5 shadow-2xs"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" /> Tất Cả Bộ Thẻ
-            </Link>
-
-            <Link
-              href={`/quiz?deck=${deck.id}`}
-              className={`px-4 py-1.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full flex items-center gap-1.5 shadow-2xs`}
-            >
-              <Play className="w-3.5 h-3.5 fill-current text-white" /> Ôn Quiz Ngay
-            </Link>
-          </div>
-
-          {/* Compact Deck Header */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 space-y-1.5 shadow-xs">
-            <div className="flex items-center gap-2">
-              <span className={`px-2 py-0.5 ${themeConfig.badgeBg} text-[10px] font-bold rounded-full`}>
-                {deck.category}
-              </span>
-              {deck.youtubeUrl && (
-                <span className={`flex items-center gap-1 text-[10px] ${themeConfig.badgeBg} px-2 py-0.5 rounded-full font-bold`}>
-                  <YoutubeIcon className={`w-3 h-3 ${themeConfig.primaryText}`} /> YouTube Video
-                </span>
-              )}
+          {isLoading ? (
+            <DeckDetailSkeleton />
+          ) : !deck ? (
+            <div className="flex-1 flex items-center justify-center p-6 text-center">
+              <div className="space-y-4">
+                <h2 className="text-xl font-black">Không Tìm Thấy Bộ Từ Vựng</h2>
+                <p className="text-slate-500 text-sm">Bộ từ vựng này không tồn tại hoặc đã bị xóa.</p>
+                <Link
+                  href="/"
+                  className={`px-4 py-2 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full inline-flex items-center gap-1.5 shadow-xs`}
+                >
+                  <ArrowLeft className="w-4 h-4" /> Quay Về Trang Chủ
+                </Link>
+              </div>
             </div>
+          ) : (
+            <>
+              {/* Top Navigation Row */}
+              <div className="flex items-center justify-between">
+                <Link
+                  href="/"
+                  className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-200/80 rounded-full hover:bg-slate-50 flex items-center gap-1.5 shadow-2xs"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" /> Tất Cả Bộ Thẻ
+                </Link>
 
-            <h1 className="text-base sm:text-xl font-black text-slate-900">{deck.title}</h1>
-            <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">{deck.description}</p>
-          </div>
+                <Link
+                  href={`/quiz?deck=${deck.id}`}
+                  className={`px-4 py-1.5 text-xs font-bold text-white ${themeConfig.primaryBg} ${themeConfig.primaryHover} rounded-full flex items-center gap-1.5 shadow-2xs`}
+                >
+                  <Play className="w-3.5 h-3.5 fill-current text-white" /> Ôn Quiz Ngay
+                </Link>
+              </div>
 
-          {/* Flashcard Component */}
-          <FlashcardView cards={deck.cards} deckTitle={deck.title} />
+              {/* Compact Deck Header */}
+              <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 space-y-1.5 shadow-xs">
+                <div className="flex items-center gap-2">
+                  <span className={`px-2 py-0.5 ${themeConfig.badgeBg} text-[10px] font-bold rounded-full`}>
+                    {deck.category}
+                  </span>
+                  {deck.youtubeUrl && (
+                    <span className={`flex items-center gap-1 text-[10px] ${themeConfig.badgeBg} px-2 py-0.5 rounded-full font-bold`}>
+                      <YoutubeIcon className={`w-3 h-3 ${themeConfig.primaryText}`} /> YouTube Video
+                    </span>
+                  )}
+                </div>
+
+                <h1 className="text-base sm:text-xl font-black text-slate-900">{deck.title}</h1>
+                <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">{deck.description}</p>
+              </div>
+
+              {/* Flashcard Component */}
+              <FlashcardView cards={deck.cards} deckTitle={deck.title} />
+            </>
+          )}
         </main>
       </div>
 

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Bot, Sparkles, Send, Loader2, BookOpen, MessageSquare, Volume2, X, HelpCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Flashcard } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface AITutorDrawerProps {
   card: Flashcard;
@@ -187,9 +188,11 @@ export default function AITutorDrawer({ card, isOpen, onClose }: AITutorDrawerPr
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto space-y-3 min-h-[220px] max-h-[360px] p-1">
           {isLoading && (
-            <div className="flex items-center justify-center py-12 text-slate-500 text-xs gap-2">
-              <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-              <span>Groq AI đang suy luận & phân tích từ tiếng Hàn...</span>
+            <div className="space-y-3 py-4">
+              <Skeleton className="w-3/4 h-5 rounded-lg" />
+              <Skeleton className="w-full h-4 rounded-lg" />
+              <Skeleton className="w-5/6 h-4 rounded-lg" />
+              <Skeleton className="w-2/3 h-4 rounded-lg" />
             </div>
           )}
 

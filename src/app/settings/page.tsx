@@ -784,7 +784,14 @@ function SettingsContent() {
 
 export default function SettingsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#faf8f5] text-slate-900 p-8">Đang tải cài đặt...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#faf8f5] p-8 max-w-5xl mx-auto space-y-6">
+          <div className="animate-pulse h-10 w-1/3 bg-slate-200 rounded-xl" />
+          <div className="animate-pulse h-64 w-full bg-slate-200 rounded-3xl" />
+        </div>
+      }
+    >
       <SettingsContent />
     </Suspense>
   );

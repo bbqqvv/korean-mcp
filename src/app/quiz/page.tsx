@@ -7,6 +7,7 @@ import Header from '@/components/header';
 import QuizMode from '@/components/quiz-mode';
 import CreateDeckModal from '@/components/create-deck-modal';
 import { Deck } from '@/lib/types';
+import { QuizSkeleton } from '@/components/ui/skeleton';
 
 function QuizContent() {
   const searchParams = useSearchParams();
@@ -44,17 +45,6 @@ function QuizContent() {
     fetchDecks();
   }, [deckId]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#faf8f5] text-slate-900 flex items-center justify-center font-sans">
-        <div className="text-center space-y-2">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-slate-500 font-bold">Đang chuẩn bị câu hỏi Quiz...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex h-screen bg-[#faf8f5] text-slate-900 overflow-hidden font-sans">
       <Sidebar
@@ -70,12 +60,17 @@ function QuizContent() {
         />
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 pb-24 md:pb-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-w-5xl w-full mx-auto">
-          {/* Direct Quiz Component Arena */}
-          {selectedDeck && (
+          {isLoading ? (
+            <QuizSkeleton />
+          ) : selectedDeck ? (
             <QuizMode
               cards={selectedDeck.cards}
               deckTitle={selectedDeck.title}
             />
+          ) : (
+            <div className="text-center p-8 bg-white border border-slate-200 rounded-3xl">
+              <p className="text-sm font-bold text-slate-700">Chưa có dữ liệu bộ câu hỏi Quiz</p>
+            </div>
           )}
         </main>
       </div>
@@ -94,7 +89,7 @@ function QuizContent() {
 
 export default function QuizPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#faf8f5] text-slate-900 p-8">Đang tải...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#faf8f5] p-6 max-w-3xl mx-auto"><QuizSkeleton /></div>}>
       <QuizContent />
     </Suspense>
   );

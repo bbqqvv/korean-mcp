@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MCPGuideRedirectPage() {
   const router = useRouter();
@@ -11,11 +12,9 @@ export default function MCPGuideRedirectPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] text-slate-900 flex items-center justify-center font-sans">
-      <div className="text-center space-y-2">
-        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-xs text-slate-500 font-bold">Đang chuyển sang Cài Đặt MCP Server...</p>
-      </div>
+    <div className="min-h-screen bg-[#faf9f6] p-8 max-w-4xl mx-auto space-y-4">
+      <Skeleton className="w-1/3 h-8 rounded-xl" />
+      <Skeleton className="w-full h-48 rounded-3xl" />
     </div>
   );
 }
