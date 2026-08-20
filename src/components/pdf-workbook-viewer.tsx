@@ -261,6 +261,66 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
   const totalPages = uploadedPdfUrl ? pdfTotalPages : SAMPLE_TEXTBOOK_PAGES.length;
   const currentPage = SAMPLE_TEXTBOOK_PAGES[currentPageIndex] || SAMPLE_TEXTBOOK_PAGES[0];
 
+  // PDF Scroll Container Ref & Auto Scroll-Sync Page Number State
+  const pdfScrollContainerRef = useRef<HTMLDivElement>(null);
+  const isProgrammaticScrollRef = useRef(false);
+
+  const handleScrollSync = useCallback(() => {
+    if (isProgrammaticScrollRef.current) return;
+    const container = pdfScrollContainerRef.current;
+    if (!container) return;
+
+    const maxScroll = container.scrollHeight - container.clientHeight;
+    if (maxScroll <= 5) return;
+
+    const scrollRatio = Math.min(1, Math.max(0, container.scrollTop / maxScroll));
+    const computedPage = Math.min(pdfTotalPages, Math.max(1, Math.round(scrollRatio * (pdfTotalPages - 1)) + 1));
+
+    setPdfPageNumber((prev) => {
+      if (prev !== computedPage) {
+        setPageInputVal(String(computedPage));
+        return computedPage;
+      }
+      return prev;
+    });
+  }, [pdfTotalPages]);
+
+  const scrollToPageNumber = useCallback((targetPage: number) => {
+    const validPage = Math.min(pdfTotalPages, Math.max(1, targetPage));
+    setPdfPageNumber(validPage);
+    setPageInputVal(String(validPage));
+
+    const container = pdfScrollContainerRef.current;
+    if (container) {
+      const maxScroll = container.scrollHeight - container.clientHeight;
+      if (maxScroll > 5) {
+        isProgrammaticScrollRef.current = true;
+        const targetScrollTop = ((validPage - 1) / (pdfTotalPages - 1)) * maxScroll;
+        container.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
+
+        setTimeout(() => {
+          isProgrammaticScrollRef.current = false;
+        }, 600);
+      }
+    }
+  }, [pdfTotalPages]);
+
+  // Mouse Wheel Scroll Listener for Auto-Updating Page Number
+  const accumulatedDeltaYRef = useRef(0);
+
+  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    if (e.ctrlKey || e.altKey) return;
+    accumulatedDeltaYRef.current += e.deltaY;
+
+    if (accumulatedDeltaYRef.current > 100) {
+      accumulatedDeltaYRef.current = 0;
+      scrollToPageNumber(pdfPageNumber + 1);
+    } else if (accumulatedDeltaYRef.current < -100) {
+      accumulatedDeltaYRef.current = 0;
+      scrollToPageNumber(pdfPageNumber - 1);
+    }
+  }, [pdfPageNumber, scrollToPageNumber]);
+
   // Sync keyboard left/right arrow keys for physical book page turning
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -271,22 +331,14 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
       ) return;
       
       if (e.key === 'ArrowLeft') {
-        setPdfPageNumber((p) => {
-          const prev = Math.max(1, p - 1);
-          setPageInputVal(String(prev));
-          return prev;
-        });
+        scrollToPageNumber(pdfPageNumber - 1);
       } else if (e.key === 'ArrowRight') {
-        setPdfPageNumber((p) => {
-          const next = Math.min(pdfTotalPages, p + 1);
-          setPageInputVal(String(next));
-          return next;
-        });
+        scrollToPageNumber(pdfPageNumber + 1);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [pdfTotalPages]);
+  }, [pdfPageNumber, scrollToPageNumber]);
 
   // Auto-sync audio track lesson filter based on current textbook page number
   useEffect(() => {
@@ -546,6 +598,7 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
           {/* Main Book Canvas / Page Viewport */}
           <div
             ref={paperRef}
+            onWheel={handleWheel}
             style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
             className="relative w-full h-full flex-1 bg-white dark:bg-slate-900 select-none flex flex-col overflow-hidden transition-all"
           >
@@ -718,7 +771,7 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
                   if (e.key === 'Enter') {
                     const num = parseInt(pageInputVal, 10);
                     if (!isNaN(num) && num >= 1 && num <= pdfTotalPages) {
-                      setPdfPageNumber(num);
+                      scrollToPageNumber(num);
                     } else {
                       setPageInputVal(String(pdfPageNumber));
                     }
@@ -727,7 +780,7 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
                 onBlur={() => {
                   const num = parseInt(pageInputVal, 10);
                   if (!isNaN(num) && num >= 1 && num <= pdfTotalPages) {
-                    setPdfPageNumber(num);
+                    scrollToPageNumber(num);
                   } else {
                     setPageInputVal(String(pdfPageNumber));
                   }
