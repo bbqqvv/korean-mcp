@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: var(--font-noto-kr), var(--font-inter), -apple-system, BlinkMacSystemFont, 'SF Pro Display', ui-sans-serif, sans-serif;
+  --font-sans: var(--font-be-vietnam-pro), var(--font-noto-kr), -apple-system, BlinkMacSystemFont, 'SF Pro Display', ui-sans-serif, sans-serif;
   --color-ios-canvas: #faf8f5;
   --color-ios-card: #ffffff;
   --color-ios-card-back: #ffffff;

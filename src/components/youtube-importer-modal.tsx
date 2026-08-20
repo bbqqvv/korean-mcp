@@ -63,10 +63,7 @@ export default function YoutubeImporterModal({ isOpen, onClose, onSuccess }: You
             </div>
             <div>
               <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-1.5">
-                Tạo Từ Vựng Bằng Groq AI 🇰🇷
-                <span className="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 font-mono font-bold rounded">
-                  llama-3.3-70b
-                </span>
+                Tạo Từ Vựng Bằng AI 🇰🇷
               </h3>
               <p className="text-[12px] text-slate-500 dark:text-slate-400">Trích xuất bài học thông minh qua AI siêu tốc</p>
             </div>
@@ -109,7 +106,7 @@ export default function YoutubeImporterModal({ isOpen, onClose, onSuccess }: You
           <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 text-[12px] text-slate-600 dark:text-slate-400 flex items-start gap-2">
             <Sparkles className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
             <span>
-              <strong>Groq AI (llama-3.3-70b-versatile)</strong> sẽ tự động phân tích chủ đề, sinh phiên âm Romaja, từ Hán Hàn và câu ví dụ tiếng Hàn chuẩn xác trong vài giây!
+              <strong>LynKore AI</strong> sẽ tự động phân tích chủ đề, sinh phiên âm Romaja, từ Hán Hàn và câu ví dụ tiếng Hàn chuẩn xác trong vài giây!
             </span>
           </div>
 
@@ -135,12 +132,12 @@ export default function YoutubeImporterModal({ isOpen, onClose, onSuccess }: You
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin text-white" />
-                  <span>Groq AI Đang Xử Lý...</span>
+                  <span>AI Đang Xử Lý...</span>
                 </>
               ) : (
                 <>
                   <Bot className="w-4 h-4 text-white" />
-                  <span>Groq AI Tạo Bộ Thẻ</span>
+                  <span>Tạo Bộ Thẻ Bằng AI</span>
                 </>
               )}
             </button>

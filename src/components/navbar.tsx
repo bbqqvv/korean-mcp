@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { Sparkles, Layers, Award, Bot, BookOpen } from 'lucide-react';
 import { SmoothDropdown } from '@/components/smooth-dropdown';
@@ -24,11 +25,15 @@ export default function Navbar() {
       <header className="sticky top-0 z-50 backdrop-blur-md bg-white/90 border-b border-slate-200 text-slate-900 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-3">
-            {/* Logo with Korean Taegeuk solid badge */}
+            {/* Logo with LynKore brand logo image */}
             <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-              <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-2xl ${themeConfig.primaryBg} text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm`}>
-                <span className="font-black text-sm sm:text-base">한</span>
-              </div>
+              <Image
+                src="/krlogo.png"
+                alt="LynKore Logo"
+                width={36}
+                height={36}
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-contain group-hover:scale-105 transition-transform shadow-xs"
+              />
               <div>
                 <div className="flex items-center gap-1.5 sm:gap-2">
                   <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900">

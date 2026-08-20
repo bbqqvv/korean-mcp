@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import Sidebar from '@/components/sidebar';
 import CreateDeckModal from '@/components/create-deck-modal';
 import { useTheme } from '@/lib/theme-context';
@@ -147,48 +148,146 @@ export default function AITutorPage() {
     }
   };
 
-  const formatMarkdown = (content: string) => {
-    const lines = content.split('\n');
-    return lines.map((line, lineIdx) => {
-      // Replace **text** with <strong>text</strong>
-      const parts = line.split(/(\*\*[^*]+\*\*)/g);
-      const formattedLine = parts.map((part, partIdx) => {
-        if (part.startsWith('**') && part.endsWith('**')) {
+  // Helper to parse inline markdown: **bold**, `code`, *italic*, <br>, etc.
+  const renderFormattedText = (text: string) => {
+    // 1. Split by <br> or <br/> or <br />
+    const brParts = text.split(/<br\s*\/?>/gi);
+
+    return brParts.map((brPart, brIdx) => {
+      // 2. Tokenize by **bold**, `code`, *italic*
+      const tokens = brPart.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g);
+      const renderedTokens = tokens.map((token, tokenIdx) => {
+        if (token.startsWith('**') && token.endsWith('**')) {
           return (
-            <strong key={partIdx} className="font-black text-slate-900">
-              {part.slice(2, -2)}
+            <strong key={tokenIdx} className="font-extrabold text-slate-900">
+              {token.slice(2, -2)}
             </strong>
           );
         }
-        return part;
+        if (token.startsWith('`') && token.endsWith('`')) {
+          return (
+            <code key={tokenIdx} className="bg-blue-50 text-blue-700 font-mono text-[11px] font-bold px-1.5 py-0.5 rounded border border-blue-200/80 mx-0.5 inline-block">
+              {token.slice(1, -1)}
+            </code>
+          );
+        }
+        if (token.startsWith('*') && token.endsWith('*')) {
+          return (
+            <em key={tokenIdx} className="italic text-slate-600 font-medium">
+              {token.slice(1, -1)}
+            </em>
+          );
+        }
+        return token;
       });
 
-      if (line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
-        return (
-          <li key={lineIdx} className="ml-4 list-disc text-slate-800 my-0.5">
-            {formattedLine}
-          </li>
-        );
-      }
-
-      if (/^\d+\.\s/.test(line.trim())) {
-        return (
-          <div key={lineIdx} className="font-extrabold text-slate-900 pt-2 pb-0.5">
-            {formattedLine}
-          </div>
-        );
-      }
-
-      if (!line.trim()) {
-        return <div key={lineIdx} className="h-1.5" />;
-      }
-
       return (
-        <p key={lineIdx} className="my-0.5">
-          {formattedLine}
-        </p>
+        <span key={brIdx}>
+          {renderedTokens}
+          {brIdx < brParts.length - 1 && <br />}
+        </span>
       );
     });
+  };
+
+  const formatMarkdown = (content: string) => {
+    const lines = content.split('\n');
+    const elements: React.ReactNode[] = [];
+    let i = 0;
+
+    while (i < lines.length) {
+      const line = lines[i];
+      const trimmed = line.trim();
+
+      // Check for Markdown Table (lines starting with | and containing |)
+      if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+        const tableLines: string[] = [];
+        while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|')) {
+          tableLines.push(lines[i].trim());
+          i++;
+        }
+
+        if (tableLines.length >= 2) {
+          // Parse header and rows
+          const headerRow = tableLines[0].split('|').slice(1, -1).map((c) => c.trim());
+          const hasDivider = tableLines[1].includes('---');
+          const dataRows = tableLines.slice(hasDivider ? 2 : 1).map((r) =>
+            r.split('|').slice(1, -1).map((c) => c.trim())
+          );
+
+          elements.push(
+            <div key={`table-${i}`} className="my-3 overflow-x-auto rounded-2xl border border-slate-200 shadow-2xs">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-slate-100/90 text-slate-900 border-b border-slate-200">
+                    {headerRow.map((cell, cIdx) => (
+                      <th key={cIdx} className="p-2.5 font-extrabold border-r last:border-r-0 border-slate-200">
+                        {renderFormattedText(cell)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 bg-white">
+                  {dataRows.map((row, rIdx) => (
+                    <tr key={rIdx} className="hover:bg-slate-50/80 transition-colors">
+                      {row.map((cell, cIdx) => (
+                        <td key={cIdx} className="p-2.5 text-slate-700 border-r last:border-r-0 border-slate-200">
+                          {renderFormattedText(cell)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+          continue;
+        }
+      }
+
+      // Check for List Items (- or •)
+      if (trimmed.startsWith('- ') || trimmed.startsWith('• ')) {
+        const itemText = trimmed.slice(2);
+        elements.push(
+          <div key={`list-${i}`} className="flex items-start gap-2 my-1 pl-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0 mt-2" />
+            <div className="text-slate-800 text-xs sm:text-sm leading-relaxed">
+              {renderFormattedText(itemText)}
+            </div>
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // Check for Numbered List (1. 2.)
+      if (/^\d+\.\s/.test(trimmed)) {
+        elements.push(
+          <div key={`num-${i}`} className="font-extrabold text-slate-900 text-xs sm:text-sm pt-2 pb-0.5">
+            {renderFormattedText(trimmed)}
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // Empty line spacer
+      if (!trimmed) {
+        elements.push(<div key={`space-${i}`} className="h-2" />);
+        i++;
+        continue;
+      }
+
+      // Standard paragraph
+      elements.push(
+        <p key={`p-${i}`} className="my-1 text-slate-800 text-xs sm:text-sm leading-relaxed">
+          {renderFormattedText(trimmed)}
+        </p>
+      );
+      i++;
+    }
+
+    return elements;
   };
 
   return (
@@ -210,9 +309,13 @@ export default function AITutorPage() {
                 className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-2xl bg-blue-600 text-white flex items-center justify-center border-2 border-slate-900 shadow-xs shrink-0 mt-1">
-                    <Bot className="w-4 h-4" />
-                  </div>
+                  <Image
+                    src="/krlogo.png"
+                    alt="LynKore AI Logo"
+                    width={32}
+                    height={32}
+                    className="w-8 h-8 rounded-2xl object-cover border-2 border-slate-900 shadow-xs shrink-0 mt-1"
+                  />
                 )}
 
                 <div className={`max-w-[85%] sm:max-w-2xl space-y-2`}>
@@ -268,9 +371,13 @@ export default function AITutorPage() {
 
             {isLoading && (
               <div className="flex gap-3 justify-start items-center">
-                <div className="w-8 h-8 rounded-2xl bg-blue-600 text-white flex items-center justify-center border-2 border-slate-900 shadow-xs shrink-0 animate-bounce">
-                  <Bot className="w-4 h-4" />
-                </div>
+                <Image
+                  src="/krlogo.png"
+                  alt="LynKore AI Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-2xl object-cover border-2 border-slate-900 shadow-xs shrink-0 animate-bounce"
+                />
                 <div className="bg-white border-2 border-slate-900 rounded-2xl px-4 py-3 shadow-xs text-xs font-bold text-slate-600 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-500 animate-spin" />
                   <span>LynKore AI đang suy nghĩ câu trả lời...</span>

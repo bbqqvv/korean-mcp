@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter, Noto_Sans_KR } from 'next/font/google';
+import { Be_Vietnam_Pro, Noto_Sans_KR } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/lib/theme-context';
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter'
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-be-vietnam-pro'
 });
 
 const notoSansKR = Noto_Sans_KR({
@@ -18,7 +19,12 @@ export const metadata: Metadata = {
   title: 'LynKore 🇰🇷 - Học Tiếng Hàn Flashcard K-Style Tích Hợp MCP Server',
   description:
     'Ứng dụng học từ vựng tiếng Hàn bằng Flashcard tương tác cao cấp tích hợp MCP Server cho Gemini Spark kết nối tự động trích xuất bài học từ YouTube và gửi email nhắc nhở hằng ngày.',
-  keywords: ['LynKore', 'Korean Flashcards', 'Học tiếng Hàn', 'Gemini Spark', 'MCP Server', 'Model Context Protocol', 'Next.js']
+  keywords: ['LynKore', 'Korean Flashcards', 'Học tiếng Hàn', 'Gemini Spark', 'MCP Server', 'Model Context Protocol', 'Next.js'],
+  icons: {
+    icon: '/krlogo.png',
+    shortcut: '/krlogo.png',
+    apple: '/krlogo.png',
+  }
 };
 
 export default function RootLayout({
@@ -27,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${inter.variable} ${notoSansKR.variable}`}>
+    <html lang="vi" className={`${beVietnamPro.variable} ${notoSansKR.variable}`}>
       <body className="bg-[#faf8f5] text-slate-900 antialiased font-sans selection:bg-blue-500 selection:text-white min-h-screen flex flex-col">
         <ThemeProvider>{children}</ThemeProvider>
       </body>

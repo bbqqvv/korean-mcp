@@ -9,6 +9,8 @@ import AITutorDrawer from '@/components/ai-tutor-drawer';
 import { useTheme } from '@/lib/theme-context';
 import { ArrowLeft, BookOpen, Layers, Play, CheckCircle2, Sparkles } from 'lucide-react';
 
+import PDFWorkbookViewer from '@/components/pdf-workbook-viewer';
+
 interface CoursePageProps {
   params: Promise<{ id: string }>;
 }
@@ -79,73 +81,14 @@ export default function CourseDetailPage({ params }: CoursePageProps) {
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <main className="relative flex flex-col gap-6 min-h-[calc(98vh-24px)] px-4 lg:px-8 py-8 max-w-[1215px] mx-auto w-full overflow-y-auto pb-28 md:pb-12">
-          {/* Back button */}
-          <div>
-            <Link
-              href="/books"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Quay lại Danh Mục Sách</span>
-            </Link>
-          </div>
-
-          {/* Course Banner */}
-          <div className="bg-secondary-background border-2 border-border rounded-base shadow-shadow p-6 space-y-4">
-            <div className="flex items-center gap-2 text-xs font-heading text-rose-600 uppercase tracking-wider">
-              <BookOpen className="w-4 h-4" />
-              <span>{course.category}</span>
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl font-heading text-slate-900 leading-tight">
-              {course.title}
-            </h1>
-            <p className="text-sm font-medium text-slate-600">
-              {course.subtitle}
-            </p>
-            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed max-w-3xl">
-              {course.description}
-            </p>
-
-            <div className="pt-2 flex items-center gap-3">
-              <Link
-                href="/quiz"
-                className="inline-flex items-center gap-2 bg-main text-main-foreground px-5 py-2.5 rounded-base border-2 border-border font-heading text-xs sm:text-sm shadow-shadow hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all"
-              >
-                <Play className="w-4 h-4 fill-current" />
-                <span>Lật Bài Thẻ Flashcard</span>
-              </Link>
-            </div>
-          </div>
-
-          {/* Chapter List */}
-          <div className="space-y-3">
-            <h2 className="text-xl font-heading text-slate-900 flex items-center gap-2">
-              <Layers className="w-5 h-5 text-blue-600" />
-              <span>Danh Sách Chương Bài Học ({course.chapters.length} chương)</span>
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {course.chapters.map((ch, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white border-2 border-border rounded-base shadow-shadow p-4 space-y-2 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all cursor-pointer"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-blue-600 flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5" /> Chương {idx + 1}
-                    </span>
-                    <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-full border border-emerald-300 flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> {ch.count} từ vựng
-                    </span>
-                  </div>
-
-                  <h3 className="font-bold text-slate-900 text-base">{ch.title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">{ch.desc}</p>
-                </div>
-              ))}
-            </div>
+        <main className="relative flex flex-col h-full p-2 w-full max-w-full overflow-hidden">
+          {/* PDF Digital Interactive Workbook Workspace */}
+          <div className="flex-1 min-h-0 overflow-hidden">
+            <PDFWorkbookViewer
+              courseId={id}
+              courseTitle={course.title}
+              courseCategory={course.category}
+            />
           </div>
         </main>
       </div>

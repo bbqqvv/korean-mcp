@@ -65,9 +65,6 @@ export default function CreateDeckModal({ isOpen, onClose, onDeckCreated }: Crea
             <div>
               <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-1.5">
                 Tạo Bộ Từ Vựng AI 🇰🇷
-                <span className="text-[10px] px-1.5 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 font-mono font-bold rounded">
-                  llama-3.3-70b
-                </span>
               </h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">Nhập link YouTube hoặc chủ đề bạn muốn học</p>
             </div>
@@ -131,7 +128,7 @@ export default function CreateDeckModal({ isOpen, onClose, onDeckCreated }: Crea
           <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 text-[11px] text-slate-600 dark:text-slate-400 flex items-start gap-2">
             <Sparkles className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
             <span>
-              <strong>Groq AI (`llama-3.3-70b`)</strong> sẽ tự động tạo từ vựng chuẩn, phiên âm Romaja, từ Hán Hàn và câu ví dụ tiếng Hàn sắc nét chỉ trong vài giây!
+              <strong>LynKore AI</strong> sẽ tự động tạo từ vựng chuẩn, phiên âm Romaja, từ Hán Hàn và câu ví dụ tiếng Hàn sắc nét chỉ trong vài giây!
             </span>
           </div>
 
@@ -157,12 +154,12 @@ export default function CreateDeckModal({ isOpen, onClose, onDeckCreated }: Crea
               {isLoading ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>Groq AI Đang Tạo...</span>
+                  <span>AI Đang Tạo...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-3.5 h-3.5 text-rose-300" />
-                  <span>Groq AI Sinh Bộ Bài</span>
+                  <span>Tạo Bộ Bài Bằng AI</span>
                 </>
               )}
             </button>

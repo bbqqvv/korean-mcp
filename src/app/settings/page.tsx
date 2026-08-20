@@ -710,15 +710,15 @@ function SettingsContent() {
                   {/* AI Model Card */}
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-rose-600 uppercase tracking-wider">MÔ HÌNH AI HIỆN TẠI</span>
+                      <span className="text-xs font-bold text-rose-600 uppercase tracking-wider">ĐỘNG CƠ AI HIỆN TẠI</span>
                       <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 font-mono font-bold text-xs rounded-full">
-                        Groq Cloud
+                        LynKore Engine
                       </span>
                     </div>
 
-                    <h3 className="text-lg font-black text-slate-900">llama-3.3-70b-versatile</h3>
+                    <h3 className="text-lg font-black text-slate-900">LynKore Korean AI v2.0</h3>
                     <p className="text-xs text-slate-600 leading-relaxed">
-                      Mô hình AI siêu tốc xử lý phân tích ngữ pháp, dịch từ Hán Hàn và tạo câu ví dụ tiếng Hàn sắc nét dưới 1 giây.
+                      Động cơ AI siêu tốc xử lý phân tích ngữ pháp, dịch từ Hán Hàn và tạo câu ví dụ tiếng Hàn sắc nét.
                     </p>
                   </div>
 

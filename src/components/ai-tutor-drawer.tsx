@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Bot, Sparkles, Send, Loader2, BookOpen, MessageSquare, Volume2, X, HelpCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Flashcard } from '@/lib/types';
@@ -120,17 +121,18 @@ export default function AITutorDrawer({ card, isOpen, onClose }: AITutorDrawerPr
         {/* Drawer Header */}
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
-              <Bot className="w-5 h-5" />
-            </div>
+            <Image
+              src="/krlogo.png"
+              alt="LynKore AI Logo"
+              width={36}
+              height={36}
+              className="w-9 h-9 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-xs shrink-0"
+            />
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-black text-slate-900 dark:text-white">
-                  Trợ Lý Gia Sư Groq AI 🇰🇷
+                  Trợ Lý Gia Sư LynKore AI 🇰🇷
                 </h3>
-                <span className="text-[10px] px-2 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 font-mono font-bold rounded">
-                  llama-3.3-70b
-                </span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Đang phân tích thẻ: <strong className="text-slate-900 dark:text-white font-bold">{card.korean}</strong> ({card.vietnamese})
@@ -229,7 +231,7 @@ export default function AITutorDrawer({ card, isOpen, onClose }: AITutorDrawerPr
                 ))
               ) : (
                 <div className="text-center py-6 text-slate-500 text-xs space-y-2">
-                  <p>Bấm nút bên dưới để Groq AI sinh ra 3 câu ví dụ giao tiếp hoàn toàn mới.</p>
+                  <p>Bấm nút bên dưới để Trợ lý AI sinh ra 3 câu ví dụ giao tiếp hoàn toàn mới.</p>
                   <button onClick={fetchAISentences} className="px-4 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-sm">
                     Sinh câu ví dụ mới
                   </button>
