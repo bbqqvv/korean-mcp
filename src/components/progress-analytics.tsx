@@ -27,7 +27,11 @@ import {
 type SkillTab = 'dictation' | 'shadowing' | 'speaking' | 'vocabulary' | 'writing';
 type ViewTab = 'activity' | 'leaderboard';
 
-export default function ProgressAnalytics() {
+interface ProgressAnalyticsProps {
+  showHeaderAndCards?: boolean;
+}
+
+export default function ProgressAnalytics({ showHeaderAndCards = false }: ProgressAnalyticsProps) {
   const { themeConfig } = useTheme();
   const [activeView, setActiveView] = useState<ViewTab>('activity');
   const [activeSkill, setActiveSkill] = useState<SkillTab>('dictation');
@@ -69,22 +73,29 @@ export default function ProgressAnalytics() {
 
   return (
     <section className="space-y-6 pt-4 border-t border-slate-200/60 dark:border-slate-800/60">
-      {/* Section Title */}
+      {/* Section Title & View Switcher */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className={`text-[11px] ${themeConfig.primaryText} font-semibold tracking-wider uppercase`}>
-              LYNKORE ANALYTICS & DASHBOARD
-            </span>
+        {showHeaderAndCards ? (
+          <div>
+            <div className="flex items-center gap-2">
+              <span className={`text-[11px] ${themeConfig.primaryText} font-semibold tracking-wider uppercase`}>
+                LYNKORE ANALYTICS & DASHBOARD
+              </span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+              <TrendingUp className="w-6 h-6 text-blue-600" />
+              Tiến Trình Học Tập
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
+              Theo dõi hoạt động hàng ngày, chuỗi ngày học và thứ hạng của bạn so với người học khác.
+            </p>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-            <TrendingUp className="w-6 h-6 text-blue-600" />
-            Tiến Trình Học Tập
+        ) : (
+          <h2 className="text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-blue-600" />
+            Biểu Đồ Luyện Tập &amp; Hoạt Động
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
-            Theo dõi hoạt động hàng ngày, chuỗi ngày học và thứ hạng của bạn so với người học khác.
-          </p>
-        </div>
+        )}
 
         {/* View Switcher Tabs */}
         <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-2xl shrink-0 self-start sm:self-auto">
@@ -111,77 +122,79 @@ export default function ProgressAnalytics() {
         </div>
       </div>
 
-      {/* 5 Top Key Metric Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {/* 1. Chuỗi dài nhất */}
-        <div className="bg-white dark:bg-slate-900 shadow-xs rounded-2xl p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 flex items-center justify-center shrink-0">
-            <Flame className="w-5 h-5 text-amber-500 fill-current" />
+      {/* 5 Top Key Metric Cards (Only shown if showHeaderAndCards is true) */}
+      {showHeaderAndCards && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {/* 1. Chuỗi dài nhất */}
+          <div className="bg-white dark:bg-slate-900 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 flex items-center justify-center shrink-0">
+              <Flame className="w-5 h-5 text-amber-500 fill-current" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
+                {USER_STATS.longestStreak}
+                <span className="ml-1 text-xs font-normal text-slate-500">ngày</span>
+              </p>
+              <p className="truncate text-[11px] text-slate-500 font-normal">Chuỗi dài nhất</p>
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
-              {USER_STATS.longestStreak}
-              <span className="ml-1 text-xs font-normal text-slate-500">ngày</span>
-            </p>
-            <p className="truncate text-[11px] text-slate-500 font-normal">Chuỗi dài nhất</p>
-          </div>
-        </div>
 
-        {/* 2. Từ đã lưu */}
-        <div className="bg-white dark:bg-slate-900 shadow-xs rounded-2xl p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-100/80 dark:bg-emerald-950/40 flex items-center justify-center shrink-0">
-            <BookOpen className="w-5 h-5 text-emerald-600" />
+          {/* 2. Từ đã lưu */}
+          <div className="bg-white dark:bg-slate-900 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-100/80 dark:bg-emerald-950/40 flex items-center justify-center shrink-0">
+              <BookOpen className="w-5 h-5 text-emerald-600" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
+                {USER_STATS.savedWords}
+                <span className="ml-1 text-xs font-normal text-slate-500">từ</span>
+              </p>
+              <p className="truncate text-[11px] text-slate-500 font-normal">Từ đã lưu</p>
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
-              {USER_STATS.savedWords}
-              <span className="ml-1 text-xs font-normal text-slate-500">từ</span>
-            </p>
-            <p className="truncate text-[11px] text-slate-500 font-normal">Từ đã lưu</p>
-          </div>
-        </div>
 
-        {/* 3. Thời gian luyện tập */}
-        <div className="bg-white dark:bg-slate-900 shadow-xs rounded-2xl p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-100/80 dark:bg-blue-950/40 flex items-center justify-center shrink-0">
-            <Clock className="w-5 h-5 text-blue-600" />
+          {/* 3. Thời gian luyện tập */}
+          <div className="bg-white dark:bg-slate-900 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-100/80 dark:bg-blue-950/40 flex items-center justify-center shrink-0">
+              <Clock className="w-5 h-5 text-blue-600" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
+                {USER_STATS.practiceTimeMinutes}m
+              </p>
+              <p className="truncate text-[11px] text-slate-500 font-normal">Thời gian luyện tập</p>
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
-              {USER_STATS.practiceTimeMinutes}m
-            </p>
-            <p className="truncate text-[11px] text-slate-500 font-normal">Thời gian luyện tập</p>
-          </div>
-        </div>
 
-        {/* 4. Tổng XP */}
-        <div className="bg-white dark:bg-slate-900 shadow-xs rounded-2xl p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-purple-100/80 dark:bg-purple-950/40 flex items-center justify-center shrink-0">
-            <Target className="w-5 h-5 text-purple-600" />
+          {/* 4. Tổng XP */}
+          <div className="bg-white dark:bg-slate-900 shadow-xs rounded-2xl p-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-purple-100/80 dark:bg-purple-950/40 flex items-center justify-center shrink-0">
+              <Target className="w-5 h-5 text-purple-600" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
+                {USER_STATS.totalXp}
+                <span className="ml-1 text-[10px] font-bold text-purple-600">XP</span>
+              </p>
+              <p className="truncate text-[11px] text-slate-500 font-normal">Tổng XP</p>
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
-              {USER_STATS.totalXp}
-              <span className="ml-1 text-[10px] font-bold text-purple-600">XP</span>
-            </p>
-            <p className="truncate text-[11px] text-slate-500 font-normal">Tổng XP</p>
-          </div>
-        </div>
 
-        {/* 5. Hạng của bạn */}
-        <div className="bg-white dark:bg-slate-900 shadow-xs rounded-2xl p-4 flex items-center gap-3 col-span-2 sm:col-span-1">
-          <div className="w-10 h-10 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 flex items-center justify-center shrink-0">
-            <Trophy className="w-5 h-5 text-amber-600" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
-              #{USER_STATS.weeklyRank}
-              <span className="ml-1 text-xs font-normal text-slate-500">Tuần</span>
-            </p>
-            <p className="truncate text-[11px] text-slate-500 font-normal">Hạng của bạn</p>
+          {/* 5. Hạng của bạn */}
+          <div className="bg-white dark:bg-slate-900 shadow-xs rounded-2xl p-4 flex items-center gap-3 col-span-2 sm:col-span-1">
+            <div className="w-10 h-10 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 flex items-center justify-center shrink-0">
+              <Trophy className="w-5 h-5 text-amber-600" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-lg font-semibold text-slate-900 dark:text-white leading-tight">
+                #{USER_STATS.weeklyRank}
+                <span className="ml-1 text-xs font-normal text-slate-500">Tuần</span>
+              </p>
+              <p className="truncate text-[11px] text-slate-500 font-normal">Hạng của bạn</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Content Area Based on Active View */}
       {activeView === 'activity' ? (
