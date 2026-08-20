@@ -29,7 +29,9 @@ import {
   Film,
   Volume2,
   MessageSquare,
-  TrendingUp
+  TrendingUp,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -123,7 +125,7 @@ export default function Sidebar({
         {/* Brand Header & Collapse Toggle Button */}
         <div className="p-3.5">
           {isCollapsed ? (
-            <div className="flex flex-col items-center justify-center gap-2">
+            <div className="flex flex-col items-center justify-center gap-3">
               <Link href="/" title="Trang chủ LynKore">
                 <Image
                   src="/krlogo.png"
@@ -135,14 +137,14 @@ export default function Sidebar({
               </Link>
               <button
                 onClick={() => setIsCollapsed(false)}
-                className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"
+                className="w-7.5 h-7.5 rounded-full bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/80 text-blue-600 dark:text-blue-400 flex items-center justify-center transition-all shadow-2xs"
                 title="Mở rộng Sidebar"
               >
-                <PanelLeft className="w-5 h-5 text-blue-600" />
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pl-1">
               <Link href="/" className="flex items-center gap-2.5 group">
                 <Image
                   src="/krlogo.png"
@@ -152,7 +154,7 @@ export default function Sidebar({
                   className="w-8.5 h-8.5 rounded-xl object-contain group-hover:scale-105 transition-transform shadow-xs shrink-0"
                 />
                 <div>
-                  <span className="font-bold text-lg tracking-tight text-slate-900 block leading-none">
+                  <span className="font-bold text-lg tracking-tight text-slate-900 dark:text-white block leading-none">
                     LynKore
                   </span>
                   <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase block mt-1">
@@ -161,19 +163,19 @@ export default function Sidebar({
                 </div>
               </Link>
 
-              {/* Desktop Sidebar Collapse Toggle Button */}
+              {/* Desktop Sidebar Collapse Toggle Button (Fully Rounded & Positioned Outside) */}
               <button
                 onClick={() => setIsCollapsed(true)}
-                className="hidden md:flex p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors shrink-0"
+                className="hidden md:flex w-7.5 h-7.5 rounded-full bg-slate-100/90 hover:bg-slate-200/90 dark:bg-slate-800/90 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white items-center justify-center transition-all shadow-2xs shrink-0 ml-auto"
                 title="Thu hẹp Sidebar"
               >
-                <PanelLeftClose className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
 
               {onCloseMobile && (
                 <button
                   onClick={onCloseMobile}
-                  className="md:hidden p-1.5 text-slate-400 hover:text-slate-700 rounded-lg"
+                  className="md:hidden p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-full"
                 >
                   <X className="w-5 h-5" />
                 </button>
