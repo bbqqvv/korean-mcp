@@ -138,6 +138,30 @@ html.dark [class*="bg-white"] {
   color: var(--text-main) !important;
 }
 
+html.dark .bg-slate-50,
+html.dark .bg-slate-50\/70,
+html.dark .bg-slate-100,
+html.dark .bg-slate-200 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-main) !important;
+}
+
+/* DARK MODE HOVER OVERRIDES (NO BRIGHT WHITE HOVER FLASHES) */
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-slate-100:hover,
+html.dark .hover\:bg-slate-200:hover,
+html.dark .hover\:bg-white:hover,
+html.dark .hover\:bg-slate-100\/80:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-main) !important;
+}
+
+/* DARK MODE HEATMAP LEVEL 0 DOTS OVERRIDE */
+html.dark .bg-slate-100.border-slate-200\/70 {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
 /* AMBIENT PARTICLE ANIMATIONS (SAKURA, SNOW, STARS) */
 @keyframes ambientFall {
   0% {
