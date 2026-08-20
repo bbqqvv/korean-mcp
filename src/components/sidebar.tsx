@@ -137,10 +137,10 @@ export default function Sidebar({
               </Link>
               <button
                 onClick={() => setIsCollapsed(false)}
-                className="w-7.5 h-7.5 rounded-full bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/80 text-blue-600 dark:text-blue-400 flex items-center justify-center transition-all shadow-2xs"
+                className="w-8.5 h-8.5 rounded-full bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/70 dark:hover:bg-blue-900 text-blue-600 dark:text-blue-400 flex items-center justify-center transition-all shadow-xs hover:scale-105"
                 title="Mở rộng Sidebar"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           ) : (
@@ -166,10 +166,10 @@ export default function Sidebar({
               {/* Desktop Sidebar Collapse Toggle Button (Fully Rounded & Positioned Outside) */}
               <button
                 onClick={() => setIsCollapsed(true)}
-                className="hidden md:flex w-7.5 h-7.5 rounded-full bg-slate-100/90 hover:bg-slate-200/90 dark:bg-slate-800/90 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white items-center justify-center transition-all shadow-2xs shrink-0 ml-auto"
+                className="hidden md:flex w-8.5 h-8.5 rounded-full bg-slate-100/90 hover:bg-slate-200/90 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white items-center justify-center transition-all shadow-xs hover:scale-105 shrink-0 ml-auto"
                 title="Thu hẹp Sidebar"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-5 h-5" />
               </button>
 
               {onCloseMobile && (
