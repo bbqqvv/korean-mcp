@@ -67,7 +67,7 @@ export default function Sidebar({
 
   const mainNavLinks = [
     { href: '/', label: 'Trang Chủ', icon: Home },
-    { href: '/speaking', label: 'Luyện Nói & Shadowing', icon: Mic, isSpeaking: true },
+    { href: '/speaking', label: 'Luyện Nói', icon: Mic, isSpeaking: true },
     { href: '/ai-tutor', label: 'Trợ Lý AI', icon: Bot },
     { href: '/books', label: 'Sách & Giáo Trình', icon: BookOpen, isBooks: true },
     { href: '/dictionary', label: 'Tra Từ Điển', icon: Search },
@@ -77,9 +77,9 @@ export default function Sidebar({
   ];
 
   const speakingSubMenu = [
-    { label: 'Luyện Nhại Video (Shadowing)', href: '/shadowing', icon: Film, color: 'text-blue-600' },
-    { label: 'Phân Biệt Âm & Khẩu Hình', href: '/pronunciation', icon: Volume2, color: 'text-emerald-600' },
-    { label: 'Đóng Vai Tình Huống (Roleplay)', href: '/roleplay', icon: MessageSquare, color: 'text-amber-600' }
+    { label: 'Shadowing Video', href: '/shadowing', icon: Film, color: 'text-blue-600' },
+    { label: 'Phân Biệt Âm', href: '/pronunciation', icon: Volume2, color: 'text-emerald-600' },
+    { label: 'Đóng Vai Roleplay', href: '/roleplay', icon: MessageSquare, color: 'text-amber-600' }
   ];
 
   const bookSubMenu = [
