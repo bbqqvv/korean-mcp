@@ -19,7 +19,8 @@ import {
   Search,
   Bot,
   PanelLeftClose,
-  PanelLeft
+  PanelLeft,
+  Mic
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -56,6 +57,7 @@ export default function Sidebar({
 
   const mainNavLinks = [
     { href: '/', label: 'Trang Chủ', icon: Home },
+    { href: '/speaking', label: 'Luyện Nói & Shadowing', icon: Mic },
     { href: '/ai-tutor', label: 'Trợ Lý AI', icon: Bot },
     { href: '/books', label: 'Sách & Giáo Trình', icon: BookOpen, isBooks: true },
     { href: '/dictionary', label: 'Tra Từ Điển', icon: Search },
