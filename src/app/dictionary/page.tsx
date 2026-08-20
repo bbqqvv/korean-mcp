@@ -124,11 +124,12 @@ const DICTIONARY_DATABASE: Array<{
 export default function DictionaryPage() {
   const { themeConfig } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
+  const [submittedQuery, setSubmittedQuery] = useState('');
   const [recentSearches, setRecentSearches] = useState<string[]>(['tạm biệt', 'Xin chào', '시간', '행복', '감사합니다']);
   const [selectedWord, setSelectedWord] = useState<Flashcard | null>(null);
 
   // AI Dynamic Dictionary Search State
-  const [aiResults, setAiResults] = useState<Array<{
+  const [searchedResults, setSearchedResults] = useState<Array<{
     korean: string;
     hanja?: string;
     vietnamese: string;
@@ -144,28 +145,32 @@ export default function DictionaryPage() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const localFilteredResults = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    const q = searchQuery.toLowerCase().trim();
-    return DICTIONARY_DATABASE.filter(
-      (item) =>
-        item.korean.toLowerCase().includes(q) ||
-        item.vietnamese.toLowerCase().includes(q) ||
-        (item.hanja && item.hanja.toLowerCase().includes(q))
-    );
-  }, [searchQuery]);
-
-  const displayResults = useMemo(() => {
-    if (aiResults.length > 0) {
-      return aiResults;
-    }
-    return localFilteredResults;
-  }, [localFilteredResults, aiResults]);
-
-  const performAISearch = async (queryText: string) => {
+  const performSearch = async (queryText: string) => {
     const q = queryText.trim();
     if (!q) return;
+    setSubmittedQuery(q);
+
+    // Save to recent searches
+    if (!recentSearches.includes(q)) {
+      setRecentSearches((prev) => [q, ...prev.slice(0, 4)]);
+    }
+
+    // 1. Check local pre-populated dictionary first
+    const localMatches = DICTIONARY_DATABASE.filter(
+      (item) =>
+        item.korean.toLowerCase().includes(q.toLowerCase()) ||
+        item.vietnamese.toLowerCase().includes(q.toLowerCase()) ||
+        (item.hanja && item.hanja.toLowerCase().includes(q.toLowerCase()))
+    );
+
+    if (localMatches.length > 0) {
+      setSearchedResults(localMatches);
+      return;
+    }
+
+    // 2. If not found in local database, fetch from AI dictionary API
     setIsSearchingAI(true);
+    setSearchedResults([]);
     try {
       const res = await fetch('/api/ai/tutor', {
         method: 'POST',
@@ -193,22 +198,21 @@ export default function DictionaryPage() {
             : [];
 
           if (list.length > 0) {
-            setAiResults(list);
+            setSearchedResults(list);
           }
         } catch (parseErr) {
-          // Robust fallback extraction if direct JSON.parse fails
           const matchObj = rawText.match(/\{[\s\S]*\}/);
           const matchArr = rawText.match(/\[[\s\S]*\]/);
           if (matchObj) {
             try {
               const pObj = JSON.parse(matchObj[0]);
               const list = Array.isArray(pObj?.results) ? pObj.results : [];
-              if (list.length > 0) setAiResults(list);
+              if (list.length > 0) setSearchedResults(list);
             } catch {}
           } else if (matchArr) {
             try {
               const pArr = JSON.parse(matchArr[0]);
-              if (Array.isArray(pArr) && pArr.length > 0) setAiResults(pArr);
+              if (Array.isArray(pArr) && pArr.length > 0) setSearchedResults(pArr);
             } catch {}
           }
         }
@@ -220,35 +224,14 @@ export default function DictionaryPage() {
     }
   };
 
-  useEffect(() => {
-    const q = searchQuery.trim();
-    if (!q) {
-      setAiResults([]);
-      return;
-    }
-    if (localFilteredResults.length === 0 && !isSearchingAI && aiResults.length === 0) {
-      const timer = setTimeout(() => {
-        performAISearch(q);
-      }, 350);
-      return () => clearTimeout(timer);
-    }
-  }, [searchQuery, localFilteredResults]);
-
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const q = searchQuery.trim();
-    if (!q) return;
-    if (!recentSearches.includes(q)) {
-      setRecentSearches((prev) => [q, ...prev.slice(0, 4)]);
-    }
-    setAiResults([]);
-    performAISearch(q);
+    performSearch(searchQuery);
   };
 
   const handleRecentClick = (term: string) => {
     setSearchQuery(term);
-    setAiResults([]);
-    performAISearch(term);
+    performSearch(term);
   };
 
   const speakKorean = (text: string) => {
@@ -290,10 +273,7 @@ export default function DictionaryPage() {
                   type="text"
                   placeholder="Tra tiếng Hàn hoặc tiếng Việt... (vd: tạm biệt, 시간, thời gian)"
                   value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    if (aiResults.length > 0) setAiResults([]);
-                  }}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-white border-2 border-slate-900 rounded-2xl pl-10 pr-4 py-3 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs"
                 />
               </div>
@@ -338,22 +318,22 @@ export default function DictionaryPage() {
 
           {/* Results List Grid */}
           <div className="space-y-4 pt-2">
-            {searchQuery.trim() && (
+            {submittedQuery.trim() && !isSearchingAI && (
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-600 uppercase tracking-wide">
-                  Kết Quả Tra Cứu ({displayResults.length} từ)
+                  Kết Quả Tra Cứu cho &quot;{submittedQuery}&quot; ({searchedResults.length} từ)
                 </span>
               </div>
             )}
 
-            {!searchQuery.trim() && !isSearchingAI && (
+            {!submittedQuery.trim() && !isSearchingAI && (
               <div className="bg-white border-2 border-slate-900 rounded-3xl p-10 text-center space-y-3 shadow-xs my-4">
                 <BookOpen className="w-10 h-10 text-blue-600 mx-auto" />
                 <h3 className="text-base font-black text-slate-900">
-                  Nhập từ vựng cần tra cứu ở khung trên
+                  Nhập từ vựng và bấm Tra từ
                 </h3>
                 <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                  Hỗ trợ tra từ bằng Tiếng Hàn hoặc Tiếng Việt. Hệ thống tự động phân tích phát âm, loại từ, gốc Hán và câu ví dụ minh họa.
+                  Hỗ trợ tra từ bằng Tiếng Hàn hoặc Tiếng Việt. Nhập từ cần tra ở ô trên và bấm nút &quot;Tra từ&quot; hoặc phím Enter để xem kết quả.
                 </p>
               </div>
             )}
@@ -362,7 +342,7 @@ export default function DictionaryPage() {
               <div className="bg-white border-2 border-slate-900 rounded-3xl p-8 text-center space-y-3 shadow-xs">
                 <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
                 <p className="text-sm font-bold text-slate-900">
-                  Đang truy vấn từ điển cho &quot;{searchQuery}&quot;...
+                  Đang truy vấn từ điển cho &quot;{submittedQuery}&quot;...
                 </p>
                 <p className="text-xs text-slate-500">
                   Tự động dịch thuật, tìm gốc Hán Hàn, phiên âm và tạo câu ví dụ thực tế.
@@ -370,10 +350,10 @@ export default function DictionaryPage() {
               </div>
             )}
 
-            {!isSearchingAI && displayResults.length === 0 && searchQuery.trim() && (
+            {!isSearchingAI && searchedResults.length === 0 && submittedQuery.trim() && (
               <div className="bg-white border-2 border-slate-900 rounded-3xl p-8 text-center space-y-2 shadow-xs">
                 <p className="text-sm font-black text-slate-900">
-                  Không tìm thấy kết quả phù hợp cho &quot;{searchQuery}&quot;
+                  Không tìm thấy kết quả phù hợp cho &quot;{submittedQuery}&quot;
                 </p>
                 <p className="text-xs text-slate-500">
                   Thử kiểm tra lại chính tả hoặc tìm từ khóa khác trên thanh tìm kiếm.
@@ -381,9 +361,9 @@ export default function DictionaryPage() {
               </div>
             )}
 
-            {!isSearchingAI && displayResults.length > 0 && (
+            {!isSearchingAI && searchedResults.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {displayResults.map((item, index) => (
+                {searchedResults.map((item, index) => (
                   <div
                     key={index}
                     className="bg-white border-2 border-slate-900 rounded-3xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4"
