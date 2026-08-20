@@ -48,7 +48,7 @@ export function HelpWidget() {
     {
       id: '1',
       role: 'assistant',
-      content: 'Xin chào! 👋 Mình là trợ lý AI của OtterSync × LynKore. Mình có thể giúp gì cho bạn hôm nay?'
+      content: 'Xin chào! 👋 Mình là LynKore AI Tutor – trợ lý học tiếng Hàn & luyện thi TOPIK thông minh. Bạn cần hỗ trợ bài học nào hôm nay?'
     }
   ]);
 
@@ -89,19 +89,19 @@ export function HelpWidget() {
   }, []);
 
   const handleResetChecklist = () => {
-    showToast('Đã hiển thị lại thanh hướng dẫn thiết lập!');
+    showToast('Đã hiển thị lại lộ trình học tiếng Hàn sơ cấp!');
     setIsOpen(false);
   };
 
   const handleReportBug = () => {
-    showToast('Đã gửi báo cáo lỗi kỹ thuật thành công!');
+    showToast('Đã gửi báo cáo thắc mắc câu hỏi thành công!');
     setIsOpen(false);
   };
 
   const handleSendFeedback = (e: React.FormEvent) => {
     e.preventDefault();
     if (!feedbackText.trim()) return;
-    showToast('Cảm ơn bạn đã gửi ý kiến đóng góp!');
+    showToast('Cảm ơn bạn đã gửi đóng góp ý kiến bài học cho LynKore!');
     setFeedbackText('');
     setShowFeedback(false);
     setIsOpen(false);
@@ -125,15 +125,15 @@ export function HelpWidget() {
 
     setTimeout(() => {
       const q = question.toLowerCase();
-      let answer = 'Hệ thống đã ghi nhận câu hỏi. Trợ lý AI sẽ trả lời chi tiết qua email của bạn sớm nhất!';
-      if (q.includes('kênh') || q.includes('kết nối') || q.includes('channel') || q.includes('tài khoản')) {
-        answer = 'Để kết nối kênh, bạn hãy truy cập trang "Kênh xã hội" và nhấp liên kết tài khoản mong muốn.';
-      } else if (q.includes('đăng') || q.includes('lịch') || q.includes('post') || q.includes('schedule')) {
-        answer = 'Bạn có thể soạn và đặt lịch bài đăng mới trong menu "Studio" hoặc qua giao diện "Lịch đăng bài".';
-      } else if (q.includes('topik') || q.includes('đề') || q.includes('thi')) {
-        answer = 'Bạn có thể truy cập mục "Luyện Đề TOPIK" ở menu bên trái để chọn các bộ đề thi thử TOPIK I và TOPIK II có bấm giờ thực tế!';
+      let answer = 'LynKore AI Tutor đã ghi nhận câu hỏi của bạn. Hãy thử tham khảo các chuyên mục luyện tập tương ứng nhé!';
+      if (q.includes('topik') || q.includes('đề') || q.includes('thi') || q.includes('luyện')) {
+        answer = 'Bạn hãy truy cập trang "Luyện Đề TOPIK" ở menu bên trái để chọn đề 35th, 36th, 37th, 41st TOPIK I hoặc 83rd TOPIK II có bấm giờ thi thật và giải thích chi tiết!';
+      } else if (q.includes('từ vựng') || q.includes('flashcard') || q.includes('học') || q.includes('thẻ')) {
+        answer = 'Mục "Bộ Thẻ Bài Học" áp dụng thuật toán Lặp lại ngắt quãng (Spaced Repetition) tự động giúp bạn nhớ từ vựng tiếng Hàn lâu gấp 3 lần!';
+      } else if (q.includes('phim') || q.includes('youtube') || q.includes('nghe') || q.includes('phát âm')) {
+        answer = 'Hãy truy cập "AI Tutor Tiếng Hàn" hoặc "Luyện Phát Âm" để nhận phản hồi chỉnh khẩu hình & ngữ điệu giọng chuẩn Seoul!';
       } else if (q.includes('phím tắt') || q.includes('shortcut')) {
-        answer = 'Mở bảng phím tắt bên dưới để xem chi tiết nhé.';
+        answer = 'Mở danh sách phím tắt bên dưới để lật thẻ Flashcard bằng phím Space và Mũi tên siêu nhanh nhé!';
         setShowShortcuts(true);
       }
 
@@ -154,11 +154,13 @@ export function HelpWidget() {
     ]);
 
     setTimeout(() => {
-      let answer = 'Bạn có thể xem chi tiết ở mục Tài liệu hướng dẫn sử dụng.';
-      if (question.includes('kết nối')) {
-        answer = 'Bạn hãy vào trang "Kênh xã hội" (Accounts) ở thanh bên trái để thực hiện kết nối kênh đầu tiên.';
-      } else if (question.includes('lên lịch')) {
-        answer = 'Sử dụng chức năng "Studio" hoặc kéo thả bài viết trực tiếp vào giao diện "Lịch đăng bài" (Calendar).';
+      let answer = 'Bạn có thể xem chi tiết trong bộ tài liệu hướng dẫn học tiếng Hàn của LynKore.';
+      if (question.includes('TOPIK')) {
+        answer = 'Bạn nên chọn chế độ "Luyện tập từng phần" trước để rèn phản xạ, sau đó làm "Full Test Bấm Giờ" để quen với áp lực phòng thi thật!';
+      } else if (question.includes('Flashcard') || question.includes('Spaced Repetition')) {
+        answer = 'Mỗi ngày ôn 15-20 từ vựng. Hệ thống tự ghi nhận từ bạn làm sai để nhắc lại đúng thời điểm chu kỳ trí nhớ!';
+      } else if (question.includes('phát âm') || question.includes('AI Tutor')) {
+        answer = 'Mở trang "AI Tutor Tiếng Hàn" và nói trực tiếp qua micro. AI sẽ phân tích độ chính xác nguyên âm/phụ âm của bạn!';
       }
 
       setMessages((prev) => {
@@ -190,7 +192,7 @@ export function HelpWidget() {
             ? 'border-blue-500 text-blue-600 dark:text-blue-400 shadow-blue-500/20'
             : 'border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-500'
         } ${isOpen && isChatting ? 'opacity-0 scale-50 pointer-events-none' : 'opacity-100 scale-100'}`}
-        title="Trợ giúp & Tài nguyên OtterSync × LynKore"
+        title="Trợ giúp & Hỏi đáp LynKore AI Tutor"
       >
         {isOpen ? (
           <X className="h-5 w-5 transition-transform duration-300 rotate-90" strokeWidth={2} />
@@ -241,14 +243,14 @@ export function HelpWidget() {
               {/* Header Controls (Expand, History, Close) */}
               <div className="absolute top-3.5 right-3.5 flex items-center gap-3 text-white/80 z-10">
                 <button
-                  onClick={() => showToast('Đang kết nối cổng hỗ trợ...')}
+                  onClick={() => showToast('Đang kết nối cổng trợ giúp LynKore...')}
                   className="hover:text-white transition-colors cursor-pointer"
                   title="Mở rộng"
                 >
                   <Maximize2 className="h-3.5 w-3.5 drop-shadow-md" strokeWidth={2.2} />
                 </button>
                 <button
-                  onClick={() => showToast('Không có lịch sử câu hỏi.')}
+                  onClick={() => showToast('Chưa có lịch sử câu hỏi.')}
                   className="hover:text-white transition-colors cursor-pointer"
                   title="Lịch sử"
                 >
@@ -268,7 +270,7 @@ export function HelpWidget() {
             </div>
           ) : (
             <div className="bg-slate-900 text-white p-3.5 flex items-center justify-between shrink-0 border-b border-slate-800">
-              <span className="text-xs font-bold">Hỗ trợ nhanh từ Trung tâm trợ giúp</span>
+              <span className="text-xs font-bold">Trợ Giúp Học Tiếng Hàn & TOPIK</span>
               <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white cursor-pointer">
                 <X className="h-4 w-4" />
               </button>
@@ -292,9 +294,11 @@ export function HelpWidget() {
                     {msg.role === 'assistant' && (
                       <div className="flex items-center gap-2 mb-0.5">
                         <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-slate-200 dark:border-zinc-700">
-                          <img src="/helpcenter.png" alt="Otter AI" className="w-full h-full object-cover" />
+                          <img src="/helpcenter.png" alt="LynKore AI Tutor" className="w-full h-full object-cover" />
                         </div>
-                        <span className="text-[12px] font-bold text-slate-900 dark:text-white tracking-tight">Otter AI</span>
+                        <span className="text-[12px] font-bold text-slate-900 dark:text-white tracking-tight">
+                          LynKore AI Tutor 🇰🇷
+                        </span>
                       </div>
                     )}
 
@@ -336,7 +340,7 @@ export function HelpWidget() {
                         handleSearchSubmit(e);
                       }
                     }}
-                    placeholder="Đặt câu hỏi hoặc nhập vấn đề bạn đang gặp phải..."
+                    placeholder="Hỏi AI về từ vựng, đề thi TOPIK hoặc phương pháp học..."
                     rows={2}
                     className="w-full text-xs bg-transparent border-none text-slate-800 dark:text-zinc-200 placeholder-slate-400 focus:outline-none resize-none p-0 leading-normal"
                   />
@@ -356,9 +360,9 @@ export function HelpWidget() {
                     )}
                     <button
                       type="button"
-                      onClick={() => showToast('Tính năng đính kèm ảnh sắp ra mắt!')}
+                      onClick={() => showToast('Tính năng trích xuất bài tập từ ảnh sắp ra mắt!')}
                       className="text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 cursor-pointer p-1 flex items-center"
-                      title="Đính kèm ảnh"
+                      title="Đính kèm ảnh bài tập"
                     >
                       <ImageIcon className="h-3.5 w-3.5" strokeWidth={1.5} />
                     </button>
@@ -390,7 +394,7 @@ export function HelpWidget() {
                 {showShortcuts ? (
                   <div className="space-y-3 animate-in fade-in duration-200">
                     <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-zinc-300">
-                      <span>Danh sách phím tắt</span>
+                      <span>Danh sách phím tắt học Flashcard</span>
                       <button
                         onClick={() => setShowShortcuts(false)}
                         className="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer font-medium"
@@ -400,23 +404,23 @@ export function HelpWidget() {
                     </div>
                     <div className="space-y-2 bg-white dark:bg-[#121215] p-3 rounded-xl border border-slate-200/80 dark:border-zinc-800/80 text-xs">
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-600 dark:text-zinc-400">Mở bảng lệnh nhanh</span>
-                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">⌘K / Ctrl+K</kbd>
+                        <span className="text-slate-600 dark:text-zinc-400">Lật thẻ Flashcard (Flip)</span>
+                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">Space</kbd>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-600 dark:text-zinc-400">Đổi giao diện sáng/tối</span>
-                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">Shift + L</kbd>
+                        <span className="text-slate-600 dark:text-zinc-400">Chuyển thẻ Kế tiếp / Trước</span>
+                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">← / →</kbd>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-600 dark:text-zinc-400">Thu gọn sidebar</span>
-                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">Shift + S</kbd>
+                        <span className="text-slate-600 dark:text-zinc-400">Mở bảng tìm kiếm từ vựng</span>
+                        <kbd className="px-1.5 py-0.5 text-[9px] font-mono bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded font-semibold text-slate-800 dark:text-zinc-200">Ctrl + K</kbd>
                       </div>
                     </div>
                   </div>
                 ) : showFeedback ? (
                   <form onSubmit={handleSendFeedback} className="space-y-3 animate-in fade-in duration-200">
                     <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-zinc-300">
-                      <span>Gửi đóng góp ý kiến</span>
+                      <span>Góp ý bài học & Đề thi TOPIK</span>
                       <button
                         type="button"
                         onClick={() => {
@@ -431,7 +435,7 @@ export function HelpWidget() {
                     <textarea
                       value={feedbackText}
                       onChange={(e) => setFeedbackText(e.target.value)}
-                      placeholder="Ý kiến của bạn sẽ giúp chúng tôi hoàn thiện sản phẩm..."
+                      placeholder="Ý kiến của bạn giúp LynKore cải tiến chất lượng đề thi và từ vựng..."
                       className="w-full text-xs p-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 outline-none h-20 resize-none leading-relaxed"
                       required
                       autoFocus
@@ -445,39 +449,39 @@ export function HelpWidget() {
                   </form>
                 ) : (
                   <div className="space-y-3.5">
-                    {/* FAQs (Matching OtterSync Screenshot) */}
+                    {/* FAQs Tailored 100% to LynKore */}
                     <div className="space-y-2">
                       <span className="text-[11px] font-bold text-slate-500 dark:text-zinc-400 tracking-tight">
-                        Câu hỏi thường gặp
+                        CÂU HỎI THƯỜNG GẶP
                       </span>
                       <div className="space-y-1.5">
                         <button
-                          onClick={() => handleQuestionClick('Lịch đăng bài tự động hoạt động như thế nào?')}
+                          onClick={() => handleQuestionClick('Luyện thi TOPIK I & TOPIK II như thế nào hiệu quả nhất?')}
                           className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-normal rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
                         >
-                          Lịch đăng bài tự động hoạt động như thế nào?
+                          Luyện thi TOPIK I & TOPIK II như thế nào hiệu quả nhất?
                         </button>
                         <button
-                          onClick={() => handleQuestionClick('Làm sao để kết nối tài khoản Instagram?')}
+                          onClick={() => handleQuestionClick('Phương pháp ôn từ vựng Flashcard Spaced Repetition hoạt động ra sao?')}
                           className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-normal rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
                         >
-                          Làm sao để kết nối tài khoản Instagram?
+                          Phương pháp ôn từ vựng Flashcard Spaced Repetition hoạt động ra sao?
                         </button>
                         <button
-                          onClick={() => handleQuestionClick('Làm cách nào để lên lịch đăng cho nhiều kênh cùng lúc?')}
+                          onClick={() => handleQuestionClick('Làm thế nào để sử dụng AI Tutor thực hành nói & phát âm tiếng Hàn?')}
                           className="w-full border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-slate-800 dark:text-zinc-200 text-xs font-normal rounded-xl py-2 px-3 hover:bg-slate-100 dark:hover:bg-zinc-800 text-left transition-colors cursor-pointer"
                         >
-                          Làm cách nào để lên lịch đăng cho nhiều kênh cùng lúc?
+                          Làm thế nào để sử dụng AI Tutor thực hành nói & phát âm tiếng Hàn?
                         </button>
                       </div>
                     </div>
 
                     <div className="h-px bg-slate-200/60 dark:bg-zinc-800/60" />
 
-                    {/* Quick Help Options (Matching OtterSync Screenshot) */}
+                    {/* Quick Help Options Tailored 100% to LynKore */}
                     <div className="space-y-1.5">
                       <span className="text-[11px] font-bold text-slate-500 dark:text-zinc-400 tracking-tight">
-                        Tùy chọn trợ giúp nhanh
+                        TÙY CHỌN TRỢ GIÚP NHANH
                       </span>
                       <div className="space-y-1">
                         <button
@@ -489,9 +493,9 @@ export function HelpWidget() {
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
                             <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                              Hiện thanh thiết lập
+                              Hướng Dẫn Học Cho Người Mới
                             </span>
-                            <span className="text-[10px] text-slate-400">Khôi phục hướng dẫn thiết lập</span>
+                            <span className="text-[10px] text-slate-400">Khôi phục lộ trình học tiếng Hàn từ sơ cấp</span>
                           </div>
                         </button>
 
@@ -504,9 +508,9 @@ export function HelpWidget() {
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
                             <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                              Danh sách phím tắt
+                              Danh Sách Phím Tắt Lật Thẻ
                             </span>
-                            <span className="text-[10px] text-slate-400">Phím tắt thao tác nhanh</span>
+                            <span className="text-[10px] text-slate-400">Phím tắt thao tác nhanh ôn Flashcard</span>
                           </div>
                         </button>
 
@@ -519,9 +523,9 @@ export function HelpWidget() {
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
                             <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                              Gửi ý kiến đóng góp
+                              Góp Ý Cải Tiến Bài Học
                             </span>
-                            <span className="text-[10px] text-slate-400">Góp ý cải tiến chất lượng</span>
+                            <span className="text-[10px] text-slate-400">Góp ý nội dung cho đội ngũ LynKore</span>
                           </div>
                         </button>
 
@@ -534,9 +538,9 @@ export function HelpWidget() {
                           </div>
                           <div className="flex-grow min-w-0 flex flex-col">
                             <span className="text-xs font-medium text-slate-800 dark:text-zinc-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                              Báo cáo lỗi kỹ thuật
+                              Báo Cáo Lỗi Bài Thi / Kỹ Thuật
                             </span>
-                            <span className="text-[10px] text-slate-400">Báo sự cố hoặc lỗi hiển thị</span>
+                            <span className="text-[10px] text-slate-400">Báo sự cố hiển thị hoặc đáp án</span>
                           </div>
                         </button>
                       </div>
@@ -546,7 +550,7 @@ export function HelpWidget() {
               </div>
             </div>
 
-            {/* Live Chat Footer Button & Powered by OtterSync */}
+            {/* Live Chat Footer Button & Powered by LynKore */}
             <div
               className={`overflow-hidden transition-all duration-300 shrink-0 flex flex-col border-t border-slate-200/60 dark:border-zinc-800/60 ${
                 isChatting ? 'h-0 opacity-0' : 'h-[75px] opacity-100 p-3 justify-between'
@@ -555,7 +559,7 @@ export function HelpWidget() {
               {!showShortcuts && !showFeedback && (
                 <button
                   onClick={() => {
-                    showToast('Đang kết nối bộ phận hỗ trợ trực tiếp (Live Chat)...');
+                    showToast('Đang kết nối Giảng viên & Bộ phận hỗ trợ trực tiếp...');
                     setIsOpen(false);
                   }}
                   className="p-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#121215] hover:bg-slate-50 dark:hover:bg-zinc-800 cursor-pointer flex items-center justify-between text-xs font-medium transition-all text-slate-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-3xs group"
@@ -563,7 +567,7 @@ export function HelpWidget() {
                   <div className="flex items-center gap-2">
                     <ArrowRightCircle className="h-4 w-4 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" strokeWidth={1.8} />
                     <span className="text-slate-600 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-white">
-                      Liên hệ trực tiếp với bộ phận hỗ trợ (Live Chat)
+                      Liên hệ trực tiếp Giảng viên (Live Chat)
                     </span>
                   </div>
                   <ExternalLink className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" strokeWidth={1.8} />
@@ -571,7 +575,7 @@ export function HelpWidget() {
               )}
 
               <div className="text-center text-[10.5px] text-slate-400 dark:text-zinc-500 font-semibold select-none">
-                Powered by OtterSync × LynKore
+                Powered by LynKore K-Learning AI
               </div>
             </div>
           </div>
