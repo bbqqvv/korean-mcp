@@ -59,12 +59,10 @@ body {
   margin: 0;
   min-height: 100dvh;
   min-height: 100svh;
-  background-color: var(--color-ios-canvas, #faf8f5);
+  background-color: #f8fafc;
   color: var(--color-ios-fg);
-  background-image:
-    linear-gradient(to right, rgba(0, 70, 180, 0.12) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 70, 180, 0.12) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px);
+  background-size: 20px 20px;
   background-attachment: fixed;
   color-scheme: light;
   -webkit-font-smoothing: antialiased;
@@ -76,19 +74,15 @@ body {
 }
 
 .bg-caro-grid {
-  background-color: var(--color-ios-canvas, #faf8f5);
-  background-image:
-    linear-gradient(to right, rgba(0, 70, 180, 0.12) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 70, 180, 0.12) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-color: #f8fafc;
+  background-image: radial-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 .bg-caro-grid-dark {
   background-color: #09090b;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 body::-webkit-scrollbar {
