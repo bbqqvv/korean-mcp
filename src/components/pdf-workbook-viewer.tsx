@@ -194,15 +194,18 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
   const [pageInputVal, setPageInputVal] = useState('1');
   const [pdfRotation, setPdfRotation] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(100);
-  const [useCanvasPdf, setUseCanvasPdf] = useState(true);
-  const pdfRenderCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  // PDF.js Clean Canvas Renderer (Eliminates Chrome PDFium Extracting text dialog 100%)
+  // PDF.js Canvas Continuous Scroll Renderer
+  const [pdfDocInstance, setPdfDocInstance] = useState<any>(null);
+  const canvasRefs = useRef<Record<number, HTMLCanvasElement | null>>({});
+  const pdfScrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Load PDF Document Instance
   useEffect(() => {
-    if (!uploadedPdfUrl || !useCanvasPdf) return;
+    if (!uploadedPdfUrl) return;
 
     let isMounted = true;
-    const renderPdfCanvas = async () => {
+    const loadPdfDoc = async () => {
       try {
         if (!(window as any).pdfjsLib) {
           const script = document.createElement('script');
@@ -223,14 +226,29 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
 
         const pdfDoc = await pdfjs.getDocument(uploadedPdfUrl).promise;
         if (!isMounted) return;
+        setPdfDocInstance(pdfDoc);
+      } catch (err) {
+        console.warn('PDF.js Load Error:', err);
+      }
+    };
 
-        const page = await pdfDoc.getPage(pdfPageNumber);
-        if (!isMounted) return;
+    loadPdfDoc();
 
-        const canvas = pdfRenderCanvasRef.current;
-        if (!canvas) return;
+    return () => {
+      isMounted = false;
+    };
+  }, [uploadedPdfUrl]);
 
-        const scale = (zoomLevel / 100) * 1.4;
+  // Render individual page canvas when scrolled into view
+  const renderPageCanvas = useCallback(
+    async (pageNum: number) => {
+      if (!pdfDocInstance) return;
+      const canvas = canvasRefs.current[pageNum];
+      if (!canvas || canvas.getAttribute('data-rendered') === 'true') return;
+
+      try {
+        const page = await pdfDocInstance.getPage(pageNum);
+        const scale = (zoomLevel / 100) * 1.35;
         const viewport = page.getViewport({ scale, rotation: pdfRotation });
         const context = canvas.getContext('2d');
 
@@ -238,76 +256,88 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
         canvas.width = viewport.width;
 
         if (context) {
+          canvas.setAttribute('data-rendered', 'true');
           await page.render({
             canvasContext: context,
             viewport: viewport
           }).promise;
         }
       } catch (err) {
-        console.warn('PDF.js Canvas rendering fallback:', err);
-        setUseCanvasPdf(false);
+        console.warn(`Error rendering page ${pageNum}:`, err);
       }
-    };
+    },
+    [pdfDocInstance, zoomLevel, pdfRotation]
+  );
 
-    renderPdfCanvas();
+  // Re-render rendered canvases on zoom / rotation change
+  useEffect(() => {
+    if (!pdfDocInstance) return;
+    Object.keys(canvasRefs.current).forEach((key) => {
+      const pageNum = parseInt(key, 10);
+      const canvas = canvasRefs.current[pageNum];
+      if (canvas) {
+        canvas.removeAttribute('data-rendered');
+      }
+    });
+    renderPageCanvas(pdfPageNumber);
+  }, [zoomLevel, pdfRotation, pdfDocInstance, pdfPageNumber, renderPageCanvas]);
+
+  // Auto Scroll-Sync Page Number State via IntersectionObserver
+  useEffect(() => {
+    const container = pdfScrollContainerRef.current;
+    if (!container || !pdfDocInstance) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const pageAttr = entry.target.getAttribute('data-page-number');
+            if (pageAttr) {
+              const pageNum = parseInt(pageAttr, 10);
+              if (!isNaN(pageNum)) {
+                renderPageCanvas(pageNum);
+                setPdfPageNumber(pageNum);
+                setPageInputVal(String(pageNum));
+              }
+            }
+          }
+        });
+      },
+      {
+        root: container,
+        threshold: 0.25
+      }
+    );
+
+    const pageElements = container.querySelectorAll('[data-page-number]');
+    pageElements.forEach((el) => observer.observe(el));
 
     return () => {
-      isMounted = false;
+      observer.disconnect();
     };
-  }, [uploadedPdfUrl, pdfPageNumber, zoomLevel, pdfRotation, useCanvasPdf]);
+  }, [pdfDocInstance, renderPageCanvas]);
 
-  // Page Navigation (Sample pages fallback)
-  const [currentPageIndex, setCurrentPageIndex] = useState(0);
-  const totalPages = uploadedPdfUrl ? pdfTotalPages : SAMPLE_TEXTBOOK_PAGES.length;
+  const scrollToPageNumber = useCallback(
+    (targetPage: number) => {
+      const validPage = Math.min(pdfTotalPages, Math.max(1, targetPage));
+      setPdfPageNumber(validPage);
+      setPageInputVal(String(validPage));
+
+      const pageElem = document.getElementById(`pdf-page-${validPage}`);
+      if (pageElem) {
+        renderPageCanvas(validPage);
+        pageElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    },
+    [pdfTotalPages, renderPageCanvas]
+  );
+
+  // Fallback Sample Page State
+  const currentPageIndex = Math.max(0, Math.min(SAMPLE_TEXTBOOK_PAGES.length - 1, pdfPageNumber - 1));
   const currentPage = SAMPLE_TEXTBOOK_PAGES[currentPageIndex] || SAMPLE_TEXTBOOK_PAGES[0];
 
-  // PDF Scroll Container Ref & Auto Scroll-Sync Page Number State
-  const pdfScrollContainerRef = useRef<HTMLDivElement>(null);
-  const isProgrammaticScrollRef = useRef(false);
-
-  const handleScrollSync = useCallback(() => {
-    if (isProgrammaticScrollRef.current) return;
-    const container = pdfScrollContainerRef.current;
-    if (!container) return;
-
-    const maxScroll = container.scrollHeight - container.clientHeight;
-    if (maxScroll <= 5) return;
-
-    const scrollRatio = Math.min(1, Math.max(0, container.scrollTop / maxScroll));
-    const computedPage = Math.min(pdfTotalPages, Math.max(1, Math.round(scrollRatio * (pdfTotalPages - 1)) + 1));
-
-    setPdfPageNumber((prev) => {
-      if (prev !== computedPage) {
-        setPageInputVal(String(computedPage));
-        return computedPage;
-      }
-      return prev;
-    });
-  }, [pdfTotalPages]);
-
-  const scrollToPageNumber = useCallback((targetPage: number) => {
-    const validPage = Math.min(pdfTotalPages, Math.max(1, targetPage));
-    setPdfPageNumber(validPage);
-    setPageInputVal(String(validPage));
-
-    const container = pdfScrollContainerRef.current;
-    if (container) {
-      const maxScroll = container.scrollHeight - container.clientHeight;
-      if (maxScroll > 5) {
-        isProgrammaticScrollRef.current = true;
-        const targetScrollTop = ((validPage - 1) / (pdfTotalPages - 1)) * maxScroll;
-        container.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
-
-        setTimeout(() => {
-          isProgrammaticScrollRef.current = false;
-        }, 600);
-      }
-    }
-  }, [pdfTotalPages]);
-
-  // Mouse Wheel Scroll Listener for Auto-Updating Page Number
+  // Mouse Wheel Scroll Listener
   const accumulatedDeltaYRef = useRef(0);
-
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
     if (e.ctrlKey || e.altKey) return;
     accumulatedDeltaYRef.current += e.deltaY;
@@ -654,24 +684,30 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
 
             {/* Real PDF Page Viewer Container */}
             {uploadedPdfUrl ? (
-              <div className="relative z-10 w-full h-full flex-1 flex flex-col overflow-hidden bg-white">
-                <object
-                  key={`pdf-page-${pdfPageNumber}-${readingViewMode}`}
-                  data={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=1&view=${
-                    readingViewMode === 'page' ? 'Fit' : 'FitH'
-                  }`}
-                  type="application/pdf"
-                  className="w-full h-full flex-1 border-none bg-white pointer-events-auto"
-                >
-                  <embed
-                    src={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=1`}
-                    type="application/pdf"
-                    className="w-full h-full flex-1 border-none bg-white"
-                  />
-                </object>
+              <div
+                ref={pdfScrollContainerRef}
+                className="relative z-10 w-full h-full flex-1 overflow-y-auto bg-slate-900/95 dark:bg-slate-950 p-4 space-y-6 flex flex-col items-center select-none scroll-smooth"
+              >
+                {Array.from({ length: pdfTotalPages }, (_, i) => i + 1).map((pageNum) => (
+                  <div
+                    key={`pdf-page-container-${pageNum}`}
+                    id={`pdf-page-${pageNum}`}
+                    data-page-number={pageNum}
+                    className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 p-2 transition-all min-h-[500px] flex flex-col items-center justify-center group"
+                  >
+                    <div className="w-full flex items-center justify-between px-3 py-1.5 text-[11px] font-extrabold text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800 mb-2">
+                      <span>📖 Trang {pageNum} / {pdfTotalPages}</span>
+                      <span className="text-blue-600 dark:text-blue-400 font-mono tracking-tight">{courseTitle}</span>
+                    </div>
 
-                {/* Bottom-left Floating Mask Overlay (Blocks Chrome PDFium 'Extracting text from PDF...' Toast) */}
-                <div className="absolute bottom-0 left-0 z-30 w-72 h-12 bg-slate-200/95 dark:bg-slate-900/95 backdrop-blur-xs pointer-events-none rounded-tr-xl border-t border-r border-slate-300/40 dark:border-slate-800/40 hidden" />
+                    <canvas
+                      ref={(el) => {
+                        canvasRefs.current[pageNum] = el;
+                      }}
+                      className="max-w-full height-auto rounded-lg shadow-sm"
+                    />
+                  </div>
+                ))}
               </div>
             ) : (
               /* Interactive Sample Page */
