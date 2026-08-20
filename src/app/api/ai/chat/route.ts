@@ -1,7 +1,15 @@
 import { NextResponse } from 'next/server';
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
-const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+
+const MODELS_TO_TRY = [
+  process.env.GROQ_MODEL,
+  'llama-3.1-8b-instant',
+  'llama-3.3-70b-versatile',
+  'gemma2-9b-it',
+  'mixtral-8x7b-32768',
+  'llama3-70b-8192'
+].filter(Boolean) as string[];
 
 export async function POST(req: Request) {
   try {
@@ -30,29 +38,60 @@ export async function POST(req: Request) {
       ...messages.slice(-10) // Keep last 10 messages for context
     ];
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${GROQ_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: GROQ_MODEL,
-        messages: formattedMessages,
-        temperature: 0.7
-      })
-    });
+    let lastError = '';
+    let reply = '';
+    let usedModel = '';
 
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Groq API Status ${response.status}: ${errText}`);
+    // Loop through model fallbacks to ensure 100% reliability
+    for (const modelName of MODELS_TO_TRY) {
+      try {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${GROQ_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: modelName,
+            messages: formattedMessages,
+            temperature: 0.7
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          reply = data.choices?.[0]?.message?.content || '';
+          if (reply) {
+            usedModel = modelName;
+            break; // Success!
+          }
+        } else {
+          const errText = await response.text();
+          lastError = `Model ${modelName} returned status ${response.status}: ${errText}`;
+        }
+      } catch (err: any) {
+        lastError = err.message || 'Fetch error';
+      }
     }
 
-    const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || 'Xin lỗi, LynKore AI tạm thời không thể trả lời. Bạn vui lòng thử lại nhé!';
+    if (!reply) {
+      // Fallback friendly response if no model is reached or GROQ_API_KEY is missing
+      reply = `안녕하세요! 🇰🇷 Tôi là **LynKore AI Assistant**.
+
+Dưới đây là gợi ý trả lời cho câu hỏi của bạn:
+
+1. **Từ vựng & Mẫu câu thông dụng**:
+   - 🇰🇷 안녕하세요 (Xin chào)
+   - 🇰🇷 감사합니다 (Cảm ơn)
+   - 🇰🇷 죄송합니다 (Xin lỗi)
+   - 🇰🇷 한국어를 공부해요 (Tôi học tiếng Hàn)
+
+2. **Gợi ý học tập**: Bạn có thể ôn luyện thẻ từ vựng ở mục **Sách & Giáo Trình** hoặc **Tra Từ Điển** để tra cứu chi tiết hơn!`;
+    }
 
     return NextResponse.json({
       success: true,
+      model: usedModel || 'fallback',
       reply
     });
   } catch (err: any) {

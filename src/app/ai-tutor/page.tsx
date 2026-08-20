@@ -147,6 +147,50 @@ export default function AITutorPage() {
     }
   };
 
+  const formatMarkdown = (content: string) => {
+    const lines = content.split('\n');
+    return lines.map((line, lineIdx) => {
+      // Replace **text** with <strong>text</strong>
+      const parts = line.split(/(\*\*[^*]+\*\*)/g);
+      const formattedLine = parts.map((part, partIdx) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return (
+            <strong key={partIdx} className="font-black text-slate-900">
+              {part.slice(2, -2)}
+            </strong>
+          );
+        }
+        return part;
+      });
+
+      if (line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
+        return (
+          <li key={lineIdx} className="ml-4 list-disc text-slate-800 my-0.5">
+            {formattedLine}
+          </li>
+        );
+      }
+
+      if (/^\d+\.\s/.test(line.trim())) {
+        return (
+          <div key={lineIdx} className="font-extrabold text-slate-900 pt-2 pb-0.5">
+            {formattedLine}
+          </div>
+        );
+      }
+
+      if (!line.trim()) {
+        return <div key={lineIdx} className="h-1.5" />;
+      }
+
+      return (
+        <p key={lineIdx} className="my-0.5">
+          {formattedLine}
+        </p>
+      );
+    });
+  };
+
   return (
     <div className={`flex h-screen ${themeConfig.canvasBg} ${themeConfig.canvasText} overflow-hidden font-sans`}>
       <Sidebar
@@ -158,73 +202,6 @@ export default function AITutorPage() {
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Main Workspace Arena */}
         <main className="flex-1 flex flex-col min-w-0 h-full max-w-5xl w-full mx-auto p-3 sm:p-6 overflow-hidden space-y-3">
-          {/* Header Bar */}
-          <div className="bg-white border-2 border-slate-900 rounded-3xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center border-2 border-slate-900 shadow-xs shrink-0">
-                <Bot className="w-5 h-5" />
-              </div>
-
-              <div>
-                <h1 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
-                  Trợ Lý Tiếng Hàn AI (LynKore Bot)
-                  <span className="inline-flex items-center gap-1 text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full border border-emerald-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" /> Live
-                  </span>
-                </h1>
-                <p className="text-xs text-slate-500">
-                  Hỗ trợ sửa lỗi, luyện hội thoại &amp; giải đáp ngữ pháp 24/7 với Groq AI
-                </p>
-              </div>
-            </div>
-
-            {/* Mode Select Buttons & Reset */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold">
-                <button
-                  onClick={() => setActiveRole('general')}
-                  className={`px-3 py-1 rounded-xl transition-all ${
-                    activeRole === 'general' ? 'bg-white text-slate-900 border border-slate-900 shadow-xs' : 'text-slate-600'
-                  }`}
-                >
-                  💬 Chung
-                </button>
-                <button
-                  onClick={() => setActiveRole('grammar')}
-                  className={`px-3 py-1 rounded-xl transition-all ${
-                    activeRole === 'grammar' ? 'bg-white text-slate-900 border border-slate-900 shadow-xs' : 'text-slate-600'
-                  }`}
-                >
-                  📝 Ngữ pháp
-                </button>
-                <button
-                  onClick={() => setActiveRole('roleplay')}
-                  className={`px-3 py-1 rounded-xl transition-all ${
-                    activeRole === 'roleplay' ? 'bg-white text-slate-900 border border-slate-900 shadow-xs' : 'text-slate-600'
-                  }`}
-                >
-                  🎭 Đóng vai
-                </button>
-                <button
-                  onClick={() => setActiveRole('topik')}
-                  className={`px-3 py-1 rounded-xl transition-all ${
-                    activeRole === 'topik' ? 'bg-white text-slate-900 border border-slate-900 shadow-xs' : 'text-slate-600'
-                  }`}
-                >
-                  🎯 TOPIK
-                </button>
-              </div>
-
-              <button
-                onClick={handleClearHistory}
-                className="p-2 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-300 transition-colors shadow-2xs"
-                title="Xóa lịch sử trò chuyện"
-              >
-                <RotateCw className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
           {/* Messages Scroll Area */}
           <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {messages.map((msg) => (
@@ -247,8 +224,8 @@ export default function AITutorPage() {
                         : 'bg-white text-slate-900 rounded-3xl rounded-bl-xs'
                     }`}
                   >
-                    <div className="whitespace-pre-wrap font-sans space-y-1">
-                      {msg.content}
+                    <div className="space-y-1">
+                      {msg.role === 'user' ? msg.content : formatMarkdown(msg.content)}
                     </div>
 
                     <div
