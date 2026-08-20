@@ -58,7 +58,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { mode, subStyle, setMode, setSubStyle, themeConfig } = useTheme();
+  const { mode, subStyle, ambientEffect, setMode, setSubStyle, setAmbientEffect, themeConfig } = useTheme();
 
   const isBooksActive = pathname === '/books' || pathname.startsWith('/course');
   const isSpeakingActive =
@@ -484,8 +484,35 @@ export default function Sidebar({
                       })}
                     </div>
 
+                    {/* Ambient Effects Section */}
+                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
+                      <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+                        Hiệu ứng môi trường
+                      </span>
+                      <div className="grid grid-cols-4 gap-1">
+                        {[
+                          { id: 'none', label: 'Tắt 🚫' },
+                          { id: 'sakura', label: 'Anh Đào 🌸' },
+                          { id: 'snow', label: 'Tuyết ❄️' },
+                          { id: 'stars', label: 'Sao ✨' }
+                        ].map((ef) => (
+                          <button
+                            key={ef.id}
+                            onClick={() => setAmbientEffect(ef.id as any)}
+                            className={`py-1 px-1 rounded-lg text-[10px] font-semibold transition-all text-center ${
+                              ambientEffect === ef.id
+                                ? 'bg-blue-600 text-white shadow-2xs'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {ef.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* Settings Item */}
-                    <div className="space-y-0.5 text-xs font-medium pt-1">
+                    <div className="space-y-0.5 text-xs font-medium pt-0.5">
                       <Link
                         href="/settings"
                         onClick={() => setIsProfileMenuOpen(false)}

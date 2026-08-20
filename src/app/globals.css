@@ -138,10 +138,29 @@ html.dark [class*="bg-white"] {
   color: var(--text-main) !important;
 }
 
-html.dark .bg-slate-50,
-html.dark .bg-slate-50\/70,
-html.dark .bg-slate-100 {
-  background-color: var(--bg-canvas) !important;
+/* AMBIENT PARTICLE ANIMATIONS (SAKURA, SNOW, STARS) */
+@keyframes ambientFall {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(50vh) translateX(25px) rotate(180deg);
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(105vh) translateX(-20px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.animate-ambientFall {
+  animation: ambientFall linear infinite;
 }
 
 html.dark .text-slate-900 {

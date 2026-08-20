@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type ModeType = 'light' | 'dark' | 'system';
 export type SubStyleId = 'default' | 'purple' | 'pink' | 'blue';
+export type EffectId = 'none' | 'sakura' | 'snow' | 'stars';
 
 export type AppThemeId =
   | 'light'
@@ -193,11 +194,13 @@ export const THEME_CONFIGS: Record<string, ThemeConfig> = {
 interface ThemeContextType {
   mode: ModeType;
   subStyle: SubStyleId;
+  ambientEffect: EffectId;
   activeThemeId: AppThemeId;
   themePreset: ThemePreset;
   themeConfig: ThemeConfig;
   setMode: (mode: ModeType) => void;
   setSubStyle: (sub: SubStyleId) => void;
+  setAmbientEffect: (effect: EffectId) => void;
   setAppTheme: (themeId: AppThemeId) => void;
   // Backward compatibility
   theme: ThemeId;
@@ -207,11 +210,13 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType>({
   mode: 'light',
   subStyle: 'default',
+  ambientEffect: 'none',
   activeThemeId: 'light',
   themePreset: THEME_PRESETS.light,
   themeConfig: THEME_PRESETS.light as unknown as ThemeConfig,
   setMode: () => {},
   setSubStyle: () => {},
+  setAmbientEffect: () => {},
   setAppTheme: () => {},
   theme: 'light',
   setTheme: () => {}
@@ -228,14 +233,17 @@ function resolveThemeId(mode: ModeType, subStyle: SubStyleId): AppThemeId {
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setModeState] = useState<ModeType>('light');
   const [subStyle, setSubStyleState] = useState<SubStyleId>('default');
+  const [ambientEffect, setAmbientEffectState] = useState<EffectId>('none');
 
   const activeThemeId = resolveThemeId(mode, subStyle);
 
   useEffect(() => {
     const savedMode = localStorage.getItem('lynkore-mode') as ModeType;
     const savedSub = localStorage.getItem('lynkore-sub-style') as SubStyleId;
+    const savedEffect = localStorage.getItem('lynkore-ambient-effect') as EffectId;
     if (savedMode) setModeState(savedMode);
     if (savedSub) setSubStyleState(savedSub);
+    if (savedEffect) setAmbientEffectState(savedEffect);
   }, []);
 
   useEffect(() => {
@@ -262,6 +270,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const setSubStyle = (s: SubStyleId) => {
     setSubStyleState(s);
     localStorage.setItem('lynkore-sub-style', s);
+  };
+
+  const setAmbientEffect = (e: EffectId) => {
+    setAmbientEffectState(e);
+    localStorage.setItem('lynkore-ambient-effect', e);
   };
 
   const setAppTheme = (id: AppThemeId) => {
@@ -301,11 +314,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       value={{
         mode,
         subStyle,
+        ambientEffect,
         activeThemeId,
         themePreset: currentPreset,
         themeConfig: currentConfig,
         setMode,
         setSubStyle,
+        setAmbientEffect,
         setAppTheme,
         theme: activeThemeId,
         setTheme
