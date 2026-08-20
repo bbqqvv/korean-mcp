@@ -15,7 +15,8 @@ import {
   Settings,
   Keyboard,
   BookOpen,
-  Search
+  Search,
+  Bot
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -51,6 +52,7 @@ export default function Sidebar({
 
   const mainNavLinks = [
     { href: '/', label: 'Trang Chủ', icon: Home },
+    { href: '/ai-tutor', label: 'Trợ Lý AI', icon: Bot },
     { href: '/books', label: 'Sách & Giáo Trình', icon: BookOpen, isBooks: true },
     { href: '/dictionary', label: 'Tra Từ Điển', icon: Search },
     { href: '/typing', label: 'Luyện Gõ Phím', icon: Keyboard },
