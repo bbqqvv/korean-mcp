@@ -193,6 +193,68 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
   const [readingViewMode, setReadingViewMode] = useState<'page' | 'continuous'>('page');
   const [pageInputVal, setPageInputVal] = useState('1');
   const [pdfRotation, setPdfRotation] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(100);
+  const [useCanvasPdf, setUseCanvasPdf] = useState(true);
+  const pdfRenderCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  // PDF.js Clean Canvas Renderer (Eliminates Chrome PDFium Extracting text dialog 100%)
+  useEffect(() => {
+    if (!uploadedPdfUrl || !useCanvasPdf) return;
+
+    let isMounted = true;
+    const renderPdfCanvas = async () => {
+      try {
+        if (!(window as any).pdfjsLib) {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+          document.head.appendChild(script);
+          await new Promise((resolve, reject) => {
+            script.onload = resolve;
+            script.onerror = reject;
+          });
+          if ((window as any).pdfjsLib) {
+            (window as any).pdfjsLib.GlobalWorkerOptions.workerSrc =
+              'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+          }
+        }
+
+        const pdfjs = (window as any).pdfjsLib;
+        if (!pdfjs) return;
+
+        const pdfDoc = await pdfjs.getDocument(uploadedPdfUrl).promise;
+        if (!isMounted) return;
+
+        const page = await pdfDoc.getPage(pdfPageNumber);
+        if (!isMounted) return;
+
+        const canvas = pdfRenderCanvasRef.current;
+        if (!canvas) return;
+
+        const scale = (zoomLevel / 100) * 1.4;
+        const viewport = page.getViewport({ scale, rotation: pdfRotation });
+        const context = canvas.getContext('2d');
+
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        if (context) {
+          await page.render({
+            canvasContext: context,
+            viewport: viewport
+          }).promise;
+        }
+      } catch (err) {
+        console.warn('PDF.js Canvas rendering fallback:', err);
+        setUseCanvasPdf(false);
+      }
+    };
+
+    renderPdfCanvas();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [uploadedPdfUrl, pdfPageNumber, zoomLevel, pdfRotation, useCanvasPdf]);
 
   // Page Navigation (Sample pages fallback)
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
@@ -238,7 +300,6 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
   const [toolMode, setToolMode] = useState<ToolMode>('select');
   const [penColor, setPenColor] = useState('#ef4444'); // Red default for workbook marking
   const [penSize, setPenSize] = useState(4);
-  const [zoomLevel, setZoomLevel] = useState(100);
 
   // Canvas Annotations per Page Index
   const [pageStrokes, setPageStrokes] = useState<Record<number, DrawingStroke[]>>({});
@@ -540,21 +601,28 @@ export default function PDFWorkbookViewer({ courseId, courseTitle, courseCategor
 
             {/* Real PDF Page Viewer Container */}
             {uploadedPdfUrl ? (
-              <div className="relative z-10 w-full h-full flex-1 flex flex-col overflow-hidden bg-white">
-                <object
-                  key={`pdf-page-${pdfPageNumber}-${readingViewMode}`}
-                  data={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=0&view=${
-                    readingViewMode === 'page' ? 'Fit' : 'FitH'
-                  }`}
-                  type="application/pdf"
-                  className="w-full h-full flex-1 border-none bg-white pointer-events-auto"
-                >
-                  <embed
-                    src={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=0`}
-                    type="application/pdf"
-                    className="w-full h-full flex-1 border-none bg-white"
+              <div className="relative z-10 w-full h-full flex-1 flex flex-col items-center justify-center overflow-auto bg-slate-100 dark:bg-slate-950 p-4">
+                {useCanvasPdf ? (
+                  <canvas
+                    ref={pdfRenderCanvasRef}
+                    className="shadow-xl rounded-xl bg-white max-w-full h-auto transition-all"
                   />
-                </object>
+                ) : (
+                  <object
+                    key={`pdf-page-${pdfPageNumber}-${readingViewMode}`}
+                    data={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=0&view=${
+                      readingViewMode === 'page' ? 'Fit' : 'FitH'
+                    }`}
+                    type="application/pdf"
+                    className="w-full h-full flex-1 border-none bg-white pointer-events-auto"
+                  >
+                    <embed
+                      src={`${uploadedPdfUrl}#page=${pdfPageNumber}&toolbar=0&navpanes=0&scrollbar=0`}
+                      type="application/pdf"
+                      className="w-full h-full flex-1 border-none bg-white"
+                    />
+                  </object>
+                )}
               </div>
             ) : (
               /* Interactive Sample Page */
