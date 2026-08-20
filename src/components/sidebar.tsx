@@ -518,7 +518,7 @@ export default function Sidebar({
                           Nhạc nền Lofi & Ambient
                         </span>
                         {ambientAudio !== 'none' && (
-                          <span className="text-[9px] font-bold text-emerald-500 animate-pulse flex items-center gap-0.5">
+                          <span className="text-[9px] font-bold text-blue-600 dark:text-blue-400 animate-pulse flex items-center gap-0.5">
                             <Volume2 className="w-2.5 h-2.5" /> Đang phát
                           </span>
                         )}
@@ -535,7 +535,7 @@ export default function Sidebar({
                             onClick={() => setAmbientAudio(au.id as any)}
                             className={`py-1 px-1 rounded-lg text-[10px] font-semibold transition-all text-center ${
                               ambientAudio === au.id
-                                ? 'bg-emerald-600 text-white shadow-2xs'
+                                ? 'bg-blue-600 text-white shadow-2xs'
                                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                             }`}
                           >
