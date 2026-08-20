@@ -26,12 +26,12 @@ export default function PronunciationPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className={`text-[11px] ${themeConfig.primaryText} font-extrabold tracking-wide uppercase flex items-center gap-1`}>
-                    <Volume2 className="w-3.5 h-3.5" /> LYNKORE PRONUNCIATION DRILL
+                  <span className={`text-[11px] ${themeConfig.primaryText} font-semibold tracking-wide uppercase`}>
+                    LYNKORE PRONUNCIATION DRILL
                   </span>
                 </div>
-                <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
-                  Phân Biệt Âm &amp; Khẩu Hình Tiếng Hàn 🔊
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                  Phân Biệt Âm &amp; Khẩu Hình Tiếng Hàn
                 </h1>
                 <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
                   Bí kíp phân biệt 3 nhóm phụ âm gây khó nhất cho người Việt: Âm nhẹ thường, Âm bật hơi mạnh &amp; Âm căng gãi gọn.

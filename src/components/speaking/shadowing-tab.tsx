@@ -209,7 +209,7 @@ export default function ShadowingTab() {
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
           }`}
         >
-          ☕ Giao Tiếp Thực Tế
+          Giao Tiếp Thực Tế
         </button>
         <button
           onClick={() => setFilterCategory('vlog')}
@@ -219,7 +219,7 @@ export default function ShadowingTab() {
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
           }`}
         >
-          📹 Vlog Đời Sống
+          Vlog Đời Sống
         </button>
       </div>
 
@@ -323,8 +323,8 @@ export default function ShadowingTab() {
               </div>
 
               <div className="space-y-1 pt-2 border-t border-slate-700/80 text-xs">
-                <p className="text-blue-300 font-semibold">🗣️ Phiên âm: {activeSegment.romaja}</p>
-                <p className="text-slate-300 font-medium">🇻🇳 Nghĩa: {activeSegment.vietnamese}</p>
+                <p className="text-blue-300 font-semibold">Phiên âm: {activeSegment.romaja}</p>
+                <p className="text-slate-300 font-medium">Nghĩa: {activeSegment.vietnamese}</p>
               </div>
             </div>
           </div>
@@ -334,8 +334,7 @@ export default function ShadowingTab() {
         <div className="lg:col-span-5 space-y-4">
           <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 shadow-xs space-y-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-              <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
-                <ListVideo className={`w-4 h-4 ${themeConfig.primaryText}`} />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                 PHỤ ĐỀ KARAOKE (TỰ ĐỘNG CUỘN SÁNG)
               </h3>
               <span className="text-[10px] font-bold text-slate-400">
@@ -360,9 +359,9 @@ export default function ShadowingTab() {
                         : 'bg-slate-50 border-slate-200/80 hover:bg-white hover:border-slate-400 text-slate-900'
                     }`}
                   >
-                    <div className="flex items-center justify-between text-[10px] font-extrabold">
+                    <div className="flex items-center justify-between text-[10px] font-bold">
                       <span className={isActive ? 'text-amber-400' : 'text-blue-600'}>
-                        ⏱️ {sub.startTime}s - {sub.endTime}s
+                        {sub.startTime}s - {sub.endTime}s
                       </span>
                       {isActive && (
                         <span className="bg-blue-600 text-white px-2 py-0.5 rounded-md flex items-center gap-1 animate-pulse">
@@ -385,8 +384,7 @@ export default function ShadowingTab() {
 
           {/* Curated Video Playlist */}
           <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 shadow-xs space-y-3">
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
               THƯ VIỆN VIDEO CHỌN LỌC
             </h4>
 

@@ -47,12 +47,12 @@ function SpeakingContent() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className={`text-[11px] ${themeConfig.primaryText} font-extrabold tracking-wide uppercase flex items-center gap-1`}>
-                    <Mic className="w-3.5 h-3.5" /> LYNKORE SPEAKING HUB
+                  <span className={`text-[11px] ${themeConfig.primaryText} font-semibold tracking-wide uppercase`}>
+                    LYNKORE SPEAKING HUB
                   </span>
                 </div>
-                <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
-                  Luyện Nói &amp; Phát Âm Chuẩn Giọng Seoul 🇰🇷
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                  Luyện Nói &amp; Phát Âm Chuẩn Giọng Seoul
                 </h1>
                 <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
                   Phân biệt 3 nhóm phụ âm khó trong tiếng Hàn &amp; thực hành đóng vai giao tiếp tình huống 2 chiều.

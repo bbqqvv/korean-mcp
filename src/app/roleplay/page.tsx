@@ -26,12 +26,12 @@ export default function RoleplayPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className={`text-[11px] ${themeConfig.primaryText} font-extrabold tracking-wide uppercase flex items-center gap-1`}>
-                    <MessageSquare className="w-3.5 h-3.5" /> LYNKORE ROLEPLAY SIMULATOR
+                  <span className={`text-[11px] ${themeConfig.primaryText} font-semibold tracking-wide uppercase`}>
+                    LYNKORE ROLEPLAY SIMULATOR
                   </span>
                 </div>
-                <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
-                  Đóng Vai Giao Tiếp Tình Huống Thực Tế 💬
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                  Đóng Vai Giao Tiếp Tình Huống Thực Tế
                 </h1>
                 <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
                   Luyện phản xạ giao tiếp 2 chiều theo các kịch bản đời sống sinh động: Gọi cafe Hongdae, Ăn tiệm BBQ Samgyeopsal, Đi Taxi Seoul...

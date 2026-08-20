@@ -26,12 +26,12 @@ export default function ShadowingPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className={`text-[11px] ${themeConfig.primaryText} font-extrabold tracking-wide uppercase flex items-center gap-1`}>
-                    <Film className="w-3.5 h-3.5" /> LYNKORE VIDEO SHADOWING STUDIO
+                  <span className={`text-[11px] ${themeConfig.primaryText} font-semibold tracking-wide uppercase`}>
+                    LYNKORE VIDEO SHADOWING STUDIO
                   </span>
                 </div>
-                <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
-                  Luyện Nhại Video Shadowing Chuẩn K-Style 🎬
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                  Luyện Nhại Video Shadowing Chuẩn K-Style
                 </h1>
                 <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
                   Luyện nói nhại theo các đoạn clip YouTube Hàn Quốc thực tế (K-Drama, Vlog đời sống, K-Pop) kèm phụ đề chạy đồng bộ và tính năng lặp phân đoạn.

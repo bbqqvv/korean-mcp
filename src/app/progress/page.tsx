@@ -59,12 +59,12 @@ export default function ProgressPage() {
           {/* Header Title */}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className={`text-[11px] ${themeConfig.primaryText} font-extrabold tracking-wide uppercase flex items-center gap-1`}>
-                <TrendingUp className="w-3.5 h-3.5" /> LYNKORE ANALYTICS &amp; DASHBOARD
+              <span className={`text-[11px] ${themeConfig.primaryText} font-semibold tracking-wide uppercase`}>
+                LYNKORE ANALYTICS &amp; DASHBOARD
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              Tiến Trình Học Tập 📈
+              Tiến Trình Học Tập
             </h1>
             <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
               Theo dõi hoạt động hàng ngày, chuỗi ngày học và thứ hạng của bạn so với người học khác.
@@ -173,8 +173,7 @@ export default function ProgressPage() {
               {/* Card 1: 6-Month Activity Heatmap Grid */}
               <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-blue-600" />
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900">
                     Tổng quan hoạt động (6 tháng gần đây)
                   </h2>
                   <span className="text-[11px] text-slate-400 font-semibold">180 Ngày</span>
@@ -223,8 +222,7 @@ export default function ProgressPage() {
               {/* Card 2: 30-Day Daily Practice Breakdown */}
               <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                  <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4 text-blue-600" />
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900">
                     Luyện tập hàng ngày (30 ngày gần đây)
                   </h2>
 
@@ -323,8 +321,7 @@ export default function ProgressPage() {
             <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-4 animate-fadeIn">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div>
-                  <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-amber-500" />
+                  <h2 className="text-base font-bold text-slate-900">
                     Bảng Xếp Hạng Siêng Năng Tuần Này
                   </h2>
                   <p className="text-xs text-slate-500 font-medium">

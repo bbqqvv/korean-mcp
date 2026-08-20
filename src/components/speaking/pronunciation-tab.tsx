@@ -44,10 +44,10 @@ export default function PronunciationTab() {
     <div className="space-y-6">
       {/* Intro Banner */}
       <div className="bg-gradient-to-r from-indigo-900 via-blue-900 to-slate-900 text-white rounded-3xl p-6 border border-slate-200/80 shadow-xs shadow-xs space-y-2">
-        <div className="flex items-center gap-2 text-xs font-extrabold text-blue-300 uppercase tracking-wide">
-          <Sparkles className="w-4 h-4 text-amber-400" /> Bí Kíp Phát Âm Chuẩn Giọng Seoul
+        <div className="text-xs font-bold text-blue-300 uppercase tracking-wide">
+          Bí Kíp Phát Âm Chuẩn Giọng Seoul
         </div>
-        <h2 className="text-xl sm:text-2xl font-black">
+        <h2 className="text-xl sm:text-2xl font-bold">
           Phân Biệt 3 Nhóm Âm: Âm Thường - Âm Bật Hơi - Âm Căng
         </h2>
         <p className="text-xs text-slate-300 max-w-3xl leading-relaxed">

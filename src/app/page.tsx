@@ -106,8 +106,8 @@ function DashboardContent() {
           <div className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 sm:p-6 shadow-xs space-y-3.5">
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
-                <span className={`text-[11px] ${themeConfig.primaryText} font-extrabold tracking-wide uppercase`}>
-                  안녕하세요! 🇰🇷 LynKore Learning Hub
+                <span className={`text-[11px] ${themeConfig.primaryText} font-semibold tracking-wide uppercase`}>
+                  안녕하세요! LynKore Learning Hub
                 </span>
               </div>
               <h1 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
@@ -165,12 +165,9 @@ function DashboardContent() {
             recommendedDeck && (
               <section className="bg-white border border-slate-200/80 shadow-xs rounded-3xl p-5 shadow-xs space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <Sparkles className={`w-3.5 h-3.5 ${themeConfig.primaryText}`} />
-                    <span className="text-xs font-bold text-slate-900 uppercase tracking-wide">
-                      Bài Học Gợi Ý Hôm Nay
-                    </span>
-                  </div>
+                  <span className="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                    Bài Học Gợi Ý Hôm Nay
+                  </span>
                   <span className={`text-[11px] font-bold ${themeConfig.badgeBg} px-2.5 py-0.5 rounded-full`}>
                     {recommendedDeck.category}
                   </span>
@@ -211,12 +208,9 @@ function DashboardContent() {
           {/* DECK LIBRARY GRID */}
           <section className="space-y-3 pt-1">
             <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
-              <div className="flex items-center gap-2">
-                <FolderOpen className={`w-4 h-4 ${themeConfig.primaryText}`} />
-                <h3 className="text-sm sm:text-base font-bold text-slate-900">
-                  {activeCategory === 'Tất cả' ? 'Thư Viện Bài Học Tiếng Hàn' : `Danh Mục: ${activeCategory}`}
-                </h3>
-              </div>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                {activeCategory === 'Tất cả' ? 'Thư Viện Bài Học Tiếng Hàn' : `Danh Mục: ${activeCategory}`}
+              </h3>
             </div>
 
             {/* Grid of Decks with Skeletons */}
