@@ -322,7 +322,7 @@ export default function Sidebar({
                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                 className="w-full p-2 rounded-xl hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between gap-2.5 group text-left"
               >
-                <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <div className="p-[2px] rounded-full bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-500 shadow-2xs shrink-0 ring-1 ring-amber-400/60">
                     <Image
                       src="/krlogo.png"
@@ -332,20 +332,18 @@ export default function Sidebar({
                       className="w-8 h-8 rounded-full object-contain bg-white dark:bg-slate-900"
                     />
                   </div>
-                  <div className="min-w-0">
-                    <div className="flex items-start gap-1">
-                      <span className="text-xs font-semibold text-slate-900 dark:text-white truncate leading-tight group-hover:text-blue-600 transition-colors">
-                        LynKore Learner
-                      </span>
-                      <span className="px-1.5 py-[1px] bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 text-white text-[8px] font-black rounded-md shadow-2xs tracking-wider uppercase shrink-0 -mt-0.5">
-                        VIP
-                      </span>
-                    </div>
+                  <div className="min-w-0 flex-1">
+                    <span className="text-xs font-semibold text-slate-900 dark:text-white block truncate leading-tight group-hover:text-blue-600 transition-colors">
+                      LynKore Learner
+                    </span>
                     <span className="text-[10px] text-slate-400 font-normal block truncate">
                       learner@lynkore.edu.vn
                     </span>
                   </div>
                 </div>
+                <span className="px-1.5 py-[1px] bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 text-white text-[8px] font-black rounded-md shadow-2xs tracking-wider uppercase shrink-0">
+                  VIP
+                </span>
                 <ChevronsUpDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-colors shrink-0" />
               </button>
 
@@ -360,29 +358,29 @@ export default function Sidebar({
 
                   <div className="absolute left-[calc(100%+10px)] bottom-0 w-72 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-2xl p-3.5 space-y-3 z-50 animate-fadeIn select-none">
                     {/* User Header */}
-                    <div className="flex items-center gap-2.5 pb-2.5 border-b border-slate-100 dark:border-slate-800">
-                      <div className="p-[2px] rounded-full bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-500 shadow-2xs shrink-0 ring-1 ring-amber-400/60">
-                        <Image
-                          src="/krlogo.png"
-                          alt="LynKore Icon"
-                          width={36}
-                          height={36}
-                          className="w-8.5 h-8.5 rounded-full object-contain bg-white dark:bg-slate-900"
-                        />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-start gap-1">
-                          <span className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate leading-tight">
+                    <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 dark:border-slate-800">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="p-[2px] rounded-full bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-500 shadow-2xs shrink-0 ring-1 ring-amber-400/60">
+                          <Image
+                            src="/krlogo.png"
+                            alt="LynKore Icon"
+                            width={36}
+                            height={36}
+                            className="w-8.5 h-8.5 rounded-full object-contain bg-white dark:bg-slate-900"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-xs font-bold text-slate-900 dark:text-slate-100 block truncate leading-tight">
                             LynKore Learner
                           </span>
-                          <span className="px-1.5 py-[1px] rounded-md bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 text-white text-[8px] font-black tracking-wider uppercase shadow-2xs shrink-0 -mt-0.5">
-                            VIP
+                          <span className="text-[10px] text-slate-400 font-normal block truncate mt-0.5">
+                            learner@lynkore.edu.vn
                           </span>
                         </div>
-                        <span className="text-[10px] text-slate-400 font-normal block truncate mt-0.5">
-                          learner@lynkore.edu.vn
-                        </span>
                       </div>
+                      <span className="px-2 py-0.5 rounded-md bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-500 text-white text-[9px] font-black tracking-wider uppercase shadow-2xs shrink-0 ml-auto border border-amber-300/40">
+                        VIP
+                      </span>
                     </div>
 
                     {/* Mode Selector Tabs (Sáng ☀️ / Tối 🌙 / Tự động 💻) */}
