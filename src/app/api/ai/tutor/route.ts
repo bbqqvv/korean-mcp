@@ -47,15 +47,19 @@ export async function POST(req: Request) {
     } else if (action === 'dict_lookup') {
       systemPrompt = `Bạn là hệ thống từ điển Hàn-Việt chuẩn xác chuyên sâu. CHỈ xuất kết quả JSON Object chuẩn không kèm văn bản lập luận.
 Tuân thủ nghiêm ngặt 10 QUY TẮC BẤT BIẾN (INVARIANT RULES):
-1. Không tự ý bịa đặt từ điển hay bịa từ Hán-Hàn.
-2. Phân biệt rõ ràng thực tế từ điển và suy luận ngữ cảnh.
-3. Nếu từ có nhiều nghĩa (ví dụ: 배 -> 1. Bụng, 2. Thuyền, 3. Quả lê; hoặc máy bay -> 비행기, 항공기), xuất danh sách ứng viên (candidates) kèm độ tin cậy confidence.
-4. Giữ nguyên chính tả tiếng Hàn và khoảng cách (spacing).
-5. Chuẩn hóa dạng chia động/tính từ về dạng nguyên thể (-다).
-6. Phân tích chính xác gốc Hán-Hàn khi có cơ sở tin cậy.
-7. KHÔNG tự ý dán nhãn "(chuyên ngành)" cho các danh từ phổ thông (như 우주선, 잠수함). Chỉ dán nhãn "(chính thức/chuyên ngành)" khi thực sự mang tính hành chính/luật pháp/kỹ thuật chuyên sâu (như 항공기, 차량).
-8. Nếu từ có gốc Hán-Hàn, xây dựng Mạng lưới Họ Từ Hán-Hàn (hanjaFamily) với 2-4 từ liên quan phổ biến (ví dụ: 항공 -> 항공사, 항공권, 항공편).
-9. Ưu tiên thói quen sử dụng tự nhiên của người bản xứ Hàn Quốc hơn dịch thô từng từ.
+1. QUY TẮC NGUỒN GỐC TỪ (ETYMOLOGY): Phân loại chính xác origin là "native_korean" (Từ thuần Hàn/고유어), "sino_korean" (Từ Hán-Hàn/한자어), hoặc "loanword" (Ngoại lai).
+2. NẾU origin == "native_korean" (ví dụ: 모르다, 몰라요, 먹다, 가다, 보다, 알다, 집, 친구):
+   - Tuyệt đối set hanja = null, hanjaExplanation = null, hanjaFamily = null. KHÔNG ĐƯỢC TỰ BỊA CHỮ HÁN NHƯ 不知 CHO 몰라요!
+   - Cung cấp trường "lemma" là dạng từ gốc (ví dụ: 몰라요 -> lemma: "모르다") và "type": "Động từ (dạng chia)" hoặc "Tính từ (dạng chia)".
+   - Cung cấp trường "relatedWords" (từ liên quan về nghĩa) với các từ đồng nghĩa/trái nghĩa thuần Hàn hoặc phổ thông (ví dụ cho 몰라요: 알다, 알지 못하다).
+3. NẾU origin == "sino_korean" (ví dụ: 우주선, 항공기, 시간, 학생):
+   - Cung cấp hanja (ví dụ: 宇宙船), hanjaExplanation (ví dụ: 宇宙 (Vũ trụ) + 船 (Thuyền/Tàu)) và hanjaFamily (mạng lưới từ họ hàng Hán-Hàn như 항공사, 항공권).
+4. KHÔNG tự ý dán nhãn "(chuyên ngành)" cho các danh từ phổ thông (như 우주선, 잠수함). Chỉ dán nhãn "(chính thức/chuyên ngành)" khi từ thực sự mang tính hành chính/kỹ thuật chuyên sâu (như 항공기, 차량).
+5. Nếu từ có nhiều nghĩa (ví dụ: 배 -> 1. Bụng, 2. Thuyền, 3. Quả lê), xuất danh sách ứng viên (candidates) kèm độ tin cậy confidence.
+6. Giữ nguyên chính tả tiếng Hàn và khoảng cách (spacing).
+7. Chuẩn hóa dạng chia động/tính từ về dạng nguyên thể (-다) trong trường "lemma".
+8. Ưu tiên thói quen sử dụng tự nhiên của người bản xứ Hàn Quốc.
+9. Dịch nghĩa tiếng Việt tự nhiên, chuẩn xác theo ngữ cảnh.
 10. Luôn trả về cấu trúc JSON duy nhất.`;
 
       userPrompt = `Hãy tra cứu từ hoặc cụm từ: "${word}".
@@ -63,20 +67,24 @@ Trả về dữ liệu dưới dạng JSON Object duy nhất với key "results"
 {
   "results": [
     {
-      "korean": "Từ tiếng Hàn",
-      "hanja": "Gốc Hán nếu có hoặc rỗng",
-      "hanjaExplanation": "Phân tích bóc tách từng chữ Hán (ví dụ: 宇宙 (Vũ trụ) + 船 (Thuyền/Tàu))",
+      "korean": "Từ tiếng Hàn (ví dụ: 몰라요)",
+      "lemma": "Từ gốc nguyên thể (ví dụ: 모르다)",
+      "origin": "native_korean / sino_korean / loanword",
+      "hanja": "Gốc Hán nếu là sino_korean, nếu native_korean thì NULL",
+      "hanjaExplanation": "Bóc tách âm Hán Việt nếu sino_korean, nếu native_korean thì NULL",
       "hanjaFamily": [
-        {"korean": "Từ họ hàng 1", "vietnamese": "Nghĩa 1"},
-        {"korean": "Từ họ hàng 2", "vietnamese": "Nghĩa 2"}
+        {"korean": "Từ họ hàng Hán-Hàn 1", "vietnamese": "Nghĩa 1"}
       ],
-      "vietnamese": "Nghĩa tiếng Việt tự nhiên chuẩn xác",
-      "type": "Danh từ / Động từ / Tính từ / Cụm từ",
+      "relatedWords": [
+        {"korean": "Từ liên quan về nghĩa 1", "vietnamese": "Nghĩa 1"}
+      ],
+      "vietnamese": "Nghĩa tiếng Việt tự nhiên (ví dụ: Tôi không biết)",
+      "type": "Danh từ / Động từ / Động từ (dạng chia) / Tính từ",
       "level": "Sơ cấp 1 / Sơ cấp 2 / Trung cấp / Cao cấp",
       "pronunciation": "[phiên âm đọc]",
       "exampleKr": "Câu ví dụ tiếng Hàn thực tế",
       "exampleVi": "Dịch câu ví dụ tiếng Việt",
-      "confidence": 0.95
+      "confidence": 0.98
     }
   ]
 }`;

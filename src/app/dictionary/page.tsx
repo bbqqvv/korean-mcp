@@ -12,9 +12,12 @@ import { Flashcard } from '@/lib/types';
 // Pre-populated rich Korean-Vietnamese Dictionary Dataset
 const DICTIONARY_DATABASE: Array<{
   korean: string;
+  lemma?: string;
+  origin?: 'native_korean' | 'sino_korean' | 'loanword';
   hanja?: string;
   hanjaExplanation?: string;
   hanjaFamily?: Array<{ korean: string; vietnamese: string }>;
+  relatedWords?: Array<{ korean: string; vietnamese: string }>;
   vietnamese: string;
   type: string;
   level: string;
@@ -23,9 +26,45 @@ const DICTIONARY_DATABASE: Array<{
   exampleVi: string;
 }> = [
   {
+    korean: '몰라요',
+    lemma: '모르다',
+    origin: 'native_korean',
+    vietnamese: 'Tôi không biết',
+    type: 'Động từ (dạng chia)',
+    level: 'Sơ cấp 1',
+    pronunciation: '[mol-la-yo]',
+    relatedWords: [
+      { korean: '알다', vietnamese: 'Biết' },
+      { korean: '알지 못하다', vietnamese: 'Không biết' },
+      { korean: '이해하다', vietnamese: 'Hiểu' }
+    ],
+    exampleKr: '그 영화 제목이 뭐예요? 몰라요.',
+    exampleVi: 'Tiêu đề phim đó là gì? Tôi không biết.'
+  },
+  {
+    korean: '모르다',
+    lemma: '모르다',
+    origin: 'native_korean',
+    vietnamese: 'Không biết',
+    type: 'Động từ',
+    level: 'Sơ cấp 1',
+    pronunciation: '[mo-reu-da]',
+    relatedWords: [
+      { korean: '알다', vietnamese: 'Biết' },
+      { korean: '알지 못하다', vietnamese: 'Không biết' }
+    ],
+    exampleKr: '저는 그 사실을 몰라요.',
+    exampleVi: 'Tôi không biết sự thật đó.'
+  },
+  {
     korean: '우주선',
     hanja: '宇宙船',
+    origin: 'sino_korean',
     hanjaExplanation: '宇宙 (Vũ trụ) + 船 (Thuyền/Tàu) = Tàu vũ trụ',
+    hanjaFamily: [
+      { korean: '우주', vietnamese: 'Vũ trụ' },
+      { korean: '우주비행사', vietnamese: 'Phi hành gia' }
+    ],
     vietnamese: 'Tàu vũ trụ / Tàu không gian',
     type: 'Danh từ',
     level: 'Trung cấp',
@@ -208,9 +247,12 @@ export default function DictionaryPage() {
   const [normalizationHint, setNormalizationHint] = useState<string | null>(null);
   const [searchedResults, setSearchedResults] = useState<Array<{
     korean: string;
+    lemma?: string;
+    origin?: 'native_korean' | 'sino_korean' | 'loanword';
     hanja?: string;
     hanjaExplanation?: string;
     hanjaFamily?: Array<{ korean: string; vietnamese: string }>;
+    relatedWords?: Array<{ korean: string; vietnamese: string }>;
     vietnamese: string;
     type: string;
     level: string;
@@ -500,19 +542,55 @@ export default function DictionaryPage() {
                           {item.vietnamese}
                         </p>
 
-                        {/* Hanja Breakdown Badge */}
-                        {item.hanjaExplanation && (
-                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-900 text-xs font-semibold">
-                            <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                            <span><strong>Hán Việt:</strong> {item.hanjaExplanation}</span>
+                        {/* Lemma Conjugation Hint for Verbs/Adjectives */}
+                        {item.lemma && item.lemma !== item.korean && (
+                          <div className="p-2 bg-blue-50/80 border border-blue-200 rounded-xl text-blue-900 text-xs font-semibold flex items-center justify-between">
+                            <span><strong>Dạng chia:</strong> {item.lemma} → {item.korean}</span>
+                            <span className="text-[11px] font-mono text-blue-700">Nguyên thể: {item.lemma}</span>
                           </div>
                         )}
 
-                        {/* Hanja Family Lexical Network */}
-                        {item.hanjaFamily && item.hanjaFamily.length > 0 && (
+                        {/* Native Korean vs Sino-Korean Origin Badge */}
+                        {item.origin === 'native_korean' || !item.hanja ? (
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 border border-emerald-200/80 rounded-xl text-emerald-900 text-xs font-semibold">
+                            <span><strong>Từ thuần Hàn (고유어)</strong> · Không có Hán tự (Hanja)</span>
+                          </div>
+                        ) : (
+                          item.hanjaExplanation && (
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 border border-amber-200/80 rounded-xl text-amber-900 text-xs font-semibold">
+                              <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                              <span><strong>Hán Việt:</strong> {item.hanjaExplanation}</span>
+                            </div>
+                          )
+                        )}
+
+                        {/* Semantic Related Words (For Native Korean or General Words) */}
+                        {item.relatedWords && item.relatedWords.length > 0 && (
                           <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 space-y-1.5">
                             <span className="text-[11px] font-bold text-slate-600 flex items-center gap-1">
-                              <Tag className="w-3 h-3 text-blue-600" /> Mạng lưới từ Hán-Hàn liên quan (Lexical Network):
+                              <Tag className="w-3 h-3 text-emerald-600" /> Từ liên quan về nghĩa (Synonyms / Antonyms):
+                            </span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {item.relatedWords.map((rel, rIdx) => (
+                                <button
+                                  key={rIdx}
+                                  type="button"
+                                  onClick={() => handleRecentClick(rel.korean)}
+                                  className="px-2 py-0.5 bg-white border border-slate-300 hover:border-emerald-500 rounded-lg text-[11px] font-bold text-slate-800 hover:text-emerald-600 transition-colors"
+                                  title={`Tra từ ${rel.korean}`}
+                                >
+                                  {rel.korean} <span className="font-normal text-slate-500">({rel.vietnamese})</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Hanja Family Lexical Network (For Sino-Korean Words) */}
+                        {item.hanjaFamily && item.hanjaFamily.length > 0 && item.origin !== 'native_korean' && (
+                          <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 space-y-1.5">
+                            <span className="text-[11px] font-bold text-slate-600 flex items-center gap-1">
+                              <Tag className="w-3 h-3 text-blue-600" /> Mạng lưới Họ từ Hán-Hàn (Hanja Network):
                             </span>
                             <div className="flex flex-wrap gap-1.5">
                               {item.hanjaFamily.map((fam, fIdx) => (
