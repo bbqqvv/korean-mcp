@@ -250,11 +250,11 @@ export default function Sidebar({
                               onClick={onCloseMobile}
                               className={`flex items-center gap-2 py-1.5 px-2.5 text-[11px] font-medium rounded-xl transition-all ${
                                 isSubActive
-                                  ? 'bg-blue-600 text-white font-semibold shadow-2xs'
-                                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+                                  ? 'bg-slate-200/90 dark:bg-slate-800 text-slate-900 dark:text-white font-extrabold shadow-2xs'
+                                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                               }`}
                             >
-                              <SubIcon className={`w-3.5 h-3.5 shrink-0 ${isSubActive ? 'text-white' : 'text-slate-400'}`} />
+                              <SubIcon className={`w-3.5 h-3.5 shrink-0 ${isSubActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`} />
                               <span className="truncate">{sub.label}</span>
                             </Link>
                           );

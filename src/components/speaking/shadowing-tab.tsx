@@ -67,7 +67,7 @@ export default function ShadowingTab() {
         if (playerRef.current) {
           try {
             playerRef.current.destroy();
-          } catch (e) {}
+          } catch (e) { }
         }
 
         playerRef.current = new window.YT.Player(`yt-player-${selectedVideo.id}`, {
@@ -118,7 +118,7 @@ export default function ShadowingTab() {
     if (playerRef.current && playerRef.current.setPlaybackRate) {
       try {
         playerRef.current.setPlaybackRate(playbackSpeed);
-      } catch (e) {}
+      } catch (e) { }
     }
   }, [playbackSpeed]);
 
@@ -157,7 +157,7 @@ export default function ShadowingTab() {
             playerRef.current.pauseVideo();
             setAutoPauseSegment(false); // trigger once
           }
-        } catch (e) {}
+        } catch (e) { }
       }
     }, 250);
 
@@ -173,7 +173,7 @@ export default function ShadowingTab() {
       try {
         playerRef.current.seekTo(seg.startTime, true);
         playerRef.current.playVideo();
-      } catch (e) {}
+      } catch (e) { }
     }
   };
 
@@ -193,31 +193,28 @@ export default function ShadowingTab() {
       <div className="flex items-center gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <button
           onClick={() => setFilterCategory('all')}
-          className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
-            filterCategory === 'all'
+          className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${filterCategory === 'all'
               ? `${themeConfig.primaryBg} text-white shadow-xs`
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-          }`}
+            }`}
         >
           Tất cả Video ({SHADOWING_VIDEOS.length})
         </button>
         <button
           onClick={() => setFilterCategory('daily')}
-          className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
-            filterCategory === 'daily'
+          className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${filterCategory === 'daily'
               ? `${themeConfig.primaryBg} text-white shadow-xs`
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-          }`}
+            }`}
         >
           Giao Tiếp Thực Tế
         </button>
         <button
           onClick={() => setFilterCategory('vlog')}
-          className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
-            filterCategory === 'vlog'
+          className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${filterCategory === 'vlog'
               ? `${themeConfig.primaryBg} text-white shadow-xs`
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-          }`}
+            }`}
         >
           Vlog Đời Sống
         </button>
@@ -253,11 +250,10 @@ export default function ShadowingTab() {
                 {/* Loop Segment Toggle */}
                 <button
                   onClick={() => setIsLoopingSegment(!isLoopingSegment)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all ${
-                    isLoopingSegment
+                  className={`px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all ${isLoopingSegment
                       ? 'bg-blue-600 text-white shadow-2xs'
                       : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                  }`}
+                    }`}
                 >
                   <Repeat className="w-3.5 h-3.5" />
                   <span>{isLoopingSegment ? 'Đang Lặp Câu' : 'Lặp Câu Này'}</span>
@@ -266,11 +262,10 @@ export default function ShadowingTab() {
                 {/* Auto Pause Toggle */}
                 <button
                   onClick={() => setAutoPauseSegment(!autoPauseSegment)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all ${
-                    autoPauseSegment
+                  className={`px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all ${autoPauseSegment
                       ? 'bg-amber-500 text-slate-950 shadow-2xs'
                       : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                  }`}
+                    }`}
                 >
                   <PauseCircle className="w-3.5 h-3.5" />
                   <span>{autoPauseSegment ? 'Dừng Hết Câu' : 'Tạm Dừng Hết Câu'}</span>
@@ -294,11 +289,10 @@ export default function ShadowingTab() {
                   <button
                     key={speed}
                     onClick={() => setPlaybackSpeed(speed)}
-                    className={`px-2 py-0.5 rounded-lg text-[11px] font-bold transition-all ${
-                      playbackSpeed === speed
+                    className={`px-2 py-0.5 rounded-lg text-[11px] font-bold transition-all ${playbackSpeed === speed
                         ? 'bg-slate-900 text-white'
                         : 'text-slate-500 hover:text-slate-900'
-                    }`}
+                      }`}
                   >
                     {speed}x
                   </button>
@@ -353,11 +347,10 @@ export default function ShadowingTab() {
                     key={sub.id}
                     id={`sub-item-${sub.id}`}
                     onClick={() => handleSeekToSegment(sub)}
-                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer space-y-1.5 ${
-                      isActive
+                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer space-y-1.5 ${isActive
                         ? `bg-slate-900 text-white border-slate-900 shadow-md ring-2 ring-blue-400/40 scale-[1.01]`
                         : 'bg-slate-50 border-slate-200/80 hover:bg-white hover:border-slate-400 text-slate-900'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center justify-between text-[10px] font-bold">
                       <span className={isActive ? 'text-amber-400' : 'text-blue-600'}>
@@ -395,11 +388,10 @@ export default function ShadowingTab() {
                   <div
                     key={video.id}
                     onClick={() => setSelectedVideo(video)}
-                    className={`p-3 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between gap-3 ${
-                      isSelected
+                    className={`p-3 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between gap-3 ${isSelected
                         ? `bg-blue-50 border-blue-600 shadow-xs`
                         : 'bg-white border-slate-200 hover:border-slate-400'
-                    }`}
+                      }`}
                   >
                     <div className="space-y-0.5 min-w-0 flex-1">
                       <span className="text-[10px] font-bold text-slate-400 block">{video.categoryLabel}</span>
